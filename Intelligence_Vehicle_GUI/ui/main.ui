@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>899</width>
-    <height>856</height>
+    <width>823</width>
+    <height>728</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,9 +26,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>520</y>
-     <width>426</width>
-     <height>240</height>
+     <y>20</y>
+     <width>800</width>
+     <height>450</height>
     </rect>
    </property>
    <property name="frameShape">
@@ -41,8 +41,8 @@
   <widget class="QLabel" name="label_lane_view">
    <property name="geometry">
     <rect>
-     <x>456</x>
-     <y>520</y>
+     <x>10</x>
+     <y>480</y>
      <width>426</width>
      <height>240</height>
     </rect>
@@ -57,9 +57,9 @@
   <widget class="QLabel" name="label_system_message">
    <property name="geometry">
     <rect>
-     <x>22</x>
-     <y>120</y>
-     <width>851</width>
+     <x>20</x>
+     <y>180</y>
+     <width>781</width>
      <height>41</height>
     </rect>
    </property>
@@ -69,7 +69,7 @@
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(94, 92, 100, 50);</string>
+    <string notr="true">background-color: rgb(94, 92, 100);</string>
    </property>
    <property name="text">
     <string>SystemMessage</string>
@@ -81,8 +81,8 @@
   <widget class="QLabel" name="label_speedometer_neelde">
    <property name="geometry">
     <rect>
-     <x>314</x>
-     <y>631</y>
+     <x>490</x>
+     <y>490</y>
      <width>256</width>
      <height>256</height>
     </rect>
@@ -109,8 +109,8 @@
   <widget class="QLabel" name="label_speedometer_bg">
    <property name="geometry">
     <rect>
-     <x>317</x>
-     <y>641</y>
+     <x>494</x>
+     <y>496</y>
      <width>256</width>
      <height>256</height>
     </rect>
@@ -128,8 +128,8 @@
   <widget class="QPushButton" name="btn_log">
    <property name="geometry">
     <rect>
-     <x>810</x>
-     <y>770</y>
+     <x>730</x>
+     <y>30</y>
      <width>71</width>
      <height>71</height>
     </rect>
@@ -151,23 +151,6 @@
     </size>
    </property>
   </widget>
-  <widget class="QLabel" name="label_map_view">
-   <property name="geometry">
-    <rect>
-     <x>11</x>
-     <y>20</y>
-     <width>871</width>
-     <height>491</height>
-    </rect>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::Box</enum>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <zorder>label_map_view</zorder>
   <zorder>label_speedometer_bg</zorder>
   <zorder>label_front_view</zorder>
   <zorder>label_lane_view</zorder>
