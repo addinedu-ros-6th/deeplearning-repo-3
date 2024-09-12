@@ -14,7 +14,6 @@ class DetectedObject:
     def __str__(self):
         return f"Detected at: {self.detection_time}, Width: {round(self.width,2)}, \
 Height: {round(self.height,2)}"
-detected_objects = {}
 
 class ObjectAlertManager:
     def __init__(self, alert_interval = 10, min_detections = 3, width_threshold = (50, 300)):
@@ -76,7 +75,7 @@ class Train:
                             x, y, w, h = box.xywh[0].tolist()  # bounding box 정보
                             # curr_time = time.strftime("%H:%M:%S")
 
-                            detected_objects[object_name] = DetectedObject(
+                            self.detected_objects[object_name] = DetectedObject(
                                 detection_time=time.strftime("%H:%M:%S"), 
                                 width=w, 
                                 height=h
@@ -87,10 +86,10 @@ class Train:
                                 print(f"ALERT: {object_name} detected with width {w}")
                                 print("#############################################")                
                     
-                # for name in detected_objects:
+                # for name in self.detected_objects:
                 #     print("time "+ name + " detected : ", 
-                #     detected_objects[name].detection_time)
-                #     print("width of " + name + " : ", round(detected_objects[name].width,2 ))
+                #     self.detected_objects[name].detection_time)
+                #     print("width of " + name + " : ", round(self.detected_objects[name].width,2 ))
                 
                 # 결과를 보여줌
                 cv2.imshow("Live Camera", results[0].plot())
