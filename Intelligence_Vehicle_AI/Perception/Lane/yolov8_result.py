@@ -101,8 +101,8 @@ while cap.isOpened():
 
         # 중앙 선의 x 좌표
         center_x = image.shape[1] // 2
-        error = center_x - middle_point[0]  # 에러 계산
-        error_text = f"error: {error:.2f}"  # 에러 텍스트
+        error = round((center_x - middle_point[0]), 1)  # 에러 계산
+        error_text = f"error: {error:.1f}"  # 에러 텍스트
         cv2.putText(image, error_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
         print("error값 :{}".format(error))
