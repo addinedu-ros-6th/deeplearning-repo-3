@@ -4,11 +4,11 @@ import numpy as np
 from ultralytics import YOLO
 
 # YOLOv8 모델 로드
-model = YOLO('/home/heechun/dev_ws/#3 dl_project_folder/03_lane/runs/segment/train/weights/best_v8n_seg.pt')  # 모델 파일 경로
+model = YOLO('/home/heechun/dev_ws/deeplearning-repo-3/Intelligence_Vehicle_AI/Perception/Lane/best_v8n_seg.pt')  # 모델 파일 경로
 
 # 비디오 파일 열기
 # cap = cv2.VideoCapture('/home/heechun/dev_ws/#3 dl_project_folder/03_lane/30_only_lane_video_fast.avi')  # 비디오 파일 경로
-cap = cv2.VideoCapture('/home/heechun/dev_ws/#3 dl_project_folder/02_rasberry/0906_test/Dataset/video/lane_data/lane_sum_video.mp4')
+cap = cv2.VideoCapture('/home/heechun/dev_ws/deeplearning-repo-3/Intelligence_Vehicle_AI/Dataset/Lane_dataset/30_only_lane_video.mp4')
 # 윈도우 생성
 cv2.namedWindow('Lane Centers')  # 윈도우 이름
 
