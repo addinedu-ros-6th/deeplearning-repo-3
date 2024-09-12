@@ -80,11 +80,13 @@ class LaneDetector:
                 color = (0, 255, 0) if abs(self.error) < 10 else (0, 255, 255) if abs(self.error) < 20 else (0, 0, 255)
                 cv2.line(image, (int(middle_point[0]), int(middle_point[1])), (center_x, int(middle_point[1])), color, 2)
 
-            # 텍스트 표시
+            # Return the latest values after processing each frame
             cv2.putText(image, f"Error: {self.error}", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
             cv2.putText(image, f"Stop Line Flag: {self.stop_line_flag}", (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-
             cv2.imshow('Lane Centers', image)
+            
+            # Yield the current frame's error and stop line flag
+            yield self.error, self.stop_line_flag
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
@@ -100,10 +102,3 @@ class LaneDetector:
         for obj in self.newlist[:]:
             if obj not in current_objects:
                 self.newlist.remove(obj)
-
-    def get_error(self):
-        print('errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
-        return self.error
-
-    def get_stop_line_flag(self):
-        return self.stop_line_flag
