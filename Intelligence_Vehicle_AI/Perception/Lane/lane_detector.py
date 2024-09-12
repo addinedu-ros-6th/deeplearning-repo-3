@@ -34,7 +34,7 @@ class LaneDetector:
             if not ret:
                 break
 
-            results = self.model(image)
+            results = self.model(image, verbose = False)
             self.stop_line_flag = 1 if 'Stop_Line' in self.newlist else 0
 
             lane_masks = results[0].masks.xy

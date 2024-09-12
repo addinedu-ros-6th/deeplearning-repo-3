@@ -19,20 +19,36 @@ class FrameBuffer:
 
 def webcam(frame_buffer, idx):
     capture = cv2.VideoCapture(idx)
-    while True:
-        ret, frame = capture.read()
-        if not ret:
-            continue
+    # while True:
+    #     ret, frame = capture.read()
+    #     if not ret:
+    #         continue
         
-        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
-        result, imgencode = cv2.imencode('.jpg', frame, encode_param)
+    #     encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+    #     result, imgencode = cv2.imencode('.jpg', frame, encode_param)
         
-        data = np.array(imgencode)
-        stringData = data.tobytes()
+    #     data = np.array(imgencode)
+    #     stringData = data.tobytes()
         
-        frame_buffer.update(idx, stringData)
+    #     frame_buffer.update(idx, stringData)
     
-    capture.release()
+    # capture.release()
+    try:
+        while True:
+            ret, frame = capture.read()
+            if not ret:
+                continue
+            
+            encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+            result, imgencode = cv2.imencode('.jpg', frame, encode_param)
+            
+            data = np.array(imgencode)
+            stringData = data.tobytes()
+            
+            frame_buffer.update(idx, stringData)
+    
+    finally:
+        capture.release()
 
 def handle_client(client_socket, addr, frame_buffer):
     print('Connected by:', addr)
