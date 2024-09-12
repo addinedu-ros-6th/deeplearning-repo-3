@@ -46,8 +46,8 @@ alert_manager = ObjectAlertManager(alert_interval=10, min_detections=3,width_thr
 class Train:
     def __init__(self):
         self.detected_objects = {}
-        self.model = YOLO("/home/kim/Downloads/model/obstacle_n.pt")
-        self.cap = cv2.VideoCapture("/home/kim/Downloads/object.mp4")
+        self.model = YOLO("./Intelligence_Vehicle_AI/Perception/Object/obstacle_n.pt")
+        self.cap = cv2.VideoCapture("./Intelligence_Vehicle_AI/Dataset/Object_dataset/object.mp4")
 
     def run(self):
         try:
