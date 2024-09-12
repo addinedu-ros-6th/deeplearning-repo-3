@@ -3,10 +3,12 @@ from abc import ABC, abstractmethod
 import cv2
 
 class ObstacleSubject:
-    def __init__(self, key, observer: DetectObserver):
+    def __init__(self):
         self._detectEvents = {}
-        self._detectEvents[key] = observer
         self._observers: list[DetectObserver] = []
+
+    def addEvent(self, key, observer: DetectObserver):
+        self._detectEvents[key] = observer
 
     def attach(self, observer: DetectObserver):
         self._observers.append(observer)
@@ -15,9 +17,9 @@ class ObstacleSubject:
         if observer in self._observers:
             self._observers.remove(observer)
 
-    def notify(self, obstacle_type: str):
+    def notify(self):
         for observer in self._observers:
-            observer.update(obstacle_type)
+            observer.update()
         
         self._observers.clear()
 

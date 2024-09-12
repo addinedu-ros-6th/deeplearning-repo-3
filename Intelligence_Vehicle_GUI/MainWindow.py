@@ -48,7 +48,7 @@ class WindowClass(QMainWindow, from_class):
     def __init__(self, parent=None):
         super(WindowClass, self).__init__(parent)
         self.setupUi(self)
-        self.label_system_message.hide()
+        # self.label_system_message.hide()
 
         # self.label_system_message.setVisible(False)
         # self.label_system_message.setText("test")
@@ -93,23 +93,18 @@ if __name__ == "__main__":
 
     train = Train()
     train.front_viewer.connect(myWindow.update_front_view)
+    train.addEvent("dog", DetectDog(myWindow.start_blink_system_message))
+    train.addEvent("dog_cancel", DetectDogCancel(myWindow.start_blink_system_message))
+    train.addEvent("child", DetectChildZone(myWindow.start_blink_system_message))
+    train.addEvent("child_deactive", DetectChildCancellation(myWindow.start_blink_system_message))
+    train.addEvent("Red_sign", DetectTrafficLightRed(myWindow.start_blink_system_message))
+    train.addEvent("Blue_sign",  DetectTrafficLightBlue(myWindow.start_blink_system_message))
+    train.addEvent("person", DetectPerson(myWindow.start_blink_system_message))
+    train.addEvent("person_cancel", DetectPersonCancel(myWindow.start_blink_system_message))
+    train.addEvent("50km", DetectSpeedLimitSign(myWindow.start_blink_system_message))
+    train.addEvent("50km_deactive", DetectSpeedCancellation(myWindow.start_blink_system_message))
+    train.addEvent("stop", DetectStop(myWindow.start_blink_system_message))
+    train.addEvent("stop_cancel", DetectStopCancel(myWindow.start_blink_system_message))
     train.run()
-
-    # detected_objects = {}
-    # detected_objects["dog"] = DetectDog(myWindow.start_blink_system_message)
-    # detected_objects["dog_cancel"] = DetectDogCancel(myWindow.start_blink_system_message)
-    # detected_objects["child"] = DetectChildZone(myWindow.start_blink_system_message)
-    # detected_objects["child_deactive"] = DetectChildCancellation(myWindow.start_blink_system_message)
-    # detected_objects["Red_sign"] = DetectTrafficLightRed(myWindow.start_blink_system_message)
-    # detected_objects["Blue_sign"] = DetectTrafficLightBlue(myWindow.start_blink_system_message)
-    # detected_objects["person"] = DetectPerson(myWindow.start_blink_system_message)
-    # detected_objects["person_cancel"] = DetectPersonCancel(myWindow.start_blink_system_message)
-    # detected_objects["50km"] = DetectSpeedLimitSign(myWindow.start_blink_system_message)
-    # detected_objects["50km_deactive"] = DetectSpeedCancellation(myWindow.start_blink_system_message)
-    # detected_objects["stop"] = DetectStop(myWindow.start_blink_system_message)
-    # detected_objects["stop_cancel"] = DetectStopCancel(myWindow.start_blink_system_message)
-
-
-    # train._detectEvents = detected_objects
 
     sys.exit(app.exec_())

@@ -45,12 +45,13 @@ class ObjectAlertManager:
         return False
 alert_manager = ObjectAlertManager(alert_interval=10, min_detections=3,width_threshold=(50, 300))
 
-class Train(QObject):
+class Train(QObject, ObstacleSubject):
 
     front_viewer = pyqtSignal(np.ndarray)
 
     def __init__(self):
-        super().__init__()
+        QObject.__init__(self)
+        ObstacleSubject.__init__(self)
         self.detected_objects = {}
         self.model = YOLO("./Intelligence_Vehicle_AI/Perception/Object/obstacle_n.pt")
         self.cap = cv2.VideoCapture("./Intelligence_Vehicle_AI/Dataset/Object_dataset/object.mp4")
@@ -59,7 +60,6 @@ class Train(QObject):
         try:
             while True:
                 ret, frame = self.cap.read()
-                print(frame)
                 if not ret:
                     print("Empty video frame or completed processing")
                     break
@@ -69,7 +69,7 @@ class Train(QObject):
 
                 frame = cv2.resize(frame, (720, 480))
                 self.front_viewer.emit(frame)
-                results = self.model.track(frame, conf=0.3, imgsz=480)
+                results = self.model.track(frame, conf=0.3, imgsz=480,verbose=False)
                 cv2.putText(frame, f"Total: {len(results[0].boxes)}", (50, 50), 
                             cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
                 
@@ -90,8 +90,9 @@ class Train(QObject):
                             )
 
                             if alert_manager.should_alert(object_name, w):
+                                self.attach(self._detectEvents[object_name])
                                 print("#############################################")
-                                print(f"ALERT: {object_name} detected with width {w}")
+                                print('\033[91m'+f"ALERT: {object_name} detected with width {w}"+'\033[0m')
                                 print("#############################################")                
                     
                 # for name in self.detected_objects:
@@ -101,6 +102,7 @@ class Train(QObject):
                 
                 # 결과를 보여줌
                 cv2.imshow("Live Camera", results[0].plot())
+                self.notify()
                 if cv2.waitKey(1) == ord('q'):
                     break
         finally:
