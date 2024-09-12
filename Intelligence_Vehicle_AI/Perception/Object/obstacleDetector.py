@@ -51,6 +51,7 @@ class Train(QObject):
 
     def __init__(self):
         super().__init__()
+        self.detected_objects = {}
         self.model = YOLO("./Intelligence_Vehicle_AI/Perception/Object/obstacle_n.pt")
         self.cap = cv2.VideoCapture("./Intelligence_Vehicle_AI/Dataset/Object_dataset/object.mp4")
 
@@ -58,6 +59,7 @@ class Train(QObject):
         try:
             while True:
                 ret, frame = self.cap.read()
+                print(frame)
                 if not ret:
                     print("Empty video frame or completed processing")
                     break
@@ -66,7 +68,7 @@ class Train(QObject):
                     break
 
                 frame = cv2.resize(frame, (720, 480))
-                self.front_viewer(frame)
+                self.front_viewer.emit(frame)
                 results = self.model.track(frame, conf=0.3, imgsz=480)
                 cv2.putText(frame, f"Total: {len(results[0].boxes)}", (50, 50), 
                             cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)

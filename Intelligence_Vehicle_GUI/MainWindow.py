@@ -48,6 +48,7 @@ class WindowClass(QMainWindow, from_class):
     def __init__(self, parent=None):
         super(WindowClass, self).__init__(parent)
         self.setupUi(self)
+        self.label_system_message.hide()
 
         # self.label_system_message.setVisible(False)
         # self.label_system_message.setText("test")
@@ -92,6 +93,7 @@ if __name__ == "__main__":
 
     train = Train()
     train.front_viewer.connect(myWindow.update_front_view)
+    train.run()
 
     # detected_objects = {}
     # detected_objects["dog"] = DetectDog(myWindow.start_blink_system_message)
