@@ -9,3 +9,5 @@ from Intelligence_Vehicle_Service.Processor.Processor import Processor
 class LaneProcessor(Processor):
     def execute(self, data):
         print("LaneProcessor")
+        # 데이터 처리 로직 추가
+        print(f"Received lane data: {data}")
