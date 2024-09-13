@@ -1,27 +1,17 @@
-from typing import Any
+from typing import Any, Callable
 from flask import Flask, request, jsonify
 import requests
 from threading import Thread
 
 class SingletonMeta(type):
-    """
-    The Singleton class can be implemented in different ways in Python. Some
-    possible methods include: base class, decorator, metaclass. We will use the
-    metaclass because it is best suited for this purpose.
-    """
-
     _instances = {}
 
     def __call__(cls, *args, **kwargs):
-        """
-        Possible changes to the value of the `__init__` argument do not affect
-        the returned instance.
-        """
         if cls not in cls._instances:
             instance = super().__call__(*args, **kwargs)
             cls._instances[cls] = instance
         return cls._instances[cls]
-
+    
 class FlaskClient(metaclass = SingletonMeta):
 
     def __init__(self, client_id, port):
@@ -31,30 +21,38 @@ class FlaskClient(metaclass = SingletonMeta):
 
         # 클라이언트의 메시지 수신 라우트 설정
         self.setup_routes()
+        self.run()
 
     def setup_routes(self):
         self.app.route('/receive_data', methods=['POST'])(self.receive_data)
 
+    def set_callback(self, callback: Callable[[str, Any], None]):
+        self.callback = callback
 
     def receive_data(self):
         data = request.json
-        from_client = data.get('from')
 
-        data = data.get('data')
+        from_client = data.get('from')
+        receive_data = data.get('data')
+
         print(f"Received data from {from_client}: {data}")
-        return jsonify({"status": "success", "data": "Data received"}), 200
+        if self.callback:
+            self.callback(from_client, receive_data)
+        return jsonify({"status": "success", "message": "Data received"}), 200
+
 
     # 다른 클라이언트로 메시지를 전송
     def send_data(self, to_client_url, data):
-        data = {
+        payload = {
             "from": self.client_id,
             "data": data
         }
         try:
-            response = requests.post(f"{to_client_url}/receive_data", json=data)
+            response = requests.post(f"{to_client_url}/receive_data", json=payload)
             print(f"Response from {to_client_url}: {response.json()}")
         except requests.exceptions.RequestException as e:
             print(f"Error sending message: {e}")
+
 
     # 클라이언트 실행 (별도의 스레드에서 Flask 실행)
     def run(self):

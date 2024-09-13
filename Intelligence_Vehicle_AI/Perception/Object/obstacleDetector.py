@@ -116,5 +116,5 @@ class Train(QObject, ObstacleSubject):
     def __del__(self):
         self.release_resources()
     
-# trainer = Train()
-# trainer.run()
+trainer = Train()
+trainer.run()

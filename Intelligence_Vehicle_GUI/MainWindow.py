@@ -1,9 +1,9 @@
-import sys
-import os
-# 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
-current_dir = os.path.dirname(os.path.abspath(__file__))
-relative_path = os.path.join(current_dir, '..')  # 상위 폴더로 이동
-sys.path.append(relative_path)
+# import sys
+# import os
+# # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
+# current_dir = os.path.dirname(os.path.abspath(__file__))
+# relative_path = os.path.join(current_dir, '..')  # 상위 폴더로 이동
+# sys.path.append(relative_path)
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import *
@@ -58,7 +58,7 @@ class WindowClass(QMainWindow, from_class):
         self.mutex = QMutex() 
 
     def start_blink_system_message(self, text):
-        self.label_system_message.setText(text)
+        # self.label_system_message.setText(text)
         print("System Message는 구현 중입니다.")
 
         # if self.blink_thread and self.blink_thread.isRunning():
@@ -106,5 +106,8 @@ if __name__ == "__main__":
     train.addEvent("stop", DetectStop(myWindow.start_blink_system_message))
     train.addEvent("stop_cancel", DetectStopCancel(myWindow.start_blink_system_message))
     train.run()
+
+    test = LaneDetector()
+    test.addEvent("lane_error", DetectDog(myWindow.start_blink_system_message))
 
     sys.exit(app.exec_())
