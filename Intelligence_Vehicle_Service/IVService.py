@@ -6,8 +6,9 @@ sys.path.append(relative_path)
 
 from typing import Any
 from flask import Flask, request, jsonify
-from Intelligence_Vehicle_Service.ProcessorFactory import *
-from Intelligence_Vehicle_Service.Processor.Processor import *
+from Intelligence_Vehicle_Service.ProcessorFactory import ProcessorFactory
+from Intelligence_Vehicle_Service.Processor.LaneProcessor import LaneProcessor
+from Intelligence_Vehicle_Service.Processor.ObstacleProcessor import ObstacleProcessor
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
 
 class IVService:
@@ -25,8 +26,8 @@ class IVService:
             return
 
         try:
-            self.processor = self.processor_factory.get_processor(key)
-            self.processor.execute(data)
+            processor = self.processor_factory.get_processor(key)
+            processor.execute(data)
 
         except ValueError as e:
             print(f"Error processing data: {e}")
