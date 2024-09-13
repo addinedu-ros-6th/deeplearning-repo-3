@@ -6,7 +6,7 @@ sys.path.append(relative_path)
 
 from typing import Any
 from flask import Flask, request, jsonify
-from Intelligence_Vehicle_Service.Processor.ProcessorFactory import *
+from Intelligence_Vehicle_Service.ProcessorFactory import *
 from Intelligence_Vehicle_Service.Processor.Processor import *
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
 

@@ -5,13 +5,9 @@ class Processor(ABC):
     def execute(self, data):
         pass
 
-class LaneProcessor(Processor):
-    def execute(self, data):
-        print("LaneProcessor")
 
-class ObstacleProcessor(Processor):
-    def execute(self, data):
-        print("ObstacleProcessor")
+
+
     
         
 
