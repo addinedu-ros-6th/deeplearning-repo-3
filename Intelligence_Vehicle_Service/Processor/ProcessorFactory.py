@@ -1,4 +1,4 @@
-from Processor.Processor import Processor
+from Intelligence_Vehicle_Service.Processor.Processor import Processor
 
 class ProcessorFactory:
     def __init__(self) -> None:
