@@ -9,6 +9,11 @@ class LaneDetector:
         self.newlist = []
         self.error = 0
         self.stop_line_flag = 0
+        # self.testfunc
+        # self.client = client  # FlaskClient 인스턴스를 저장
+
+    # def testAddFunc(self, func):
+    #     self.testAddFunc = func
 
     def find_lane_centers(self, lane_mask, image_width):
         left_lane_points = []
@@ -29,15 +34,18 @@ class LaneDetector:
         return left_lane_center, right_lane_center
 
     def get_results(self):
-        results_list = []
+        # results_list = []
+
         while self.cap.isOpened():
             ret, image = self.cap.read()
             if not ret:
                 break
             results = self.model(image, verbose=False)
-            results_list.append((image, results))  # 이미지와 결과를 함께 저장
+            # self.testAddFunc(results)
+            # yield image, results  # 각 프레임의 이미지와 결과를 반환
+            yield results
 
-        return results_list
+        self.cap.release()
 
     def process_video(self):
         results_list = self.get_results()  # 비디오에서 결과를 가져옴
