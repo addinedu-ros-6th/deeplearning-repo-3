@@ -65,8 +65,13 @@ class FlaskClient(metaclass = SingletonMeta):
     def run(self):
         Thread(target=lambda: self.app.run(host='0.0.0.0', port=self.port, debug=False, use_reloader=False)).start()
 
-    def is_port_open(self, host, port):
+    def is_port_open(self, host, ports):
         """해당 호스트의 포트가 열려 있는지 확인"""
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            result = sock.connect_ex((host, port))
-            return result == 0  # 0이면 포트가 열려있는 것
+        for port in ports:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                result = sock.connect_ex((host, port))
+                if result != 0:
+                    return False  # 하나라도 닫혀있으면 False 반환
+        return True  # 모든 포트가 열려있으면 True 반환
+
+

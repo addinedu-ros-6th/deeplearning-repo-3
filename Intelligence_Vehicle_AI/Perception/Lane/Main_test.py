@@ -11,8 +11,6 @@ from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClien
 from lane_detector import LaneDetector 
 import base64
 
-
-
 clients = {
     "Lane": 5001,
     "Obstacle": 5002,
@@ -32,7 +30,7 @@ if __name__ == "__main__":
     client.set_callback(service.handle_receive_data)
 
     while True:
-        if client.is_port_open(host='localhost', port=clients["GUI"]):
+        if client.is_port_open(host='localhost', ports=[clients["Service"], clients["GUI"]]):
             break
         print("Waiting for a server response.")
         time.sleep(1)
@@ -41,24 +39,14 @@ if __name__ == "__main__":
                                  video_path='Intelligence_Vehicle_AI/Dataset/Lane_dataset/30_only_lane_video.mp4')
     
     for results, image in lane_detector.get_results():
-        # lane_data = {
-        #     "results": results[0].tojson() # results 변환
-        # }
+        lane_data = {
+            "results": results[0].tojson() # results 변환
+        }
         encodeimage = encode_image(image)
-        # client.send_data(f"http://localhost:{clients['Service']}", "lane", {"data":lane_data})
+
+        client.send_data(f"http://localhost:{clients['Service']}", "lane", {"data":lane_data})
         client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "lane", "image":encodeimage}})
 
-    # result = lane_detector.get_results()
-    # print(type(result))
-    # test_data = {"test": "Hello, Server!"}
-    
-
-    # obstacle_data = {
-    #     "x1": random.uniform(-1.0, 1.0),
-    #     "x2": random.uniform(0, 0.001),
-    #     "x3": random.uniform(0, 0.001)
-    # }
-    # client.send_data(f"http://localhost:{clients['Service']}", "obstacle", {"data": obstacle_data})
 
     # 1. Json으로 만들기
     """
