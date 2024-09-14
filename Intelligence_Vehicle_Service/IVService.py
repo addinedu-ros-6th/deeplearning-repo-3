@@ -9,6 +9,7 @@ from flask import Flask, request, jsonify
 from Intelligence_Vehicle_Service.ProcessorFactory import ProcessorFactory
 from Intelligence_Vehicle_Service.Processor.LaneProcessor import LaneProcessor
 from Intelligence_Vehicle_Service.Processor.ObstacleProcessor import ObstacleProcessor
+from Intelligence_Vehicle_Service.Processor.GUIViewerProcessor import GUIViewerProcessor
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
 
 class IVService:
@@ -17,6 +18,7 @@ class IVService:
         self.processor_factory = ProcessorFactory()
         self.processor_factory.register_processor("lane", LaneProcessor)
         self.processor_factory.register_processor("obstacle", ObstacleProcessor)
+        self.processor_factory.register_processor("viewer", GUIViewerProcessor)
 
         
     def handle_receive_data(self, from_client, key, data):

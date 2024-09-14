@@ -1,16 +1,23 @@
-# import sys
-# import os
-# current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
-# relative_path = os.path.join(current_dir, '../../')  # 상위 폴더로 이동
-# sys.path.append(relative_path)
+import sys
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
+relative_path = os.path.join(current_dir, '../../')  # 상위 폴더로 이동
+sys.path.append(relative_path)
 
-# from Intelligence_Vehicle_Service.Processor.Processor import Processor
+from Intelligence_Vehicle_Service.Processor.Processor import Processor
 
-# class LaneProcessor(Processor):
-#     def execute(self, data):
-#         print("LaneProcessor")
-#         # 데이터 처리 로직 추가
-#         print(f"Received lane data: {data}")
+class LaneProcessor(Processor):
+    def execute(self, data):
+        print("LaneProcessor")
+        # 데이터 처리 로직 추가
+        # print(f"Received lane data: {data}")
+        print(type(data))
+
+        for key, value in data.items():
+            print('\033[91m'+'key, value: ' + '\033[92m', key, value, '\033[0m')
+            
+            
+
 
 # --------------------------------------------------------------------------------
 
@@ -152,50 +159,50 @@
 
 # -----------------------------------------------------------
 # lane_processor.py
-import cv2
-import numpy as np
-from ultralytics import YOLO
+# import cv2
+# import numpy as np
+# from ultralytics import YOLO
 
-class LaneProcessor:
-    def __init__(self, model_path):
-        self.model = YOLO(model_path)
-        self.newlist = []
-        self.error = 0
-        self.stop_line_flag = 0
+# class LaneProcessor:
+#     def __init__(self, model_path):
+#         self.model = YOLO(model_path)
+#         self.newlist = []
+#         self.error = 0
+#         self.stop_line_flag = 0
 
-    def find_lane_centers(self, lane_mask, image_width):
-        left_lane_points = []
-        right_lane_points = []
+#     def find_lane_centers(self, lane_mask, image_width):
+#         left_lane_points = []
+#         right_lane_points = []
 
-        for mask in lane_mask:
-            x_coords = mask[:, 0]
-            y_coords = mask[:, 1]
+#         for mask in lane_mask:
+#             x_coords = mask[:, 0]
+#             y_coords = mask[:, 1]
             
-            if np.mean(x_coords) < image_width / 2:
-                left_lane_points.extend(zip(x_coords, y_coords))
-            else:
-                right_lane_points.extend(zip(x_coords, y_coords))
+#             if np.mean(x_coords) < image_width / 2:
+#                 left_lane_points.extend(zip(x_coords, y_coords))
+#             else:
+#                 right_lane_points.extend(zip(x_coords, y_coords))
 
-        left_lane_center = np.mean(left_lane_points, axis=0) if left_lane_points else None
-        right_lane_center = np.mean(right_lane_points, axis=0) if right_lane_points else None
+#         left_lane_center = np.mean(left_lane_points, axis=0) if left_lane_points else None
+#         right_lane_center = np.mean(right_lane_points, axis=0) if right_lane_points else None
 
-        return left_lane_center, right_lane_center
+#         return left_lane_center, right_lane_center
 
-    def process_results(self, image, results):
-        lane_masks = results[0].masks.xy
-        class_ids = results[0].boxes.cls
-        image_width = image.shape[1]
+#     def process_results(self, image, results):
+#         lane_masks = results[0].masks.xy
+#         class_ids = results[0].boxes.cls
+#         image_width = image.shape[1]
 
-        filtered_masks = [mask for mask, class_id in zip(lane_masks, class_ids) if class_id in [1, 2]]
-        lane_mask = filtered_masks
+#         filtered_masks = [mask for mask, class_id in zip(lane_masks, class_ids) if class_id in [1, 2]]
+#         lane_mask = filtered_masks
 
-        left_center, right_center = self.find_lane_centers(lane_mask, image_width)
+#         left_center, right_center = self.find_lane_centers(lane_mask, image_width)
 
-        if left_center is not None and right_center is not None:
-            middle_point = ((left_center[0] + right_center[0]) / 2, (left_center[1] + right_center[1]) / 2)
-            center_x = image_width // 2
-            self.error = round((center_x - middle_point[0]), 1)
+#         if left_center is not None and right_center is not None:
+#             middle_point = ((left_center[0] + right_center[0]) / 2, (left_center[1] + right_center[1]) / 2)
+#             center_x = image_width // 2
+#             self.error = round((center_x - middle_point[0]), 1)
 
-        self.stop_line_flag = 1 if 'Stop_Line' in self.newlist else 0
+#         self.stop_line_flag = 1 if 'Stop_Line' in self.newlist else 0
 
-        return self.error, self.stop_line_flag
+#         return self.error, self.stop_line_flag
