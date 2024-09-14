@@ -35,6 +35,7 @@ class GUIViewerProcessor(QObject, Processor, metaclass=ProcessorMeta):
         if image is None:
             print("\033[93m" + "Error: Failed to decode image" + "\033[0m")
             return
+        
         if image_type == 'front':
             self.frontView.emit(image)
         elif image_type == 'lane':

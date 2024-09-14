@@ -15,7 +15,7 @@ import time
 import cv2
 import numpy as np
 from Observer import *
-from Intelligence_Vehicle_AI.Perception.Object.obstacleDetector import ObstacleDetector
+from Intelligence_Vehicle_AI.Perception.Object.ObstacleDetector import ObstacleDetector
 
 
 

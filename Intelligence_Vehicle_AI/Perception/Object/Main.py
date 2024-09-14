@@ -46,8 +46,8 @@ if __name__ == "__main__":
         }
         encodeimage = encode_image(image)
 
-        client.send_data(f"http://localhost:{clients['Service']}", "obstacle", {"data":obstacle_data})
-        client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "obstacle", "image":encodeimage}})
+        # client.send_data(f"http://localhost:{clients['Service']}", "obstacle", {"data":obstacle_data})
+        client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "front", "image":encodeimage}})
 
 
 
