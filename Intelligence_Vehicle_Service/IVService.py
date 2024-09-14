@@ -18,11 +18,15 @@ class IVService:
         self.processor_factory = ProcessorFactory()
         self.processor_factory.register_processor("lane", LaneProcessor)
         self.processor_factory.register_processor("obstacle", ObstacleProcessor)
-        self.processor_factory.register_processor("viewer", GUIViewerProcessor)
-
+            
+    def connect_gui(self, window_class):
+        gui_viewer_processor = GUIViewerProcessor()
+        gui_viewer_processor.frontView.connect(window_class.update_front_view)
+        gui_viewer_processor.laneView.connect(window_class.update_lane_view)
+        self.processor_factory.register_processor("viewer", lambda: gui_viewer_processor)
         
     def handle_receive_data(self, from_client, key, data):
-        print('\033[91m'+"Received data: from_client=" +'\033[92m'+f"{from_client}, key={key}," +'\033[96m'+ f"data={data}", '\033[0m')
+        # print('\033[91m'+"Received data: from_client=" +'\033[92m'+f"{from_client}, key={key}," +'\033[96m'+ f"data={data}", '\033[0m')
         if key is None:
             print(f"Warning: Received data with no key from {from_client}")
             return

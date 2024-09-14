@@ -5,6 +5,7 @@
 # relative_path = os.path.join(current_dir, '..')  # 상위 폴더로 이동
 # sys.path.append(relative_path)
 
+import sys
 from PyQt5 import uic
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -14,7 +15,7 @@ import time
 import cv2
 import numpy as np
 from Observer import *
-from Intelligence_Vehicle_AI.Perception.Object.obstacleDetector import Train
+from Intelligence_Vehicle_AI.Perception.Object.obstacleDetector import ObstacleDetector
 
 
 
@@ -107,7 +108,7 @@ if __name__ == "__main__":
     train.addEvent("stop_cancel", DetectStopCancel(myWindow.start_blink_system_message))
     train.run()
 
-    test = LaneDetector()
-    test.addEvent("lane_error", DetectDog(myWindow.start_blink_system_message))
+    # test = LaneDetector()
+    # test.addEvent("lane_error", DetectDog(myWindow.start_blink_system_message))
 
     sys.exit(app.exec_())

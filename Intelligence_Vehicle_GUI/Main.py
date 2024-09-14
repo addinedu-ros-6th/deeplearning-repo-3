@@ -26,9 +26,9 @@ if __name__ == "__main__":
     myWindow.show()
 
     service = IVService()
-
-    gui_processor =  service.processor_factory.get_processor('viewer')
-    gui_processor.frontView.connect(myWindow.update_front_view)
+    service.connect_gui(myWindow)
 
     client = FlaskClient(client_id="GUI", port= clients["GUI"])
     client.set_callback(service.handle_receive_data)
+
+    sys.exit(app.exec_())

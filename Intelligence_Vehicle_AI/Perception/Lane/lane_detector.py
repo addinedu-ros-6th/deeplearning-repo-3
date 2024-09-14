@@ -43,7 +43,7 @@ class LaneDetector:
             results = self.model(image, verbose=False)
             # self.testAddFunc(results)
             # yield image, results  # 각 프레임의 이미지와 결과를 반환
-            yield results
+            yield results, image
 
         self.cap.release()
 
