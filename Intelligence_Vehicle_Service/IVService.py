@@ -23,18 +23,18 @@ class IVService:
         self.processor_factory = ProcessorFactory()
 
     def register_ai_processor(self):
-        self.processor_factory.register_processor("lane", LaneProcessor)
-        self.processor_factory.register_processor("obstacle", ObstacleProcessor)
+        self.processor_factory.register_processor("lane", LaneProcessor())
+        self.processor_factory.register_processor("obstacle", ObstacleProcessor())
             
     def register_gui_processor(self, window_class):
         gui_viewer_processor = GUIViewerProcessor()
         gui_viewer_processor.frontView.connect(window_class.update_front_view)
         gui_viewer_processor.laneView.connect(window_class.update_lane_view)
-        self.processor_factory.register_processor("viewer", lambda: gui_viewer_processor)
+        self.processor_factory.register_processor("viewer", gui_viewer_processor)
 
         gui_processor = GUIProcessor()
         # gui_processor.speedfunc.connect(window_class)
-        self.processor_factory.register_processor("gui", lambda: gui_processor)
+        self.processor_factory.register_processor("gui", gui_processor)
 
 
     def set_client(self, client:FlaskClient):

@@ -17,4 +17,4 @@ class ProcessorFactory:
         processor = self.processors.get(name)
         if not processor:
             raise ValueError(f"Invalid processor name: {name}")
-        return processor()
+        return processor
