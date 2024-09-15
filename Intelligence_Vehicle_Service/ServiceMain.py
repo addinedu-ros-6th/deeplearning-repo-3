@@ -29,8 +29,8 @@ if __name__ == "__main__":
     service.client.set_callback(service.handle_receive_data)
 
     wait_ports = []
-    wait_ports.append(service.client_addresses["GUI"])
-
+    wait_ports.append(service.client_addresses["Obstacle"])
+   
     while True:
         if service.client.is_port_open(host='localhost', ports=wait_ports):
             break

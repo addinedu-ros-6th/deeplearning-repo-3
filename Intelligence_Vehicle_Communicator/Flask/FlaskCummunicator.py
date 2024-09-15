@@ -73,6 +73,7 @@ class FlaskClient(metaclass = SingletonMeta):
                 if result != 0:
                     print(f"The {port} is not yet open")
                     return False  # 하나라도 닫혀있으면 False 반환
+        print("All servers are open.")
         return True  # 모든 포트가 열려있으면 True 반환
 
 
