@@ -1,3 +1,10 @@
+import sys
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
+relative_path = os.path.join(current_dir, '../../')  # 상위 폴더로 이동
+sys.path.append(relative_path)
+
+from Intelligence_Vehicle_Communicator.TCPClientNewVersion import TCPClient, TCPClientManager
 from Intelligence_Vehicle_Service.Processor.Processor import Processor
 import numpy as np
 import json
@@ -8,6 +15,10 @@ class LaneProcessor(Processor):
         self.stop_line_flag = 0
         self.error = 0
 
+        # tcp_client_manager = TCPClientManager()
+        # self.tcp_error_client = tcp_client_manager.get_client("lane_error", 'str', '172.20.10.5', 4002)
+        # self.tcp_error_client.start()
+    
     def execute(self, data):
         results_json = data['data']['results']
         results = json.loads(results_json)
@@ -31,6 +42,7 @@ class LaneProcessor(Processor):
 
         # 차선 데이터 처리
         self.process_lane_data(lane_masks, results)
+      
 
     def process_lane_data(self, lane_masks, results):
         if lane_masks:
@@ -47,6 +59,8 @@ class LaneProcessor(Processor):
 
             print(f"차선 중앙점: {middle_point}")
             print(f"오차(error): {self.error}")
+
+            # self.tcp_error_client.send_message(str(self.error))
 
         for result in results:
             print(f"{result['name']} 감지됨, 신뢰도: {result['confidence']:.2f}")

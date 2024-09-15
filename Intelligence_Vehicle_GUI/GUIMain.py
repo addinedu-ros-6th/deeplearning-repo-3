@@ -26,7 +26,7 @@ if __name__ == "__main__":
     myWindow.show()
 
     service = IVService()
-    service.connect_gui(myWindow)
+    service.register_gui_processor(myWindow)
 
     client = FlaskClient(client_id="GUI", port= clients["GUI"])
     client.set_callback(service.handle_receive_data)
