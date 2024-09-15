@@ -1,5 +1,6 @@
 import sys
 import os
+from typing import Callable
 current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
 relative_path = os.path.join(current_dir, '../../')  # 상위 폴더로 이동
 sys.path.append(relative_path)
@@ -14,11 +15,11 @@ class LaneProcessor(Processor):
         self.newlist = []
         self.stop_line_flag = 0
         self.error = 0
+        self.error_callback = None
 
-        # tcp_client_manager = TCPClientManager()
-        # self.tcp_error_client = tcp_client_manager.get_client("lane_error", 'str', '172.20.10.5', 4002)
-        # self.tcp_error_client.start()
-    
+    def set_error_callback(self, callback):
+        self.error_callback = callback
+        
     def execute(self, data):
         results_json = data['data']['results']
         results = json.loads(results_json)
@@ -56,11 +57,10 @@ class LaneProcessor(Processor):
             middle_point = ((left_center[0] + right_center[0]) / 2, (left_center[1] + right_center[1]) / 2)
             center_x = image_width // 2
             self.error = round((center_x - middle_point[0]), 1)
+            self.error_callback(self.error)
 
             print(f"차선 중앙점: {middle_point}")
             print(f"오차(error): {self.error}")
-
-            # self.tcp_error_client.send_message(str(self.error))
 
         for result in results:
             print(f"{result['name']} 감지됨, 신뢰도: {result['confidence']:.2f}")

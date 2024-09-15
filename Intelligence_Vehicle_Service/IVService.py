@@ -21,9 +21,17 @@ class IVService:
         self.client : FlaskClient = None
         self.client_addresses = self.set_clinet_addresses()
         self.processor_factory = ProcessorFactory()
+    
+    def start_tcp_server(self):
+        # tcp_client_manager = TCPClientManager()
+        # self.tcp_error_client = tcp_client_manager.get_client("lane_error", 'str', '172.20.10.5', 4002)
+        # self.tcp_error_client.start()
+        return
 
     def register_ai_processor(self):
-        self.processor_factory.register_processor("lane", LaneProcessor())
+        laneProcessor = LaneProcessor()
+        laneProcessor.set_error_callback(self.handle_lane_error_update)
+        self.processor_factory.register_processor("lane", laneProcessor)
         self.processor_factory.register_processor("obstacle", ObstacleProcessor())
             
     def register_gui_processor(self, window_class):
@@ -74,7 +82,14 @@ class IVService:
         # self.client.send_data(f"http://localhost:{self.client_addresses['DB']}", "db", {"data":{"type":"insert", "table":"DrivingLog","data":data}})
 
         
+    def handle_lane_error_update(self, error: float):
+        print(f"Lane error updated: {error}")
 
+        # Robot에게 에러값 전달하고 
+        # self.tcp_error_client.send_message(str(self.error))
+
+        # db 에게 에러값 전달하자.
+        
 
 
 
