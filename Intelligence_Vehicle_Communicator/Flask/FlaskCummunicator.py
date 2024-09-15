@@ -71,6 +71,7 @@ class FlaskClient(metaclass = SingletonMeta):
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                 result = sock.connect_ex((host, port))
                 if result != 0:
+                    print(f"The {sock.getsockname()} is not yet open")
                     return False  # 하나라도 닫혀있으면 False 반환
         return True  # 모든 포트가 열려있으면 True 반환
 
