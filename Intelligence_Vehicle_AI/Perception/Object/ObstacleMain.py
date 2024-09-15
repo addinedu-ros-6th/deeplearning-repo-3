@@ -32,7 +32,7 @@ if __name__ == "__main__":
     client.set_callback(service.handle_receive_data)
 
     while True:
-        if client.is_port_open(host='localhost', ports= [clients["GUI"], clients["Service"]]):
+        if client.is_port_open(host='localhost', port= clients["Service"]):
             break
         print("Waiting for a server response.")
         time.sleep(1)
@@ -46,8 +46,8 @@ if __name__ == "__main__":
         }
         encodeimage = encode_image(image)
 
-        # client.send_data(f"http://localhost:{clients['Service']}", "obstacle", {"data":obstacle_data})
-        client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "front", "image":encodeimage}})
+        client.send_data(f"http://localhost:{clients['Service']}", "obstacle", {"data":obstacle_data})
+        # client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "front", "image":encodeimage}})
 
 
 
