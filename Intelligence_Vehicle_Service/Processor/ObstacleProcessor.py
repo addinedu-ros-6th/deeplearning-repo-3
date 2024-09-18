@@ -9,6 +9,10 @@ import json
 
 detected_objects = {}  # 객체 정보 저장
 
+ALL_OBJECTS = ['child_deactive', 'Red_sign', 'dog', 'child', 'Blue_sign', 'stop', 'person', '50km', '50km_deactive']
+detection_status_dict = {obj: False for obj in ALL_OBJECTS} # dictionary 형태
+detection_status_list = [False] * len(ALL_OBJECTS)  # List to store status as boolean values # list 형태
+
 class DetectedObject:
     def __init__(self, detection_time, y_position):
 
@@ -36,15 +40,15 @@ class ObstacleProcessor(Processor):
             if obj.detection_status and current_time > self.detection_timeout + obj.detection_time:
                 obj.detection_count = 0
                 obj.detection_status = False
-                if obj_name in ['person', 'dog', 'stop']:
-                    self.notify(obj_name)
+                # if obj_name in ['person', 'dog', 'stop']:
+                #     self.notify(obj_name)
 
-    def notify(self, object_name):
-        obj = detected_objects[object_name]
-        if obj.detection_status:
-            print(f"Object {object_name}: Alert ON")
-        else:
-            print(f"Object {object_name}: Alert OFF")
+    # def notify(self, object_name):
+    #     obj = detected_objects[object_name]
+    #     if obj.detection_status:
+    #         print(f"Object {object_name}: Alert ON")
+    #     else:
+    #         print(f"Object {object_name}: Alert OFF")
 
     def execute(self, data):
     
@@ -69,25 +73,35 @@ class ObstacleProcessor(Processor):
                         if obj.detection_count > self.alert_threshold and not obj.detection_status:
                             obj.detection_status = True
                             obj.detection_count = 0
-                            self.notify(object_name)
                     elif object_name in ['child_deactivate', 'child', '50km', '50km_deactivate']:
                         if obj.detection_count > self.alert_threshold and not obj.detection_status and obj.y_position > self.yLimit_signs:
                             obj.detection_status = True
                             obj.detection_count = 0
-                            self.notify(object_name)
                     elif object_name in ['person', 'dog', 'stop']:
                         if obj.detection_count > self.alert_threshold and not obj.detection_status and obj.y_position > self.yLimit_obstacle:
                             obj.detection_status = True
                             obj.detection_count = 0
-                            self.notify(object_name)
-        if detected_objects.keys != []:
-            for DetObj in detected_objects.keys():
-                print(DetObj)
-                # objStat = DetObj.detection_status
-                # print("Status of ", DetObj, " : ", objStat)
+
+                self.check_detection_timeout(current_time)
+
+                detection_status_dict[object_name] = detected_objects[object_name].detection_status # dictionary
+
+                for i, obj_name in enumerate(ALL_OBJECTS):
+                    detection_status_list[i] = detection_status_dict[obj_name] # list
+
+        for objName in ALL_OBJECTS:
+            print(objName, " : ", detection_status_dict[objName])
+        # print("Detection status list:", detection_status_list)
 
 
 
+
+
+
+
+        # if detected_objects.keys != []:
+        #     for objName in detected_objects.keys():
+        #         print(objName, " : ", detected_objects[objName].detection_status)
 
 
 ### TEST ###
