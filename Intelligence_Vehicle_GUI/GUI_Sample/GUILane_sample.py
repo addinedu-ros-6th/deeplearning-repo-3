@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 model = YOLO("./Intelligence_Vehicle_AI/Perception/Lane/best_v8s_seg.pt")
 car_img = cv2.imread("./Intelligence_Vehicle_GUI/GUI_Sample/Dataset/car.png")
 car_img = cv2.resize(car_img, (300, 150))
-banana_img = cv2.imread("./Intelligence_Vehicle_GUI/GUI_Sample/Dataset/banana.jpeg")
 cap = cv2.VideoCapture('./Intelligence_Vehicle_AI/Dataset/Lane_dataset/30_only_lane_video.mp4')
 
 while cap.isOpened():
@@ -42,14 +41,6 @@ while cap.isOpened():
 
         x1, y1, x2, y2 = map(int, box_xyxy)
         # print(box_xyxy)
-
-        banana_width = x2 - x1
-        banana_height = y2 - y1
-        resized_banana = cv2.resize(banana_img, (banana_width, banana_height))
-        top_right_x = x2 - banana_width
-        top_right_y = y1
-        # masked_image[top_right_y:top_right_y+banana_height, 
-        #              top_right_x:top_right_x+banana_width] = resized_banana
 
     car_height, car_width = car_img.shape[:2]    
     img_height, img_width = masked_image.shape[:2]
