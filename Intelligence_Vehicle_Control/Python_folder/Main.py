@@ -7,64 +7,49 @@ from Intelligence_Vehicle_Service.IVService import IVService
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
 import time
 
-clients = {
-    "Lane": 5001,
-    "Obstacle": 5002,
-    "DB": 5003,
-    "Service": 5004,
-    "Robot":5005
-}
+import requests
+# import serial
+import threading
+
+from Intelligence_Vehicle_Communicator.TCPServerNewVersion import TCPServerManager, TCPServer
+from Intelligence_Vehicle_Communicator.TCPClientNewVersion import TCPClient, TCPClientManager
+
 
 if __name__ == "__main__":
-    service = IVService()
-    client = FlaskClient(client_id="Robot", port= clients["Robot"])
-    client.set_callback(service.handle_receive_data)
-
-    while True:
-        if client.is_port_open(host='localhost', port=clients["Service"]):
-            break
-        print("Waiting for a server response.")
-        time.sleep(1)
-    
-    import requests
-    import serial
-    import time
-    import threading
-
     # 아두이노가 연결된 시리얼 포트와 통신 속도(baud rate) 설정
-    ser = serial.Serial('/dev/ttyArduino', 9600, timeout=1)
-    time.sleep(2)  # 시리얼 연결 안정화를 위한 대기 시간
+    # ser = serial.Serial('/dev/ttyArduino', 9600, timeout=1)
+    # time.sleep(2)  # 시리얼 연결 안정화를 위한 대기 시간
 
-    pre_command = 'S'
+    # pre_command = 'S'
 
-    def read_encoder():
-        # 아두이노로부터 엔코더 값을 읽어옴
-        if ser.in_waiting > 0:
-            line = ser.readline().decode('utf-8').rstrip()
-            return line
-        return None
+    # def read_encoder():
+    #     # 아두이노로부터 엔코더 값을 읽어옴
+    #     if ser.in_waiting > 0:
+    #         line = ser.readline().decode('utf-8').rstrip()
+    #         return line
+    #     return None
 
-    def motor_forward(speed):
-        command = f'F{speed}\n'.encode()
-        ser.write(command)  # 'F' + 속도 값 전송
+    # def motor_forward(speed):
+    #     command = f'F{speed}\n'.encode()
+    #     ser.write(command)  # 'F' + 속도 값 전송
 
-    def motor_backward(speed):
-        command = f'B{speed}\n'.encode()
-        ser.write(command)  # 'B' + 속도 값 전송
+    # def motor_backward(speed):
+    #     command = f'B{speed}\n'.encode()
+    #     ser.write(command)  # 'B' + 속도 값 전송
 
-    def motor_stop():
-        ser.write(b'S\n')  # 'S' 전송 (정지)
+    # def motor_stop():
+    #     ser.write(b'S\n')  # 'S' 전송 (정지)
 
-    def right_motor_correction(right_motor_correction):
-        command = f'C{right_motor_correction}\n'.encode()
-        ser.write(command)  # 'C' + 오른쪽 보정 값 전송
+    # def right_motor_correction(right_motor_correction):
+    #     command = f'C{right_motor_correction}\n'.encode()
+    #     ser.write(command)  # 'C' + 오른쪽 보정 값 전송
 
-    def encoder_reset():
-        ser.write(b'E\n')  # 엔코더 0으로 초기화
+    # def encoder_reset():
+    #     ser.write(b'E\n')  # 엔코더 0으로 초기화
 
     # 엔코더 값을 0.1초마다 읽고 출력하는 함수
     def encoder_monitor():
-        encoder_url = 'http://192.168.0.12:4100/post_encoder'
+        # encoder_url = 'http://192.168.0.12:4100/post_encoder'
         pre_encoder_value =0
         while True:
             encoder_value = read_encoder()
@@ -87,11 +72,11 @@ if __name__ == "__main__":
                 print(f"현재 속도: {cur_speed}")
                 speed_data ={"encoder":cur_speed}
                 # encoder_data =str(encoder_value)
-                speed_response = requests.post(encoder_url,json=speed_data)
+                # speed_response = requests.post(encoder_url,json=speed_data)
                 print(cur_speed)
                 print(speed_data)
-                print(speed_response.status_code)
-                print(speed_response.json())
+                # print(speed_response.status_code)
+                # print(speed_response.json())
 
                 pre_encoder_value = mean_encoder_value
             time.sleep(0.1)  # 0.1초마다 엔코더 값 읽기
@@ -147,16 +132,25 @@ if __name__ == "__main__":
 
             command_error_flag = not command_error_flag
             time.sleep(0.1)  # 5초마다 GET 요청
-
+ 
+    def handle_receive_tcp_data(data,client_address):
+        print(data)
     # 엔코더 모니터링을 위한 스레드 실행
     encoder_thread = threading.Thread(target=encoder_monitor)
     encoder_thread.daemon = True  # 메인 프로그램이 종료되면 스레드도 종료
-    encoder_thread.start()
+    # encoder_thread.start()
 
-    # GET 요청을 주기적으로 보내는 스레드 실행
-    fetch_thread = threading.Thread(target=fetch_commands)
-    fetch_thread.daemon = True
-    fetch_thread.start()
+    # # GET 요청을 주기적으로 보내는 스레드 실행
+    # fetch_thread = threading.Thread(target=fetch_commands)
+    # fetch_thread.daemon = True
+    # fetch_thread.start()
+
+    #TCP_server_열기 명령 받는 작업
+    
+    error_server = TCPServerManager()
+    # tcp_server_manager = TCPServerManager()
+    error_server.start_server(host='192.168.0.12', port=4006, data_handler=handle_receive_tcp_data)
+
 
     # 메인 스레드는 다른 작업을 수행할 수 있으나, 현재는 대기 상태로 두어야 합니다.
     try:
@@ -165,8 +159,9 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("프로그램 종료")  # Ctrl+C로 종료
     finally:
-        motor_stop()
-        ser.close()
+        # motor_stop()
+        # ser.close()
+        print("end")
 
 
 
@@ -176,8 +171,8 @@ if __name__ == "__main__":
     #     "lane_position": 10,
     #     "lane_curvature": 0.001
     # }
-    command_data= "F30"
-    client.send_data(f"http://localhost:{clients['Service']}", "robot", {"data": command_data})
+    # command_data= "F30"
+    # client.send_data(f"http://localhost:{clients['Service']}", "robot", {"data": command_data})
 
 
     # 1. Json으로 만들기
