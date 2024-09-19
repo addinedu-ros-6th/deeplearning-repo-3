@@ -1,13 +1,15 @@
+
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from PyQt5 import uic
-import cv2
 from PyQt5.QtCore import *
-import time
 from ultralytics import YOLO
 import mysql.connector
-
+#from Intelligence_Vehicle_AI.Perception.Object.ObstacleDetector import ObstacleDetector
+import numpy as np
+from Observer import *
+from PyQt5 import uic
+import time
 
 class Camera(QThread):
     update = pyqtSignal()
@@ -76,6 +78,20 @@ class SecondWindow(QMainWindow,from_class2):
 
         #self.button = QPushButton("첫 번째 윈도우로 돌아가기", self)
         #self.button.clicked.connect(self.open_first_window)  # 버튼 클릭 시 함수 호출
+
+    def update_front_view(self, image):
+        self.update_camera_view(self.label_Obstacle_Camera, image, self.frontCameraPixmap)
+
+    def update_lane_view(self, image):
+        self.update_camera_view(self.label_Lane_Camera, image, self.laneCameraPixmap)
+
+    def update_camera_view(self, view:QLabel, image:np.ndarray, pixmap:QPixmap):
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        h, w, c = image.shape
+        qimage = QImage(image.data, w, h, w*c, QImage.Format_RGB888)
+        pixmap = pixmap.fromImage(qimage)
+        pixmap = pixmap.scaled(view.width(), view.height())
+        view.setPixmap(pixmap)
 
 
     def select_data(self, table, columns= ("*",), where = None, order = None, limit=10):
@@ -255,3 +271,4 @@ if __name__ == "__main__":
     myWindows.show() # 프로그램 화면 보이기
 
     sys.exit(app.exec_()) # 프로그램을 종료까지 동작시킴        
+

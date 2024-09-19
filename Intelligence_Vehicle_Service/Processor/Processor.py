@@ -1,17 +1,15 @@
 from abc import ABC, abstractmethod
+from PyQt5.QtCore import QObject
 
 class Processor(ABC):
     @abstractmethod
     def execute(self, data):
         pass
 
-class LaneProcessor(Processor):
-    def execute(self, data):
-        print("LaneProcessor")
+class ProcessorMeta(type(QObject), type(Processor)):
+    pass
 
-class ObstacleProcessor(Processor):
-    def execute(self, data):
-        print("ObstacleProcessor")
+
     
         
 

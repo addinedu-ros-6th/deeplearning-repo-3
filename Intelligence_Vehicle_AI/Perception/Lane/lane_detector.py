@@ -9,6 +9,11 @@ class LaneDetector:
         self.newlist = []
         self.error = 0
         self.stop_line_flag = 0
+        # self.testfunc
+        # self.client = client  # FlaskClient 인스턴스를 저장
+
+    # def testAddFunc(self, func):
+    #     self.testAddFunc = func
 
     def find_lane_centers(self, lane_mask, image_width):
         left_lane_points = []
@@ -28,13 +33,24 @@ class LaneDetector:
 
         return left_lane_center, right_lane_center
 
-    def process_video(self):
+    def get_results(self):
+        # results_list = []
+
         while self.cap.isOpened():
             ret, image = self.cap.read()
             if not ret:
                 break
+            results = self.model(image, verbose=False)
+            # self.testAddFunc(results)
+            # yield image, results  # 각 프레임의 이미지와 결과를 반환
+            yield results, image
 
-            results = self.model(image, verbose = False)
+        self.cap.release()
+
+    def process_video(self):
+        results_list = self.get_results()  # 비디오에서 결과를 가져옴
+
+        for image, results in results_list:
             self.stop_line_flag = 1 if 'Stop_Line' in self.newlist else 0
 
             lane_masks = results[0].masks.xy
@@ -80,12 +96,12 @@ class LaneDetector:
                 color = (0, 255, 0) if abs(self.error) < 10 else (0, 255, 255) if abs(self.error) < 20 else (0, 0, 255)
                 cv2.line(image, (int(middle_point[0]), int(middle_point[1])), (center_x, int(middle_point[1])), color, 2)
 
-            # Return the latest values after processing each frame
+            # 현재 프레임의 에러와 정지선 플래그를 화면에 출력
             cv2.putText(image, f"Error: {self.error}", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
             cv2.putText(image, f"Stop Line Flag: {self.stop_line_flag}", (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
             cv2.imshow('Lane Centers', image)
             
-            # Yield the current frame's error and stop line flag
+            # 현재 프레임의 에러와 정지선 플래그를 반환
             yield self.error, self.stop_line_flag
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
