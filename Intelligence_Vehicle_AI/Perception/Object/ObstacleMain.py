@@ -32,7 +32,9 @@ if __name__ == "__main__":
     client.set_callback(service.handle_receive_http_data)
 
     while True:
-        if client.is_port_open(host='localhost', port= clients["Service"]):
+        # if client.is_port_open(host='localhost', port= clients["Service"]):
+        if client.is_port_open(host='localhost', ports=[clients["Service"]]):
+
             break
         print("Waiting for a server response.")
         time.sleep(1)

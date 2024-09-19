@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1044</width>
+    <width>1060</width>
     <height>707</height>
    </rect>
   </property>
@@ -16,9 +16,9 @@
   <widget class="QWidget" name="widget_chart" native="true">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>420</x>
      <y>98</y>
-     <width>1021</width>
+     <width>611</width>
      <height>391</height>
     </rect>
    </property>
@@ -49,8 +49,8 @@
   <widget class="QLabel" name="label_start">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>65</y>
+     <x>0</x>
+     <y>495</y>
      <width>67</width>
      <height>17</height>
     </rect>
@@ -62,8 +62,8 @@
   <widget class="QLabel" name="label_end">
    <property name="geometry">
     <rect>
-     <x>330</x>
-     <y>64</y>
+     <x>210</x>
+     <y>494</y>
      <width>67</width>
      <height>17</height>
     </rect>
@@ -75,9 +75,9 @@
   <widget class="QDateTimeEdit" name="dte_end">
    <property name="geometry">
     <rect>
-     <x>370</x>
-     <y>60</y>
-     <width>194</width>
+     <x>250</x>
+     <y>490</y>
+     <width>151</width>
      <height>26</height>
     </rect>
    </property>
@@ -85,18 +85,18 @@
   <widget class="QDateTimeEdit" name="dte_start">
    <property name="geometry">
     <rect>
-     <x>70</x>
-     <y>60</y>
-     <width>194</width>
+     <x>50</x>
+     <y>490</y>
+     <width>141</width>
      <height>26</height>
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="pushButton_search">
    <property name="geometry">
     <rect>
-     <x>590</x>
-     <y>62</y>
+     <x>40</x>
+     <y>550</y>
      <width>89</width>
      <height>25</height>
     </rect>
@@ -108,32 +108,41 @@
     <string>Search</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_description">
+  <widget class="QTableWidget" name="tableWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>500</y>
-     <width>1021</width>
-     <height>191</height>
+     <x>510</x>
+     <y>490</y>
+     <width>521</width>
+     <height>211</height>
     </rect>
    </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-    </font>
+   <property name="autoFillBackground">
+    <bool>false</bool>
    </property>
-   <property name="styleSheet">
-    <string notr="true">border-color: rgb(0, 0, 0);</string>
+   <property name="sortingEnabled">
+    <bool>true</bool>
    </property>
-   <property name="frameShape">
-    <enum>QFrame::Box</enum>
-   </property>
-   <property name="text">
-    <string>Event details</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
+   <column>
+    <property name="text">
+     <string>ID</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>SPEED</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>DISTANCE</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>TIME</string>
+    </property>
+   </column>
   </widget>
  </widget>
  <resources/>
