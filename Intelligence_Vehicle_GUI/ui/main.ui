@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>823</width>
+    <width>1007</width>
     <height>728</height>
    </rect>
   </property>
@@ -22,13 +22,13 @@
     padding: 5px 10px;
 }</string>
   </property>
-  <widget class="QLabel" name="label_front_view">
+  <widget class="QLabel" name="label_Obstacle_Camera">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>20</y>
-     <width>800</width>
-     <height>450</height>
+     <width>591</width>
+     <height>361</height>
     </rect>
    </property>
    <property name="frameShape">
@@ -38,12 +38,12 @@
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="label_lane_view">
+  <widget class="QLabel" name="label_Lane_Camera">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>480</y>
-     <width>426</width>
+     <y>420</y>
+     <width>341</width>
      <height>240</height>
     </rect>
    </property>
@@ -54,81 +54,10 @@
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="label_system_message">
+  <widget class="QPushButton" name="pushButton_log">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>180</y>
-     <width>781</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgb(94, 92, 100);</string>
-   </property>
-   <property name="text">
-    <string>SystemMessage</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_speedometer_neelde">
-   <property name="geometry">
-    <rect>
-     <x>490</x>
-     <y>490</y>
-     <width>256</width>
-     <height>256</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="pixmap">
-    <pixmap>image/Speedometer-Needle.png</pixmap>
-   </property>
-   <property name="scaledContents">
-    <bool>true</bool>
-   </property>
-   <property name="wordWrap">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_speedometer_bg">
-   <property name="geometry">
-    <rect>
-     <x>494</x>
-     <y>496</y>
-     <width>256</width>
-     <height>256</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="pixmap">
-    <pixmap>image/Speedometer-Background.png</pixmap>
-   </property>
-   <property name="scaledContents">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btn_log">
-   <property name="geometry">
-    <rect>
-     <x>730</x>
+     <x>820</x>
      <y>30</y>
      <width>71</width>
      <height>71</height>
@@ -151,12 +80,96 @@
     </size>
    </property>
   </widget>
-  <zorder>label_speedometer_bg</zorder>
-  <zorder>label_front_view</zorder>
-  <zorder>label_lane_view</zorder>
-  <zorder>label_system_message</zorder>
-  <zorder>label_speedometer_neelde</zorder>
-  <zorder>btn_log</zorder>
+  <widget class="QLabel" name="label_obstacle">
+   <property name="geometry">
+    <rect>
+     <x>620</x>
+     <y>30</y>
+     <width>161</width>
+     <height>171</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>910</x>
+     <y>30</y>
+     <width>89</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="mouseTracking">
+    <bool>false</bool>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::NoContextMenu</enum>
+   </property>
+   <property name="text">
+    <string>EXIT</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_child_sign">
+   <property name="geometry">
+    <rect>
+     <x>390</x>
+     <y>520</y>
+     <width>181</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_speed_sign">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>520</y>
+     <width>181</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLCDNumber" name="lcdNumber_speed">
+   <property name="geometry">
+    <rect>
+     <x>840</x>
+     <y>590</y>
+     <width>121</width>
+     <height>61</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_camera">
+   <property name="geometry">
+    <rect>
+     <x>630</x>
+     <y>360</y>
+     <width>89</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>PushButton</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
