@@ -16,6 +16,21 @@ from Intelligence_Vehicle_Communicator.TCPClientNewVersion import TCPClient, TCP
 
 
 if __name__ == "__main__":
+    service = IVService()
+    client = FlaskClient(client_id="Robot", port= clients["Robot"])
+    client.set_callback(service.handle_receive_http_data)
+
+    while True:
+        if client.is_port_open(host='localhost', port=clients["Service"]):
+            break
+        print("Waiting for a server response.")
+        time.sleep(1)
+    
+    import requests
+    import serial
+    import time
+    import threading
+
     # 아두이노가 연결된 시리얼 포트와 통신 속도(baud rate) 설정
     # ser = serial.Serial('/dev/ttyArduino', 9600, timeout=1)
     # time.sleep(2)  # 시리얼 연결 안정화를 위한 대기 시간

@@ -29,6 +29,6 @@ if __name__ == "__main__":
     service.register_gui_processor(myWindow)
 
     client = FlaskClient(client_id="GUI", port= clients["GUI"])
-    client.set_callback(service.handle_receive_data)
+    client.set_callback(service.handle_receive_http_data)
 
     sys.exit(app.exec_())

@@ -24,7 +24,7 @@ class LaneProcessor(Processor):
         results_json = data['data']['results']
         results = json.loads(results_json)
 
-        print("LaneProcessor")
+        # print("LaneProcessor")
 
         lane_masks = []
         class_ids = []
@@ -39,15 +39,15 @@ class LaneProcessor(Processor):
         self.stop_line_flag = 1 if 'Stop_Line' in self.newlist else 0
 
         # print(f"차선 마스크: {lane_masks}")
-        print(f"클래스 ID: {class_ids}")
+        # print(f"클래스 ID: {class_ids}")
 
         # 차선 데이터 처리
         self.process_lane_data(lane_masks, results)
       
 
     def process_lane_data(self, lane_masks, results):
-        if lane_masks:
-            print(f"감지된 차선 수: {len(lane_masks)}")
+        # if lane_masks:
+        #     print(f"감지된 차선 수: {len(lane_masks)}")
 
         left_center, right_center = self.find_lane_centers(lane_masks)
         
@@ -59,15 +59,15 @@ class LaneProcessor(Processor):
             self.error = round((center_x - middle_point[0]), 1)
             self.error_callback(self.error)
 
-            print(f"차선 중앙점: {middle_point}")
-            print(f"오차(error): {self.error}")
+            # print(f"차선 중앙점: {middle_point}")
+            # print(f"오차(error): {self.error}")
 
-        for result in results:
-            print(f"{result['name']} 감지됨, 신뢰도: {result['confidence']:.2f}")
+        # for result in results:
+        #     print(f"{result['name']} 감지됨, 신뢰도: {result['confidence']:.2f}")
 
         # 평균 신뢰도 계산
         avg_confidence = sum(result['confidence'] for result in results) / len(results)
-        print(f"평균 신뢰도: {avg_confidence:.2f}")
+        # print(f"평균 신뢰도: {avg_confidence:.2f}")
 
     def find_lane_centers(self, lane_masks):
         # 왼쪽과 오른쪽 차선의 중심점을 찾는 로직

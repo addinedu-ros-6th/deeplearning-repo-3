@@ -28,7 +28,7 @@ CREATE TABLE `DrivingLog` (
   `distance` int DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,6 +37,7 @@ CREATE TABLE `DrivingLog` (
 
 LOCK TABLES `DrivingLog` WRITE;
 /*!40000 ALTER TABLE `DrivingLog` DISABLE KEYS */;
+INSERT INTO `DrivingLog` VALUES (1,60,10,'2024-09-01 13:12:12'),(2,12,2,'2024-09-02 13:12:12'),(3,255,5,'2024-09-03 13:12:12');
 /*!40000 ALTER TABLE `DrivingLog` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,7 +58,7 @@ CREATE TABLE `EventLog` (
   KEY `mid` (`mid`),
   CONSTRAINT `EventLog_ibfk_1` FOREIGN KEY (`mid`) REFERENCES `LogMessage` (`id`),
   CONSTRAINT `EventLog_ibfk_2` FOREIGN KEY (`mid`) REFERENCES `LogMessage` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,6 +67,7 @@ CREATE TABLE `EventLog` (
 
 LOCK TABLES `EventLog` WRITE;
 /*!40000 ALTER TABLE `EventLog` DISABLE KEYS */;
+INSERT INTO `EventLog` VALUES (1,'장애물','test','2024-09-12 11:24:47',2),(5,'표지판','사람','2024-09-12 17:18:30',3),(6,'표지판','사람','2024-09-12 17:19:19',3),(7,'장애물','사람','2024-09-13 13:55:17',2),(8,'장애물','사람','2024-09-13 14:19:00',2);
 /*!40000 ALTER TABLE `EventLog` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -79,6 +81,7 @@ DROP TABLE IF EXISTS `LogMessage`;
 CREATE TABLE `LogMessage` (
   `id` int NOT NULL,
   `text` varchar(64) DEFAULT NULL,
+  `type` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -89,7 +92,7 @@ CREATE TABLE `LogMessage` (
 
 LOCK TABLES `LogMessage` WRITE;
 /*!40000 ALTER TABLE `LogMessage` DISABLE KEYS */;
-INSERT INTO `LogMessage` VALUES (1,'전방 사람 발견 - 서행하세요'),(2,'전방 개 발견 - 서행하세요'),(3,'전방 정지 표지판 발견 - 서행하세요'),(4,'전방 50km 표지판 발견 - 시속 50km 이하로 서행하세요'),(5,'전방 50km 해제 표지판 발견 - 속도 제한이 해제되었어요'),(6,'전방 어린이보호구역 표지판 발견 - 30km이하로 서행하세요'),(7,'전방 어린이보호구역 해제표지판 발견 - 어린이보호구역이 해제되었어요'),(8,'전방 신호등 빨간불 발견 - 서행 후 멈추세요'),(9,'전방 신호등 초록불 발견 - 출발하세요'),(10,'ttest');
+INSERT INTO `LogMessage` VALUES (1,'전방 사람 발견 - 서행하세요','person'),(2,'전방 개 발견 - 서행하세요','dog'),(3,'전방 정지 표지판 발견 - 서행하세요','stop'),(4,'전방 50km 표지판 발견 - 시속 50km 이하로 서행하세요','50km'),(5,'전방 50km 해제 표지판 발견 - 속도 제한이 해제되었어요','50km_deactive'),(6,'전방 어린이보호구역 표지판 발견 - 30km이하로 서행하세요','stop'),(7,'전방 어린이보호구역 해제표지판 발견 - 어린이보호구역이 해제되었어요','stop_deactive'),(8,'전방 신호등 빨간불 발견 - 서행 후 멈추세요','Red_sign'),(9,'전방 신호등 초록불 발견 - 출발하세요','Blue_sign');
 /*!40000 ALTER TABLE `LogMessage` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -102,4 +105,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-11 16:02:05
+-- Dump completed on 2024-09-19 10:56:16

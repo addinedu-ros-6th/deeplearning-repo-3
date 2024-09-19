@@ -22,7 +22,7 @@ clients = {
 if __name__ == "__main__":
     service = IVService()
     client = FlaskClient(client_id="Lane", port=clients["Lane"])
-    client.set_callback(service.handle_receive_data)
+    client.set_callback(service.handle_receive_http_data)
 
     while True:
         if client.is_port_open(host='localhost', port=clients["Service"]):

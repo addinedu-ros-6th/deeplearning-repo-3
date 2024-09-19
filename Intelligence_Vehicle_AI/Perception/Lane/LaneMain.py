@@ -26,8 +26,11 @@ def encode_image(image):
 
 if __name__ == "__main__":
     service = IVService()
+    
+
     client = FlaskClient(client_id="Lane", port=clients["Lane"])
-    client.set_callback(service.handle_receive_data)
+    client.set_callback(service.handle_receive_http_data)
+
 
     while True:
         if client.is_port_open(host='localhost', ports=[clients["Service"], clients["GUI"]]):
@@ -37,6 +40,8 @@ if __name__ == "__main__":
 
     lane_detector = LaneDetector(model_path='Intelligence_Vehicle_AI/Perception/Lane/best_v8n_seg.pt',
                                  video_path='Intelligence_Vehicle_AI/Dataset/Lane_dataset/30_only_lane_video.mp4')
+    
+    service.register_receive_image_processor(lane_detector.get_results)
     
     for results, image in lane_detector.get_results():
         lane_data = {
