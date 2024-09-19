@@ -2,6 +2,7 @@ import sys
 import os
 
 
+
 current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
 relative_path = os.path.join(current_dir, '..')  # 상위 폴더로 이동
 sys.path.append(relative_path)
@@ -9,11 +10,14 @@ sys.path.append(relative_path)
 from typing import Any, Dict, List
 from flask import Flask, request, jsonify
 from Intelligence_Vehicle_Service.ProcessorFactory import ProcessorFactory
+from Intelligence_Vehicle_Service.Processor.ReceiveImageProcessor import ReceiveImageProcessor
 from Intelligence_Vehicle_Service.Processor.LaneProcessor import LaneProcessor
 from Intelligence_Vehicle_Service.Processor.ObstacleProcessor import ObstacleProcessor
 from Intelligence_Vehicle_Service.Processor.GUIViewerProcessor import GUIViewerProcessor
 from Intelligence_Vehicle_Service.Processor.GUIProcessor import GUIProcessor
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
+from Intelligence_Vehicle_Communicator.TCPClientNewVersion import TCPClientManager
+
 
 class IVService:
 
@@ -23,17 +27,27 @@ class IVService:
         self.processor_factory = ProcessorFactory()
     
     def start_tcp_server(self):
+        print("Attempting to connect to the server via socket")
         # tcp_client_manager = TCPClientManager()
-        # self.tcp_error_client = tcp_client_manager.get_client("lane_error", 'str', '172.20.10.5', 4002)
+        # self.tcp_error_client = tcp_client_manager.get_client("lane_error", '192.168.0.11', 4006)
         # self.tcp_error_client.start()
+        print("Succeessfully connected to the server via sockat")
         return
+    
+    def register_receive_image_processor(self, receive_handle):
+        receiveImageProcessor = ReceiveImageProcessor()
+        self.processor_factory.register_processor("receive_image", receiveImageProcessor)
+
 
     def register_ai_processor(self):
         laneProcessor = LaneProcessor()
         laneProcessor.set_error_callback(self.handle_lane_error_update)
         self.processor_factory.register_processor("lane", laneProcessor)
-        self.processor_factory.register_processor("obstacle", ObstacleProcessor())
-            
+
+        obstacleProcessor = ObstacleProcessor()
+        self.processor_factory.register_processor("obstacle", obstacleProcessor)
+           
+
     def register_gui_processor(self, window_class):
         gui_viewer_processor = GUIViewerProcessor()
         gui_viewer_processor.frontView.connect(window_class.update_front_view)
@@ -58,7 +72,7 @@ class IVService:
             "GUI": 5005
         }
 
-    def handle_receive_data(self, from_client, key, data):
+    def handle_receive_http_data(self, from_client, key, data):
         # print('\033[91m'+"Received data: from_client=" +'\033[92m'+f"{from_client}, key={key}," +'\033[96m'+ f"data={data}", '\033[0m')
         if key is None:
             print(f"경고: {from_client}로부터 키 없이 데이터를 받았습니다.")
@@ -70,6 +84,7 @@ class IVService:
 
         except ValueError as e:
             print(f"Error processing data: {e}")
+
 
     def handle_receive_tcp_data(self, data, client_address):
         print(f"receive_tcp: 클라이언트 {client_address}로부터 {data} 데이터 수신")
@@ -86,7 +101,7 @@ class IVService:
         print(f"Lane error updated: {error}")
 
         # Robot에게 에러값 전달하고 
-        # self.tcp_error_client.send_message(str(self.error))
+        self.tcp_error_client.send_message(str(error))
 
         # db 에게 에러값 전달하자.
         

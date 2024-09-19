@@ -29,7 +29,7 @@ def encode_image(image):
 if __name__ == "__main__":
     service = IVService()
     client = FlaskClient(client_id="Obstacle", port=clients["Obstacle"])
-    client.set_callback(service.handle_receive_data)
+    client.set_callback(service.handle_receive_http_data)
 
     while True:
         if client.is_port_open(host='localhost', port= clients["Service"]):
@@ -40,6 +40,8 @@ if __name__ == "__main__":
     obstacle_detector = ObstacleDetector('Intelligence_Vehicle_AI/Perception/Object/obstacle_n.pt',
                                  'Intelligence_Vehicle_AI/Dataset/Object_dataset/object.mp4')
     
+    service.register_receive_image_processor(obstacle_detector.get_results)
+
     for results, image in obstacle_detector.get_results():
         obstacle_data = {
             "results": results[0].tojson() # results 변환

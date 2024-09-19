@@ -1,9 +1,12 @@
+import json
 import socket
 import threading
 import sys
 import os
 import time
 import logging
+
+import numpy as np
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 relative_path = os.path.join(current_dir, '..')
@@ -62,7 +65,10 @@ class TCPServer:
 
         while self.running:
             try:
-                data = tcp_connection.receive_data()
+                data_type, data = tcp_connection.receive_data()
+                # print(f' ==> Line 68: \033[38;2;243;143;47m[data_type]\033[0m({type(data_type).__name__}) = \033[38;2;159;125;52m{data_type}\033[0m')
+                # print(f' ==> Line 68: \033[38;2;68;79;94m[data]\033[0m({type(data).__name__}) = \033[38;2;110;95;159m{data}\033[0m')
+                
                 if data is None:
                     break
                 
@@ -72,7 +78,7 @@ class TCPServer:
                     break
 
                 # 외부 데이터 핸들러 호출
-                response = self.data_handler(data, client_address)
+                response = self.data_handler(data_type, data, client_address)
                 
                 # 응답이 있으면 클라이언트에게 전송
                 if response:
@@ -92,10 +98,21 @@ class TCPServer:
         client_socket.close()
 
     @staticmethod
-    def default_data_handler(data, client_address):
+    def default_data_handler(data_type, data, client_address):
         logging.info(f"클라이언트 {client_address}로부터 수신:")
         logging.info(f"데이터 유형: {type(data)}")
-        logging.info(f"데이터: {data}")
+        if isinstance(data, dict):
+            logging.info("JSON 데이터 수신:")
+            for key, value in data.items():
+                if key == 'image':
+                    logging.info(f"  {key}: <이미지 데이터>")
+                else:
+                    logging.info(f"  {key}: {value}")
+                    
+        elif isinstance(data, np.ndarray):
+            logging.info(f"이미지 데이터 shape: {data.shape}")
+        else:
+            logging.info(f"데이터: {data}")
         return None  # 기본적으로 응답을 보내지 않음
 
 class TCPServerManager:
@@ -123,10 +140,14 @@ class TCPServerManager:
             logging.warning("실행 중인 서버가 없습니다.")
 
 # 사용 예시
-def custom_data_handler(data, client_address):
-    logging.info(f"커스텀 핸들러: 클라이언트 {client_address}로부터 {type(data)} 데이터 수신")
+def custom_data_handler(data_type, data, client_address):
+    print(f' ==> Line 143: \033[38;2;78;77;94m[data]\033[0m({type(data).__name__}) = \033[38;2;34;192;217m{data}\033[0m')
+    # print(f' ==> Line 143: \033[38;2;115;216;149m[data_type]\033[0m({type(data_type).__name__}) = \033[38;2;8;176;144m{data_type}\033[0m')
+    
     # 데이터 처리 로직
     return "데이터를 성공적으로 처리했습니다."
+
+
 
 if __name__ == "__main__":
     manager = TCPServerManager()
@@ -136,6 +157,7 @@ if __name__ == "__main__":
             user_input = input("서버를 종료하려면 'q'를 입력하세요...\n")
             if user_input.lower() == 'q':
                 break
+
     except KeyboardInterrupt:
         logging.info("\n서버 종료 요청")
     finally:

@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 import queue
 import signal
 import threading
@@ -14,7 +15,7 @@ from Intelligence_Vehicle_Communicator.TCPConnectionNewVersion import TCPConnect
 class TCPClient:
     def __init__(self, client_id, data_type, host='localhost', port=12345, max_retries=120, retry_delay=1):
         self.client_id = client_id
-        self.data_type = data_type  # 'image' or 'str'
+        self.data_type = data_type  # 'image' or 'str' or 'json'
         self.tcp_connection = TCPConnection(host, port)
         self.running = False
         self.thread = None
@@ -45,19 +46,20 @@ class TCPClient:
 
     def send_data(self, data):
         try:
-            # TCPConnectionNewVersion의 send_data 메서드는 내부적으로
-            # 데이터 타입, 데이터 크기, 그리고 실제 데이터를 순서대로 전송합니다.
-            # 1. 데이터 타입 (4 bytes)
-            # 2. 데이터 크기 (4 bytes)
-            # 3. 실제 데이터
             self.tcp_connection.send_data(data, self.data_type)
             print(f"Client {self.client_id} sent {self.data_type}")
+
         except Exception as e:
             print(f"Error sending {self.data_type}: {e}")
+            print(f"오류 유형: {type(e).__name__}")
+            print(f"오류 상세 정보: {str(e)}")
+
+
 
     def send_message(self, data):
         """Queue a message for sending"""
         self.queue_data(data)
+
 
     def run(self):
         self.running = True
@@ -191,47 +193,39 @@ class TCPClientManager:
 
 # 아래는 예제 코드입니다. ##############################################################################################
 # 주의 사항: Server가 먼저 열려있어야 합니다. 
-if __name__ =="__main__":
+if __name__ == "__main__":
     print("메인 프로그램 시작")
+    
     # 테스트를 위한 이미지와 텍스트를 만드는 함수
     def get_image():
         return np.random.randint(0, 256, size=(100, 100), dtype=np.uint8)
-
+    
     def get_text():
         return f"Sample text data"
-
-    # 여기서부터본인이 원하는 곳에서 아래의 코드를 추가하시면 됩니다.
+    
     # 싱글톤인 TCPClientManager를 하나 추가합니다.
     manager = TCPClientManager()
-
-    # 이미지와 텍스트를 보내는 클라이언트를 개별적으로 만듭니다. 
-    # (아이디, 전송하는 데이터 타입)
+    
+    # 이미지와 텍스트를 보내는 클라이언트를 개별적으로 만듭니다.
     try:
         print("클라이언트 생성 및 시작")
-        client1 = manager.get_client("test_image_client", 'image')
+        client1 = manager.get_client("test_image_client", 'json')
         client2 = manager.get_client("test_text_client", 'str')
         client1.start()
         client2.start()
-
-        # queue 에 보낼 데이터를 매개변수로 보냅니다.
-        client1.send_message(get_image())
+        
+        # JSON 형식으로 이미지 전송
+        client1.send_message({'key': 'IL', 'image': get_image()})
         client2.send_message(get_text())
-
-        # 테스트를 위한 코드입니다.
-        # 10개의 데이터가 정상적으로 1초마다 잘 보내지는지 확인합니다.
-        print("메인 루프 시작")
+        
         for _ in range(10):
-            client1.send_message(get_image())
+            client1.send_message({'key': 'IL', 'image': get_image()})
             client2.send_message(get_text())
             time.sleep(1)
         print("모든 메시지 전송 완료")
-
-        existing_client = manager.get_client("test_image_client", 'image')
-        print(f"기존 클라이언트를 검색했습니다: {existing_client.client_id}")
+    
     except KeyboardInterrupt:
         print("\n키보드 인터럽트를 받았습니다.")
     
     finally:
-        # manager는 싱글톤이라서 프로그램 당 1개의 인스턴트를 보장합니다.
-        # manager.stop_all_clients()는 한번만 실행하면 됩니다.
         manager.stop_all_clients()
