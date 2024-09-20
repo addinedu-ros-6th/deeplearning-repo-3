@@ -45,7 +45,14 @@ class LaneDetector:
         return left_lane_center, right_lane_center
     
     def start_lane_result(self, image, send_func):
-        send_func("viewer", pickle.dumps(image), "GUI")
+        _, buffer = cv2.imencode('.jpg', image)
+        encoded_image = base64.b64encode(buffer).decode('utf-8')
+
+        data = {
+            "type": "lane",
+            "image": encoded_image
+        }
+        send_func("viewer", data, "GUI")
 
         results = self.model(image, verbose=False)
         # print(f' ==> Line 37: \033[38;2;178;216;121m[results]\033[0m({type(results).__name__}) = \033[38;2;86;33;128m{results}\033[0m')
@@ -53,7 +60,7 @@ class LaneDetector:
             "results": results[0].tojson() # results 변환
         }
 
-        send_func("lane",lane_data, "Service")
+        send_func("lane", lane_data, "Service")
 
 
 

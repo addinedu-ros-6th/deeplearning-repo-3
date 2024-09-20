@@ -40,4 +40,4 @@ if __name__ == "__main__":
         print("Waiting for a server response.")
         time.sleep(1)
 
-    service.start_tcp_server(host='192.168.0.22', port=4001)
+    service.start_tcp_server(host='192.168.26.136', port=4001)

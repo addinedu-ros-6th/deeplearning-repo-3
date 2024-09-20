@@ -21,7 +21,7 @@ if __name__ == "__main__":
     service = IVService()
     service.register_ai_processor()
     service.register_tcp_receive_handle()
-    # service.start_tcp_server()
+    service.start_tcp_server(host='192.168.26.136', port=4003)
 
     client = FlaskClient(client_id="Service", port=service.client_addresses["Service"])
     service.set_client(client)

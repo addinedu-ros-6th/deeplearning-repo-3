@@ -6,7 +6,7 @@ import cv2
 
 class DataHandler(ABC):
     @abstractmethod
-    def register_data_received_callback(self, callback_func):
+    def register_data_received_callback(self, func_tuple):
         pass
     
     @abstractmethod
@@ -17,7 +17,7 @@ class ObstacleImageHandler(DataHandler):
     def handle(self, data, client_address):
         print(f"ObstacleImageHandler Handling data from {client_address}: {data}")
 
-    def register_data_received_callback(self, callback_func):
+    def register_data_received_callback(self, func_tuple):
         pass
 
 
@@ -36,7 +36,7 @@ class LaneImageHandler(DataHandler):
         threading.Thread(target=self.dect_func, args=(image, self.send_func, )).start()
 
 class SpeedDataHandler(DataHandler):
-    def register_data_received_callback(self, callback_func):
+    def register_data_received_callback(self, func_tuple):
         pass
 
     def handle(self, data, client_address):

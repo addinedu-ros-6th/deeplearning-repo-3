@@ -34,6 +34,11 @@ class IVService:
         try:
             tcp_server_manager = TCPServerManager()
             tcp_server_manager.start_server(host= host, port=port, data_handler=self.handle_receive_tcp_data)
+        
+            # client_manager = TCPClientManager()
+            # self.tcp_client = client_manager.get_client("speed", 'str', host='192.168.26.178', port=4006)
+            # self.tcp_client.start()
+        
         except KeyboardInterrupt:
             print("사용자로부터 종료 요청을 받았습니다.")
             tcp_server_manager.stop_all_clients()
@@ -97,9 +102,12 @@ class IVService:
          
 
     def handle_receive_tcp_data(self, data_type, data, client_address):
+        print(f' ==> Line 104: \033[38;2;207;145;97m[data]\033[0m({type(data).__name__}) = \033[38;2;24;234;176m{data}\033[0m')
+        print(f' ==> Line 104: \033[38;2;105;105;238m[data_type]\033[0m({type(data_type).__name__}) = \033[38;2;147;51;77m{data_type}\033[0m')
         # print(f"receive_tcp: 클라이언트 {client_address}로부터 {data} 데이터 수신")
         # key = data['key']
         # data_type : 1-str, 2-image
+        
 
         if data[0] is None:
             print(f"경고: {client_address}로부터 키 없이 데이터를 받았습니다.")
@@ -126,14 +134,17 @@ class IVService:
 
     def receive_lane_error(self, error: float):
         print(f"Lane error updated: {error}")
-
-        # Robot에게 에러값 전달하고 
-        # self.tcp_error_client.send_message(str(error))
+        # self.tcp_client.queue_data(str(error), 'error')
         # db 에게 에러값 전달하자.
+
+
 
     def send_data_http(self, key, data, send_client_id):
         self.client.send_data(f"http://localhost:{self.client_addresses[send_client_id]}", key, {"data":data})
 
+
+        # client.send_data(f"http://localhost:{clients['Service']}", "obstacle", {"data":obstacle_data})
+        # client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "front", "image":encodeimage}})
 
 
 

@@ -21,23 +21,35 @@ class GUIViewerProcessor(QObject, Processor, metaclass=ProcessorMeta):
 
     def execute(self, data):
         key_list = list(data.keys())
-        print(key_list)
-
+        print("키 리스트: ", key_list)
 
         image_type = data['data']['type']
         print('\033[38;2;77;5;108m'+'image_type: ' + '\033[38;2;20;121;218m', image_type, '\033[0m')
-        image_data = data['data']['image']
-        image_data = pickle.loads(image_data)
+        encoded_image = data['data']['image']
         
-        # Base64 디코딩 및 이미지로 변환
-        image_bytes = base64.b64decode(image_data)
-        image_bytes = np.frombuffer(image_bytes, dtype=np.uint8)
-        image = cv2.imdecode(image_bytes, cv2.IMREAD_COLOR)
-
-        if image is None:
-            print("\033[93m" + "Error: Failed to decode image" + "\033[0m")
+        print(f"Encoded image data (first 100 chars): {encoded_image[:100]}")
+        
+        try:
+            # Base64 디코딩
+            image_bytes = base64.b64decode(encoded_image)
+            
+            # numpy 배열로 변환
+            nparr = np.frombuffer(image_bytes, np.uint8)
+            
+            # 이미지 디코딩
+            image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            
+            if image is None:
+                raise ValueError("Failed to decode image")
+            
+            print(f"Decoded image shape: {image.shape}")
+            
+        except Exception as e:
+            print(f"\033[93mError decoding image: {e}\033[0m")
+            import traceback
+            traceback.print_exc()
             return
-        
+
         if image_type == 'front':
             self.frontView.emit(image)
         elif image_type == 'lane':
