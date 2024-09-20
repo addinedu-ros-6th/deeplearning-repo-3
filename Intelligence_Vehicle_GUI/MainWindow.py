@@ -130,7 +130,7 @@ class MainWindow(QDialog):
             self.label_Obstacle_Camera.setPixmap(self.pixmap)
 
         self.track_ids = results[0].boxes.cls.int().cpu().tolist()
-        print(self.track_ids)
+       
         self.printObstacleImage()
         self.printSpeedImage() 
                         
@@ -197,25 +197,6 @@ class MainWindow(QDialog):
     def speed_update(self):
         self.current_number += 1  # 숫자 증가
         self.lcdNumber_speed.display(self.current_number)
-
-    def select_data(self, table, columns= ("*",), where = None, order = None, limit=20):
-        columns_str = ', '.join(columns)
-
-        sql = f"""
-          SELECT {columns_str}
-          FROM {table}
-        """
-        if where:
-          sql += f" WHERE {where}"
-        if order:
-          sql += f" ORDER BY {order}"
-        if limit:
-          sql += f" LIMIT {limit}"
-
-        print("select_data: ", sql)
-        self.cursor.execute(sql)
-        results = self.cursor.fetchall()
-        return results    
     
     def print_driving(self):
 
@@ -265,6 +246,7 @@ class PlotWidget(QWidget):
         x = np.array([value[3] for value in plot_results])
         y = np.array([value[0] for value in plot_results]).astype(int)
         obs = np.array([value[1] for value in plot_results])
+        type = np.array([value[2] for value in plot_results])
 
         # 그래프 그리기
         ax = self.figure.add_subplot(111)  # 1x1 그리드의 첫 번째 서브플롯
@@ -273,7 +255,6 @@ class PlotWidget(QWidget):
         line, =ax.plot(x, y, label="Ferrari")
         mpl=mplcursors.cursor(line, hover=True)
        
-
         @mpl.connect("add")
         def on_add(sel): 
             
@@ -290,8 +271,8 @@ class PlotWidget(QWidget):
             # 변환
             date_time = pd.to_datetime('1970-01-01') + pd.to_timedelta(serial_value, unit='D')
             time_value = date_time.strftime('%Y-%m-%d %H:%M:%S')
-            print(index)
-            sel.annotation.set(text=f'time: {time_value}\nSpeed: {sel.target[1]}\n obstacle : {obs[index]}',
+            
+            sel.annotation.set(text=f'time: {time_value}\nSpeed: {sel.target[1]}\n obstacle : {obs[index]}\n type : {type[index]}',
                        fontsize=12,
                        bbox=dict(facecolor='lightyellow', alpha=0.8))
         
