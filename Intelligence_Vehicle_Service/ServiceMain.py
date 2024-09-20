@@ -1,7 +1,11 @@
+import random
+import socket
 import sys
 import os
+import threading
 import time
 
+import cv2
 import numpy as np
 current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
 relative_path = os.path.join(current_dir, '..')  # 상위 폴더로 이동
@@ -12,19 +16,12 @@ from Intelligence_Vehicle_Service.IVService import IVService
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
 from Intelligence_Vehicle_Communicator.TCPServerNewVersion import TCPServerManager, TCPServer
 
-# clients = {
-#     "Lane": 5001,
-#     "Obstacle": 5002,
-#     "DB": 5003,
-#     "Service": 5004,
-#     "GUI": 5005
-# }
 
 if __name__ == "__main__":
     service = IVService()
     service.register_ai_processor()
     service.register_tcp_receive_handle()
-    service.start_tcp_server()
+    service.start_tcp_server(host='192.168.26.136', port=4003)
 
     client = FlaskClient(client_id="Service", port=service.client_addresses["Service"])
     service.set_client(client)
@@ -39,6 +36,9 @@ if __name__ == "__main__":
             break
         print("Waiting for a server response.")
         time.sleep(1)
+
+
+
 
     
 

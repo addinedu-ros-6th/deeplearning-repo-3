@@ -61,6 +61,7 @@ class LaneProcessor(Processor):
 
             # print(f"차선 중앙점: {middle_point}")
             # print(f"오차(error): {self.error}")
+            
 
         # for result in results:
         #     print(f"{result['name']} 감지됨, 신뢰도: {result['confidence']:.2f}")

@@ -1,4 +1,3 @@
-
 import sys
 import os
 current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
@@ -58,139 +57,52 @@ class Speed(QThread):
             time.sleep(1)
     
     def stop(self):
-        self.running = False        
+        self.running = False   
 
-#ui 파일 연결 - 코드 파일과 같은 폴더내에 위치해야함
-from_class = uic.loadUiType("./Intelligence_Vehicle_GUI/ui/main.ui")[0]
-from_class2 = uic.loadUiType("./Intelligence_Vehicle_GUI/ui/log_window.ui")[0]
-class SecondWindow(QMainWindow,from_class2):
-    
+class MainWindow(QDialog):
     def __init__(self):
         super().__init__()
-        self.setupUi(self)
-        self.setWindowTitle("Log Page")
-       
-        self.dbm = MySQLConnection.getInstance()
-        
-        self.dbm.db_connect("192.168.0.130",3306, "deep_project", "yhc", "1234")
-        
-        self.pushButton_search.clicked.connect(self.print_driving)
+        uic.loadUi("./Intelligence_Vehicle_GUI/ui/main.ui", self)
 
-        self.dte_start.setDateTime(QDateTime.currentDateTime())
-        self.dte_end.setDateTime(QDateTime.currentDateTime()) 
+        self.setWindowTitle("Test11")
 
-        self.tableWidget.setEditTriggers(QTableWidget.NoEditTriggers)
-
-
-        # PlotWidget 추가
-        self.graph_widget = PlotWidget()
-        layout = QVBoxLayout(self.widget_chart)  # QLabel에 레이아웃 설정
-        layout.addWidget(self.graph_widget.canvas)
-        
-
-    def select_data(self, table, columns= ("*",), where = None, order = None, join = None,limit=20):
-        columns_str = ', '.join(columns)
-
-        sql = f"""
-          SELECT {columns_str}
-          FROM {table}
-        """
-        if join:
-          sql += f" {join}" 
-
-        if where:
-          sql += f" WHERE {where}"
-
-        if order:
-          sql += f" ORDER BY {order}"
-        if limit:
-          sql += f" LIMIT {limit}"
-
-        print("select_data: ", sql)
-        self.cursor.execute(sql)
-        results = self.cursor.fetchall()
-        return results
-
-
-    def print_driving(self):
-
-        selected_start_time = self.dte_start.dateTime().toString("yyyy-MM-dd HH:mm:ss")
-        selected_end_time = self.dte_end.dateTime().toString("yyyy-MM-dd HH:mm:ss")
-
-        #sql_results=self.select_data("DrivingLog",where="time >'"+selected_start_time+"' and "+"time <'"+selected_end_time+"'")
-        #sql_results=self.select_data("EventLog",columns=("COALESCE(CAST(DrivingLog.speed AS SIGNED), 'N/A') AS speed","COALESCE(EventLog.category,'N/A')AS category",  "COALESCE(EventLog.type, 'N/A') AS type",  "DrivingLog.time" ),
-        #                             join="RIGHT JOIN DrivingLog ON DrivingLog.time = EventLog.occurtime",
-        #                             where="time >'"+selected_start_time+"' and "+"time <'"+selected_end_time+"'")
-        sql_results = self.dbm.get_obstacle_by_time(selected_start_time,selected_end_time)
-
-
-        self.tableWidget.setRowCount(0)
-        if(len(sql_results)!=0):
-            for value in sql_results:
-                print(value)
-                row  = self.tableWidget.rowCount() 
-                self.tableWidget.insertRow(row)
-                self.tableWidget.setItem(row, 0, QTableWidgetItem(str(value[0])))
-                self.tableWidget.setItem(row, 1, QTableWidgetItem(str(value[1])))
-                self.tableWidget.setItem(row, 2, QTableWidgetItem(str(value[2])))
-                self.tableWidget.setItem(row, 3, QTableWidgetItem(str(value[3])))
-        self.graph_widget.plot(sql_results)
-   
-
-
-    def closeEvent(self, event):
-            # 윈도우 종료 시 데이터베이스 연결 종료
-        self.dbm.disconnection()
-               
-        event.accept()
-
-    def open_second_window(self):
-        self.second_window = SecondWindow()  # 두 번째 윈도우 객체 생성
-        self.second_window.show()  # 두 번째 윈도우 표시
-        self.close()  # 현재 윈도우 닫기
-
-
-
-   #def open_first_window(self):
-   #    self.first_window = WindowClass()  # 첫 번째 윈도우 객체 생성
-   #    self.first_window.show()  # 첫 번째 윈도우 표시
-   #    self.close()  # 현재 윈도우 닫기
-
-
-
-class WindowClass(QMainWindow, from_class):
-
-    def __init__(self):
-        super().__init__()
-        self.setupUi(self)
-        
-       
-        self.setWindowTitle("Test10")
         self.label = QLabel(self)
 
+        #main tab
         self.current_number=0
         self.speed = Speed(self)
         self.speed.start()
 
         self.frontCameraPixmap = QPixmap()
         self.laneCameraPixmap = QPixmap()
-        
         self.camera = Camera(self)
         self.camera.running = False
         self.pixmap = QPixmap()
         self.model = YOLO("./Intelligence_Vehicle_AI/Perception/Object/obstacle_n.pt")
 
         self.pushButton_camera.clicked.connect(self.clickCamera)
-        self.pushButton_log.clicked.connect(self.open_second_window)
-
         self.camera.update.connect(self.updateCamera)
         self.speed.update.connect(self.speed_update)
-    
-    def open_second_window(self):
-        self.second_window = SecondWindow()  # 두 번째 윈도우 객체 생성
-        self.second_window.show()  # 두 번째 윈도우 표시
-        #self.close()  # 현재 윈도우 닫기
 
+        #log tab
+        self.pushButton_search.clicked.connect(self.print_driving)
+        self.dte_start.setDateTime(QDateTime.currentDateTime())
+        self.dte_end.setDateTime(QDateTime.currentDateTime()) 
+        self.tableWidget.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.tableWidget.setEditTriggers(QTableWidget.NoEditTriggers)
+
+        self.dbm = MySQLConnection.getInstance()
+        
+        self.dbm.db_connect("192.168.0.130",3306, "deep_project", "yhc", "1234")
+        
+        self.pushButton_search.clicked.connect(self.print_driving)
+
+
+        self.graph_widget = PlotWidget()
+        layout = QVBoxLayout(self.widget_chart)  # QLabel에 레이아웃 설정
+        layout.addWidget(self.graph_widget.canvas)
+
+    #main tab
     def update_front_view(self, image):
         self.update_camera_view(self.label_Obstacle_Camera, image, self.frontCameraPixmap)
 
@@ -205,14 +117,7 @@ class WindowClass(QMainWindow, from_class):
         pixmap = pixmap.scaled(view.width(), view.height())
         view.setPixmap(pixmap)
 
-        # self.track_ids = results[0].boxes.cls.int().cpu().tolist()
-        # print(self.track_ids)
-        # self.printObstacleImage()
-        # self.printSpeedImage() 
-
-
     def updateCamera(self):
-    # self.label.setText('Camera Running : ' + str(self.count))
         retval,frame= self.video.read()
 
         results = self.model.track(frame, conf=0.3, imgsz=480,verbose=False)
@@ -232,7 +137,6 @@ class WindowClass(QMainWindow, from_class):
     def printObstacleImage(self):
         self.pixmap = QPixmap()
         for i in self.track_ids:
-
             if(i==2):
                 self.pixmap.load("./Intelligence_Vehicle_GUI/ui/image/dog.png")
             elif(i==5):
@@ -276,6 +180,7 @@ class WindowClass(QMainWindow, from_class):
         else:
             self.isCameraOn = False
             self.cameraStop()
+
     def cameraStart(self):
         # if self.playvideo.running == True:
         #     self.mp4Stop()
@@ -290,9 +195,51 @@ class WindowClass(QMainWindow, from_class):
         self.label_camera.clear()
 
     def speed_update(self):
-
         self.current_number += 1  # 숫자 증가
         self.lcdNumber_speed.display(self.current_number)
+
+    def select_data(self, table, columns= ("*",), where = None, order = None, limit=20):
+        columns_str = ', '.join(columns)
+
+        sql = f"""
+          SELECT {columns_str}
+          FROM {table}
+        """
+        if where:
+          sql += f" WHERE {where}"
+        if order:
+          sql += f" ORDER BY {order}"
+        if limit:
+          sql += f" LIMIT {limit}"
+
+        print("select_data: ", sql)
+        self.cursor.execute(sql)
+        results = self.cursor.fetchall()
+        return results    
+    
+    def print_driving(self):
+
+        selected_start_time = self.dte_start.dateTime().toString("yyyy-MM-dd HH:mm:ss")
+        selected_end_time = self.dte_end.dateTime().toString("yyyy-MM-dd HH:mm:ss")
+
+        sql_results = self.dbm.get_obstacle_by_time(selected_start_time,selected_end_time)
+
+        self.tableWidget.setRowCount(0)
+        if(len(sql_results)!=0):
+            for value in sql_results:
+                print(value)
+                row  = self.tableWidget.rowCount() 
+                self.tableWidget.insertRow(row)
+                self.tableWidget.setItem(row, 0, QTableWidgetItem(str(value[0])))
+                self.tableWidget.setItem(row, 1, QTableWidgetItem(str(value[1])))
+                self.tableWidget.setItem(row, 2, QTableWidgetItem(str(value[2])))
+                self.tableWidget.setItem(row, 3, QTableWidgetItem(str(value[3])))
+        self.graph_widget.plot(sql_results)
+
+    def closeEvent(self, event):
+            # 윈도우 종료 시 데이터베이스 연결 종료
+        self.dbm.disconnection()
+        event.accept()
 
 class PlotWidget(QWidget):
     def __init__(self):
@@ -365,13 +312,12 @@ class PlotWidget(QWidget):
 
         # 캔버스에 그린 내용을 업데이트
         self.canvas.draw()
-        
-  
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv) #프로그램 실행
-    myWindows = WindowClass() # 화면 클래스 생성
-    myWindows.show() # 프로그램 화면 보이기
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
 
-    sys.exit(app.exec_()) # 프로그램을 종료까지 동작시킴        
+
 

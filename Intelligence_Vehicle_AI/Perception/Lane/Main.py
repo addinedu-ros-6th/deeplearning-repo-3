@@ -41,7 +41,7 @@ def get_image():
                                  video_path='Intelligence_Vehicle_AI/Dataset/Lane_dataset/30_only_lane_video.mp4')
     
     # 비디오 처리 및 결과 전송
-    for image, results in lane_detector.get_results():
+    for image, results in lane_detector.start_lane_result():
         img_base64 = ndarray_to_base64(image)  # 이미지를 base64로 변환
         lane_results = convert_results_to_dict(results)  # results 변환
         
@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
 
 
-    for results in lane_detector.get_results():
+    for results in lane_detector.start_lane_result():
         lane_data = {
             # "lane_results": convert_results_to_dict(results)
             "lane_masks": jsonify(results[0].masks)  # results 변환

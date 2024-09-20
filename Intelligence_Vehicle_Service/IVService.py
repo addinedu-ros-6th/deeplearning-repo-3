@@ -29,29 +29,24 @@ class IVService:
         self.processor_factory = ProcessorFactory()
         self.data_handler_factory = DataHandlerFactory()
     
-    def start_tcp_server(self):
-        HOST = 'localhost'
-        PORT = 4001
+    def start_tcp_server(self, host = 'localhost', port=4001):
         
         try:
             tcp_server_manager = TCPServerManager()
-            tcp_server_manager.start_server(host= 'localhost', port=PORT, data_handler=self.handle_receive_tcp_data)
+            tcp_server_manager.start_server(host= host, port=port, data_handler=self.handle_receive_tcp_data)
+        
+            # client_manager = TCPClientManager()
+            # self.tcp_client = client_manager.get_client("speed", 'str', host='192.168.26.178', port=4006)
+            # self.tcp_client.start()
+        
         except KeyboardInterrupt:
             print("사용자로부터 종료 요청을 받았습니다.")
             tcp_server_manager.stop_all_clients()
-        finally:
-            tcp_server_manager.stop_server()
-            print("프로그램이 완전히 종료되었습니다.")
         
-    
-    def register_receive_image_processor(self, receive_handle):
-        receiveImageProcessor = ReceiveImageProcessor()
-        self.processor_factory.register("receive_image", receiveImageProcessor)
-
 
     def register_ai_processor(self):
         laneProcessor = LaneProcessor()
-        laneProcessor.set_error_callback(self.handle_lane_error_update)
+        laneProcessor.set_error_callback(self.receive_lane_error)
         self.processor_factory.register("lane", laneProcessor)
 
         obstacleProcessor = ObstacleProcessor()
@@ -72,6 +67,11 @@ class IVService:
         self.data_handler_factory.register("obstacle", ObstacleImageHandler())
         self.data_handler_factory.register("lane", LaneImageHandler())
         self.data_handler_factory.register("speed", SpeedDataHandler())
+
+
+    def set_tcp_data_handler_callback(self, key, func_tuple):
+        data_handle = self.data_handler_factory.get(key)
+        data_handle.register_data_received_callback((func_tuple[0], func_tuple[1]))
 
 
     def set_client(self, client:FlaskClient):
@@ -100,10 +100,14 @@ class IVService:
         except ValueError as e:
             print(f"Error processing data: {e}")
          
+
     def handle_receive_tcp_data(self, data_type, data, client_address):
+        print(f' ==> Line 104: \033[38;2;207;145;97m[data]\033[0m({type(data).__name__}) = \033[38;2;24;234;176m{data}\033[0m')
+        print(f' ==> Line 104: \033[38;2;105;105;238m[data_type]\033[0m({type(data_type).__name__}) = \033[38;2;147;51;77m{data_type}\033[0m')
         # print(f"receive_tcp: 클라이언트 {client_address}로부터 {data} 데이터 수신")
         # key = data['key']
         # data_type : 1-str, 2-image
+        
 
         if data[0] is None:
             print(f"경고: {client_address}로부터 키 없이 데이터를 받았습니다.")
@@ -126,14 +130,23 @@ class IVService:
         # elif identifier == 'IL':
         #     print("차선 카메라 이미지 수신")
         
-    def handle_lane_error_update(self, error: float):
+
+
+    def receive_lane_error(self, error: float):
         print(f"Lane error updated: {error}")
-
-        # Robot에게 에러값 전달하고 
-        # self.tcp_error_client.send_message(str(error))
-
+        # self.tcp_client.queue_data(str(error), 'error')
         # db 에게 에러값 전달하자.
-        
+
+
+
+    def send_data_http(self, key, data, send_client_id):
+        self.client.send_data(f"http://localhost:{self.client_addresses[send_client_id]}", key, {"data":data})
+
+
+        # client.send_data(f"http://localhost:{clients['Service']}", "obstacle", {"data":obstacle_data})
+        # client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "front", "image":encodeimage}})
+
+
 
 
 

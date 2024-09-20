@@ -17,6 +17,7 @@ class FlaskClient(metaclass = SingletonMeta):
 
     def __init__(self, client_id, port):
         self.client_id = client_id
+        print(f' ==> Line 19: \033[38;2;214;177;68m[client_id]\033[0m({type(client_id).__name__}) = \033[38;2;234;176;129m{client_id}\033[0m')
         self.port = port
         self.app = Flask(__name__)
 

@@ -80,7 +80,7 @@ class TCPConnection:
                     data += chunk
 
                 if data_type == 1:
-                    return 1, data.decode('utf-8')
+                    return 1, (identifier,data.decode('utf-8'))
                 
                 elif data_type == 2:
                     try:

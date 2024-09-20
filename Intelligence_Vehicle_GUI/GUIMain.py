@@ -5,7 +5,7 @@ relative_path = os.path.join(current_dir, '..')  # 상위 폴더로 이동
 sys.path.append(relative_path)
 from Intelligence_Vehicle_Service.IVService import IVService
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
-from Intelligence_Vehicle_GUI.MainWindow import WindowClass 
+from Intelligence_Vehicle_GUI.MainWindow import MainWindow 
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import *
@@ -22,7 +22,7 @@ clients = {
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    myWindow = WindowClass()
+    myWindow = MainWindow()
     myWindow.show()
 
     service = IVService()

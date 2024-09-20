@@ -11,7 +11,7 @@ run_script() {
 run_script "./Intelligence_Vehicle_Service/ServiceMain.py"
 run_script "./Intelligence_Vehicle_GUI/GUIMain.py"
 run_script "./Intelligence_Vehicle_AI/Perception/Lane/LaneMain.py"
-run_script "./Intelligence_Vehicle_AI/Perception/Object/ObstacleMain.py"
+# run_script "./Intelligence_Vehicle_AI/Perception/Object/ObstacleMain.py"
 echo "All scripts launched. Check individual terminals for output."
 
 # source launch_scripts.sh 
