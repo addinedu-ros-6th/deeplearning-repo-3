@@ -1,11 +1,15 @@
 
 import sys
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
+relative_path = os.path.join(current_dir, '..')  # 상위 폴더로 이동
+sys.path.append(relative_path)
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from ultralytics import YOLO
 import mysql.connector
-# from Intelligence_Vehicle_AI.Perception.Object.ObstacleDetector import ObstacleDetector
+#from Intelligence_Vehicle_AI.Perception.Object.ObstacleDetector import ObstacleDetector
 import numpy as np
 from Observer import *
 from PyQt5 import uic
@@ -16,7 +20,11 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import datetime
 import mplcursors
-
+from datetime import datetime
+import pandas as pd
+import matplotlib.dates as mdates
+from Intelligence_Vehicle_ETC.DBmanager import MySQLConnection
+import math
 
 class Camera(QThread):
     update = pyqtSignal()
@@ -56,24 +64,16 @@ class Speed(QThread):
 from_class = uic.loadUiType("./Intelligence_Vehicle_GUI/ui/main.ui")[0]
 from_class2 = uic.loadUiType("./Intelligence_Vehicle_GUI/ui/log_window.ui")[0]
 class SecondWindow(QMainWindow,from_class2):
-    def initSQL(self):
-        self.conn = mysql.connector.connect(
-        host = "192.168.0.130",
-        port = 3306,
-        user = "kjc",
-        password = "1234",
-        database = "deep_project"
-        )
-
-        self.cursor = self.conn.cursor(buffered=True)
-    
     
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self.setWindowTitle("Log Page")
-        self.initSQL()
-
+       
+        self.dbm = MySQLConnection.getInstance()
+        
+        self.dbm.db_connect("192.168.0.130",3306, "deep_project", "yhc", "1234")
+        
         self.pushButton_search.clicked.connect(self.print_driving)
 
         self.dte_start.setDateTime(QDateTime.currentDateTime())
@@ -83,20 +83,24 @@ class SecondWindow(QMainWindow,from_class2):
 
 
         # PlotWidget 추가
-        self.graph_widget = PlotWidget(self)
+        self.graph_widget = PlotWidget()
         layout = QVBoxLayout(self.widget_chart)  # QLabel에 레이아웃 설정
         layout.addWidget(self.graph_widget.canvas)
         
 
-    def select_data(self, table, columns= ("*",), where = None, order = None, limit=20):
+    def select_data(self, table, columns= ("*",), where = None, order = None, join = None,limit=20):
         columns_str = ', '.join(columns)
 
         sql = f"""
           SELECT {columns_str}
           FROM {table}
         """
+        if join:
+          sql += f" {join}" 
+
         if where:
           sql += f" WHERE {where}"
+
         if order:
           sql += f" ORDER BY {order}"
         if limit:
@@ -113,27 +117,32 @@ class SecondWindow(QMainWindow,from_class2):
         selected_start_time = self.dte_start.dateTime().toString("yyyy-MM-dd HH:mm:ss")
         selected_end_time = self.dte_end.dateTime().toString("yyyy-MM-dd HH:mm:ss")
 
-        results=self.select_data("DrivingLog",where="time >'"+selected_start_time+"' and "+"time <'"+selected_end_time+"'")
+        #sql_results=self.select_data("DrivingLog",where="time >'"+selected_start_time+"' and "+"time <'"+selected_end_time+"'")
+        #sql_results=self.select_data("EventLog",columns=("COALESCE(CAST(DrivingLog.speed AS SIGNED), 'N/A') AS speed","COALESCE(EventLog.category,'N/A')AS category",  "COALESCE(EventLog.type, 'N/A') AS type",  "DrivingLog.time" ),
+        #                             join="RIGHT JOIN DrivingLog ON DrivingLog.time = EventLog.occurtime",
+        #                             where="time >'"+selected_start_time+"' and "+"time <'"+selected_end_time+"'")
+        sql_results = self.dbm.get_obstacle_by_time(selected_start_time,selected_end_time)
+
+
         self.tableWidget.setRowCount(0)
-        if(len(results)!=0):
-            for value in results:
-                
+        if(len(sql_results)!=0):
+            for value in sql_results:
+                print(value)
                 row  = self.tableWidget.rowCount() 
                 self.tableWidget.insertRow(row)
                 self.tableWidget.setItem(row, 0, QTableWidgetItem(str(value[0])))
                 self.tableWidget.setItem(row, 1, QTableWidgetItem(str(value[1])))
                 self.tableWidget.setItem(row, 2, QTableWidgetItem(str(value[2])))
                 self.tableWidget.setItem(row, 3, QTableWidgetItem(str(value[3])))
-       
+        self.graph_widget.plot(sql_results)
    
 
 
     def closeEvent(self, event):
             # 윈도우 종료 시 데이터베이스 연결 종료
-            if self.conn.is_connected():
-                self.conn.close()
-                print("Database connection closed.")
-            event.accept()
+        self.dbm.disconnection()
+               
+        event.accept()
 
     def open_second_window(self):
         self.second_window = SecondWindow()  # 두 번째 윈도우 객체 생성
@@ -286,30 +295,29 @@ class WindowClass(QMainWindow, from_class):
         self.lcdNumber_speed.display(self.current_number)
 
 class PlotWidget(QWidget):
-    def __init__(self ,cursor):
+    def __init__(self):
         super().__init__()
         # 그래프를 그릴 Figure 객체 생성
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
-        
 
+        
         # 레이아웃 설정
         layout = QVBoxLayout()
         layout.addWidget(self.canvas)
         self.setLayout(layout)
 
         # 그래프 그리기
-        self.plot(cursor)
+        #self.plot(cursor)
 
-    def plot(self, cursor):
+    def plot(self,plot_results):
         # 랜덤 데이터 생성
-        results=cursor.select_data("DrivingLog",columns=("speed", "time"))
-        for value in results:
-            print(str(value[0]))
-        
-        x = np.array([value[1] for value in results])
-        y = np.array([value[0] for value in results])
-       
+        #plot_results=cursor.select_data("DrivingLog",columns=("speed", "time"))
+        plt.rcParams['font.family'] = 'Malgun Gothic'
+
+        x = np.array([value[3] for value in plot_results])
+        y = np.array([value[0] for value in plot_results]).astype(int)
+        obs = np.array([value[1] for value in plot_results])
 
         # 그래프 그리기
         ax = self.figure.add_subplot(111)  # 1x1 그리드의 첫 번째 서브플롯
@@ -317,20 +325,39 @@ class PlotWidget(QWidget):
         #fig, ax = self.figure.subplots()
         line, =ax.plot(x, y, label="Ferrari")
         mpl=mplcursors.cursor(line, hover=True)
-        
+       
+
         @mpl.connect("add")
-        def on_add(sel):
-            sel.annotation.set(text=f'X: {sel.target[0]}\nY: {sel.target[1]}',
-                               fontsize=12,
-                               bbox=dict(facecolor='lightyellow', alpha=0.8))
-                              #arrowprops=dict(arrowstyle='->', color='gray'))
+        def on_add(sel): 
+            
+            serial_value = np.float64(sel.target[0])  # 예시 날짜 시리얼
+
+            index = sel.index
+            decimal_part = index - int(index)
+            if(decimal_part >0.9):
+               index=  math.ceil(index)
+            else:
+                index=  round(index)   
+            
+               
+            # 변환
+            date_time = pd.to_datetime('1970-01-01') + pd.to_timedelta(serial_value, unit='D')
+            time_value = date_time.strftime('%Y-%m-%d %H:%M:%S')
+            print(index)
+            sel.annotation.set(text=f'time: {time_value}\nSpeed: {sel.target[1]}\n obstacle : {obs[index]}',
+                       fontsize=12,
+                       bbox=dict(facecolor='lightyellow', alpha=0.8))
         
-        threshold = 60  # 임계값
+        threshold = ["장애물","표지판"]   # 임계값
         for i in range(len(y)):
-            if y[i] > threshold:  # 조건: y 값이 임계값을 초과할 때
+            
+            if obs[i] in threshold:  # 조건: y 값이 임계값을 초과할 때
                 ax.plot(x[i], y[i], marker='o', markersize=8, color='blue')  # 마커 추가
+
                 
         ax.set_title("speed record")
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
+        #plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, ha='right')
         ax.set_xlabel("time")
         ax.set_ylabel('speed')
 

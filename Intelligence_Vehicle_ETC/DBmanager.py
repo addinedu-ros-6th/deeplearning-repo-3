@@ -19,7 +19,7 @@ class MySQLConnection:
             cls._instance = cls()
         return cls._instance
 
-    def connect(self, host,port, database, user, password):
+    def db_connect(self, host,port, database, user, password):
         try:
             if self.connection is None or not self.connection.is_connected():
                 self.connection = mysql.connector.connect(
@@ -33,12 +33,33 @@ class MySQLConnection:
             self.cursor = self.connection.cursor()    
         except Error as e:
             print(f"에러: {e}")
+        
 
-
-    def close_connection(self):
+    def disconnection(self):
         if self.connection and self.connection.is_connected():
             self.connection.close()
             print("MySQL 연결이 닫혔습니다.")
+
+    def get_obstacle_by_time(self,selected_start_time,selected_end_time):
+        sql= f"""
+             SELECT 
+            COALESCE(CAST(DrivingLog.speed AS SIGNED), 'N/A') AS speed, 
+            COALESCE(EventLog.category, 'N/A') AS category,  
+            COALESCE(EventLog.type, 'N/A') AS type, 
+            DrivingLog.time
+        FROM    
+            EventLog 
+        RIGHT JOIN 
+            DrivingLog ON DrivingLog.time = EventLog.occurtime
+        WHERE 
+            DrivingLog.time > '{selected_start_time}' AND 
+            DrivingLog.time < '{selected_end_time}'"""
+        
+
+        print("select_data: ", sql)
+        self.cursor.execute(sql)
+        obstacle_results = self.cursor.fetchall()
+        return obstacle_results
 
     def select_data(self, table, columns= ("*",), where = None, order = None, limit=None):
         columns_str = ', '.join(columns)
@@ -99,10 +120,10 @@ class MySQLConnection:
 
         self.connection.commit() 
 # 사용 예시
-def main():
-    db = MySQLConnection.getInstance()
-    db.connect("192.168.0.130",3306, "deep_project", "yhc", "1234")
-    current_time = datetime.now()
+#def main():
+    #db = MySQLConnection.getInstance()
+    #db.db_connect("192.168.0.130",3306, "deep_project", "yhc", "1234")
+    #current_time = datetime.now()
 
     #select query
     #result = db.select_data("LogMessage",where="id='1'")
@@ -110,10 +131,10 @@ def main():
     #    for row in result:
     #        print(row)
     
-    #db.insert_data("EventLog", ("category", "type", "occurtime", "mid"),("표지판", "사람",current_time.strftime("%Y-%m-%d %H:%M:%S"),"3"))
+    
    
     #db.update_data("EventLog",("type",), ("test",), where="category='장애물'")
 
-    db.close_connection()
-if __name__ == "__main__":
-    main()
+#    db.close_connection()
+#if __name__ == "__main__":
+#    main()
