@@ -15,10 +15,11 @@ class TCPConnection:
         self.sock = None
         self.conn = None
 
-    def connect_to_server(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    def connect_to_server(self, sock_type=socket.SOCK_STREAM):
+        self.sock = socket.socket(socket.AF_INET, sock_type)
         self.sock.connect((self.host, self.port))
         print(f"{self.host}:{self.port}에 연결 성공.")
+
 
     def send_data(self, data, data_type, identifier=''):
         if self.sock is None and self.conn is None:

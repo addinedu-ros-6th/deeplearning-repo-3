@@ -2,6 +2,7 @@ from datetime import datetime
 import json
 import queue
 import signal
+import socket
 import threading
 import time
 import numpy as np
@@ -25,15 +26,15 @@ class TCPClient:
         self.max_retries = max_retries
         self.retry_delay = retry_delay
 
-    def connect(self):
-        if not self.connect_with_retry():
+    def connect(self, sock_type=socket.SOCK_STREAM):
+        if not self.connect_with_retry(sock_type):
             raise ConnectionError("여러 번 시도한 후 서버에 연결하지 못했습니다.")
     
-    def connect_with_retry(self):
+    def connect_with_retry(self, sock_type=socket.SOCK_STREAM):
         retries = 0
         while retries < self.max_retries:
             try:
-                self.tcp_connection.connect_to_server()
+                self.tcp_connection.connect_to_server(sock_type)
                 print(f"클라이언트 {self.client_id}가 서버에 성공적으로 연결되었습니다.")
                 return True
             
@@ -73,9 +74,9 @@ class TCPClient:
                 time.sleep(0.03)  # queue에 데이터가 없으면 대기한다. 대충 30프레임으로 맞춰놓음. 
 
 
-    def start(self):
+    def start(self, sock_type=socket.SOCK_STREAM):
         # 클라이언트마다 개별 스레드에서 동작한다.
-        self.connect()
+        self.connect(sock_type)
         self.thread = threading.Thread(target=self.run)
         self.thread.start()
 
@@ -218,8 +219,8 @@ if __name__ == "__main__":
         print("클라이언트 생성 및 시작")
         client1 = manager.get_client("test_image_client", 'image')
         client2 = manager.get_client("test_text_client", 'str')
-        client1.start()
-        client2.start()
+        client1.start(socket.SOCK_DGRAM)
+        client2.start(socket.SOCK_DGRAM)
         
         for _ in range(10):
             time.sleep(1)
