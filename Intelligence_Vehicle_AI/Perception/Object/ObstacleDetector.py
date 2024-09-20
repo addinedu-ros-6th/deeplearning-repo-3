@@ -1,3 +1,4 @@
+import base64
 import cv2
 import numpy as np
 import sys
@@ -9,6 +10,29 @@ class ObstacleDetector:
     def __init__(self, model_path, video_path):
         self.model = YOLO(model_path)
         self.cap = cv2.VideoCapture(video_path)
+
+
+    def start_detect_result(self, image, send_func):
+        _, buffer = cv2.imencode('.jpg', image)
+        encoded_image = base64.b64encode(buffer).decode('utf-8')
+
+        image_data = {
+            "type": "obstacle",
+            "image": encoded_image
+        }
+        send_func("viewer", image_data , "GUI")
+            
+        frame = cv2.resize(encoded_image, (720, 480))
+        results = self.model.track(frame, conf=0.7, imgsz=480, verbose=False)
+
+        obstacle_data = {
+            "results": results[0].tojson() # results 변환
+        }
+        send_func("obstacle", obstacle_data, "Service")
+
+
+
+
 
     def get_results(self):
         while True:

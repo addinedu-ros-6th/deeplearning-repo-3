@@ -5,6 +5,7 @@ import socket
 import struct
 import pickle
 import threading
+import cv2
 import numpy as np
 import select
 
@@ -30,6 +31,7 @@ class TCPConnection:
                 data = pickle.dumps((identifier, data))
 
         elif data_type == 'image':
+            data = cv2.imencode('.jpg', data)
             data = pickle.dumps((identifier, data))
 
         else:

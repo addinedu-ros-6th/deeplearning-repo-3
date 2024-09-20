@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     service = IVService()
     service.register_tcp_receive_handle()
-    service.set_tcp_data_handler_callback("lane", (detector.start_lane_result, service.send_data_http))
+    service.set_tcp_data_handler_callback("lane", (detector.start_detect_result, service.send_data_http))
 
     client = FlaskClient(client_id="Lane", port=clients["Lane"])
     service.set_client(client)

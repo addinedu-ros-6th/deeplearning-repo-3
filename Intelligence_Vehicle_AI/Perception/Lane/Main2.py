@@ -40,7 +40,7 @@ if __name__ == "__main__":
                                  video_path='Intelligence_Vehicle_AI/Dataset/Lane_dataset/30_only_lane_video.mp4')
 
     # 비디오 처리 및 결과 전송
-    for results in lane_detector.start_lane_result():
+    for results in lane_detector.start_detect_result():
         lane_data = {
             "results": results
             }

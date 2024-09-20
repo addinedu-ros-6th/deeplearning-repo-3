@@ -38,7 +38,7 @@ def start_tcp_client():
     try:
         client_manager = TCPClientManager()
         client1 = client_manager.get_client("image_client", 'image', host=HOST, port=PORT)
-        client1.start()
+        client1.start(socket.SOCK_STREAM)
 
         for _ in range(10):
             time.sleep(1)

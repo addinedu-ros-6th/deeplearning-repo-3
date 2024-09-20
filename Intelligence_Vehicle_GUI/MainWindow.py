@@ -93,7 +93,7 @@ class MainWindow(QDialog):
 
         self.dbm = MySQLConnection.getInstance()
         
-        self.dbm.db_connect("192.168.0.130",3306, "deep_project", "yhc", "1234")
+        self.dbm.db_connect("192.168.0.130", 3306, "deep_project", "yhc", "1234")
         
         self.pushButton_search.clicked.connect(self.print_driving)
 

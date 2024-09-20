@@ -44,7 +44,7 @@ class LaneDetector:
 
         return left_lane_center, right_lane_center
     
-    def start_lane_result(self, image, send_func):
+    def start_detect_result(self, image, send_func):
         _, buffer = cv2.imencode('.jpg', image)
         encoded_image = base64.b64encode(buffer).decode('utf-8')
 
@@ -83,7 +83,7 @@ class LaneDetector:
     #     self.cap.release()
 
     def process_video(self):
-        results_list = self.start_lane_result()  # 비디오에서 결과를 가져옴
+        results_list = self.start_detect_result()  # 비디오에서 결과를 가져옴
 
         for image, results in results_list:
             self.stop_line_flag = 1 if 'Stop_Line' in self.newlist else 0
