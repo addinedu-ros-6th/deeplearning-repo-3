@@ -16,9 +16,9 @@
   <widget class="QWidget" name="widget_chart" native="true">
    <property name="geometry">
     <rect>
-     <x>420</x>
+     <x>20</x>
      <y>98</y>
-     <width>611</width>
+     <width>1011</width>
      <height>391</height>
     </rect>
    </property>

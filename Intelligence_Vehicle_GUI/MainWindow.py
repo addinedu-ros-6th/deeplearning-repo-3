@@ -10,6 +10,13 @@ import numpy as np
 from Observer import *
 from PyQt5 import uic
 import time
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
+import datetime
+import mplcursors
+
 
 class Camera(QThread):
     update = pyqtSignal()
@@ -53,7 +60,7 @@ class SecondWindow(QMainWindow,from_class2):
         self.conn = mysql.connector.connect(
         host = "192.168.0.130",
         port = 3306,
-        user = "lkm",
+        user = "kjc",
         password = "1234",
         database = "deep_project"
         )
@@ -73,28 +80,15 @@ class SecondWindow(QMainWindow,from_class2):
         self.dte_end.setDateTime(QDateTime.currentDateTime()) 
 
         self.tableWidget.setEditTriggers(QTableWidget.NoEditTriggers)
+
+
+        # PlotWidget 추가
+        self.graph_widget = PlotWidget(self)
+        layout = QVBoxLayout(self.widget_chart)  # QLabel에 레이아웃 설정
+        layout.addWidget(self.graph_widget.canvas)
         
-        # 중앙 위젯 및 레이아웃 설정
 
-        #self.button = QPushButton("첫 번째 윈도우로 돌아가기", self)
-        #self.button.clicked.connect(self.open_first_window)  # 버튼 클릭 시 함수 호출
-
-    def update_front_view(self, image):
-        self.update_camera_view(self.label_Obstacle_Camera, image, self.frontCameraPixmap)
-
-    def update_lane_view(self, image):
-        self.update_camera_view(self.label_Lane_Camera, image, self.laneCameraPixmap)
-
-    def update_camera_view(self, view:QLabel, image:np.ndarray, pixmap:QPixmap):
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        h, w, c = image.shape
-        qimage = QImage(image.data, w, h, w*c, QImage.Format_RGB888)
-        pixmap = pixmap.fromImage(qimage)
-        pixmap = pixmap.scaled(view.width(), view.height())
-        view.setPixmap(pixmap)
-
-
-    def select_data(self, table, columns= ("*",), where = None, order = None, limit=10):
+    def select_data(self, table, columns= ("*",), where = None, order = None, limit=20):
         columns_str = ', '.join(columns)
 
         sql = f"""
@@ -131,15 +125,22 @@ class SecondWindow(QMainWindow,from_class2):
                 self.tableWidget.setItem(row, 2, QTableWidgetItem(str(value[2])))
                 self.tableWidget.setItem(row, 3, QTableWidgetItem(str(value[3])))
        
-         
+   
 
-    def __exit__(self):
-        self.conn.close()  
+
+    def closeEvent(self, event):
+            # 윈도우 종료 시 데이터베이스 연결 종료
+            if self.conn.is_connected():
+                self.conn.close()
+                print("Database connection closed.")
+            event.accept()
 
     def open_second_window(self):
         self.second_window = SecondWindow()  # 두 번째 윈도우 객체 생성
         self.second_window.show()  # 두 번째 윈도우 표시
         self.close()  # 현재 윈도우 닫기
+
+
 
    #def open_first_window(self):
    #    self.first_window = WindowClass()  # 첫 번째 윈도우 객체 생성
@@ -179,6 +180,25 @@ class WindowClass(QMainWindow, from_class):
         self.second_window = SecondWindow()  # 두 번째 윈도우 객체 생성
         self.second_window.show()  # 두 번째 윈도우 표시
         #self.close()  # 현재 윈도우 닫기
+
+    def update_front_view(self, image):
+        self.update_camera_view(self.label_Obstacle_Camera, image, self.frontCameraPixmap)
+
+    def update_lane_view(self, image):
+        self.update_camera_view(self.label_Lane_Camera, image, self.laneCameraPixmap)
+
+    def update_camera_view(self, view:QLabel, image:np.ndarray, pixmap:QPixmap):
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        h, w, c = image.shape
+        qimage = QImage(image.data, w, h, w*c, QImage.Format_RGB888)
+        pixmap = pixmap.fromImage(qimage)
+        pixmap = pixmap.scaled(view.width(), view.height())
+        view.setPixmap(pixmap)
+
+        self.track_ids = results[0].boxes.cls.int().cpu().tolist()
+        print(self.track_ids)
+        self.printObstacleImage()
+        self.printSpeedImage() 
 
 
     def updateCamera(self):
@@ -263,7 +283,62 @@ class WindowClass(QMainWindow, from_class):
 
         self.current_number += 1  # 숫자 증가
         self.lcdNumber_speed.display(self.current_number)
+
+class PlotWidget(QWidget):
+    def __init__(self ,cursor):
+        super().__init__()
+        # 그래프를 그릴 Figure 객체 생성
+        self.figure = Figure()
+        self.canvas = FigureCanvas(self.figure)
         
+
+        # 레이아웃 설정
+        layout = QVBoxLayout()
+        layout.addWidget(self.canvas)
+        self.setLayout(layout)
+
+        # 그래프 그리기
+        self.plot(cursor)
+
+    def plot(self, cursor):
+        # 랜덤 데이터 생성
+        results=cursor.select_data("DrivingLog",columns=("speed", "time"))
+        for value in results:
+            print(str(value[0]))
+        
+        x = np.array([value[1] for value in results])
+        y = np.array([value[0] for value in results])
+       
+
+        # 그래프 그리기
+        ax = self.figure.add_subplot(111)  # 1x1 그리드의 첫 번째 서브플롯
+        
+        #fig, ax = self.figure.subplots()
+        line, =ax.plot(x, y, label="Ferrari")
+        mpl=mplcursors.cursor(line, hover=True)
+        
+        @mpl.connect("add")
+        def on_add(sel):
+            sel.annotation.set(text=f'X: {sel.target[0]}\nY: {sel.target[1]}',
+                               fontsize=12,
+                               bbox=dict(facecolor='lightyellow', alpha=0.8))
+                              #arrowprops=dict(arrowstyle='->', color='gray'))
+        
+        threshold = 60  # 임계값
+        for i in range(len(y)):
+            if y[i] > threshold:  # 조건: y 값이 임계값을 초과할 때
+                ax.plot(x[i], y[i], marker='o', markersize=8, color='blue')  # 마커 추가
+                
+        ax.set_title("speed record")
+        ax.set_xlabel("time")
+        ax.set_ylabel('speed')
+
+        ax.legend()
+
+        # 캔버스에 그린 내용을 업데이트
+        self.canvas.draw()
+        
+  
 
 if __name__ == "__main__":
     app = QApplication(sys.argv) #프로그램 실행
