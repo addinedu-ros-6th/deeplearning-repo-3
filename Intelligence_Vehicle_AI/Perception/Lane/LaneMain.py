@@ -33,7 +33,8 @@ if __name__ == "__main__":
 
 
     while True:
-        if client.is_port_open(host='localhost', ports=[clients["Service"], clients["GUI"]]):
+        # , clients["GUI"]
+        if client.is_port_open(host='localhost', ports=[clients["Service"]]):
             break
         print("Waiting for a server response.")
         time.sleep(1)
@@ -51,7 +52,7 @@ if __name__ == "__main__":
         encodeimage = encode_image(image)
 
         client.send_data(f"http://localhost:{clients['Service']}", "lane", {"data":lane_data})
-        client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "lane", "image":encodeimage}})
+        # client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "lane", "image":encodeimage}})
 
 
     # 1. Json으로 만들기

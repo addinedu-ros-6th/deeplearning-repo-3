@@ -1,7 +1,8 @@
 import sys
 import os
+import cv2
 
-
+from Intelligence_Vehicle_Communicator.TCPServerNewVersion import TCPServerManager
 
 current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
 relative_path = os.path.join(current_dir, '..')  # 상위 폴더로 이동
@@ -9,7 +10,7 @@ sys.path.append(relative_path)
 
 from typing import Any, Dict, List
 from flask import Flask, request, jsonify
-from Intelligence_Vehicle_Service.ProcessorFactory import ProcessorFactory
+from Intelligence_Vehicle_Service.Factory import ProcessorFactory, DataHandlerFactory
 from Intelligence_Vehicle_Service.Processor.ReceiveImageProcessor import ReceiveImageProcessor
 from Intelligence_Vehicle_Service.Processor.LaneProcessor import LaneProcessor
 from Intelligence_Vehicle_Service.Processor.ObstacleProcessor import ObstacleProcessor
@@ -17,6 +18,7 @@ from Intelligence_Vehicle_Service.Processor.GUIViewerProcessor import GUIViewerP
 from Intelligence_Vehicle_Service.Processor.GUIProcessor import GUIProcessor
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
 from Intelligence_Vehicle_Communicator.TCPClientNewVersion import TCPClientManager
+from Intelligence_Vehicle_Service.DataHandler.DataHandler import *
 
 
 class IVService:
@@ -25,38 +27,51 @@ class IVService:
         self.client : FlaskClient = None
         self.client_addresses = self.set_clinet_addresses()
         self.processor_factory = ProcessorFactory()
+        self.data_handler_factory = DataHandlerFactory()
     
     def start_tcp_server(self):
-        print("Attempting to connect to the server via socket")
-        # tcp_client_manager = TCPClientManager()
-        # self.tcp_error_client = tcp_client_manager.get_client("lane_error", '192.168.0.11', 4006)
-        # self.tcp_error_client.start()
-        print("Succeessfully connected to the server via sockat")
-        return
+        HOST = 'localhost'
+        PORT = 4001
+        
+        try:
+            tcp_server_manager = TCPServerManager()
+            tcp_server_manager.start_server(host= 'localhost', port=PORT, data_handler=self.handle_receive_tcp_data)
+        except KeyboardInterrupt:
+            print("사용자로부터 종료 요청을 받았습니다.")
+            tcp_server_manager.stop_all_clients()
+        finally:
+            tcp_server_manager.stop_server()
+            print("프로그램이 완전히 종료되었습니다.")
+        
     
     def register_receive_image_processor(self, receive_handle):
         receiveImageProcessor = ReceiveImageProcessor()
-        self.processor_factory.register_processor("receive_image", receiveImageProcessor)
+        self.processor_factory.register("receive_image", receiveImageProcessor)
 
 
     def register_ai_processor(self):
         laneProcessor = LaneProcessor()
         laneProcessor.set_error_callback(self.handle_lane_error_update)
-        self.processor_factory.register_processor("lane", laneProcessor)
+        self.processor_factory.register("lane", laneProcessor)
 
         obstacleProcessor = ObstacleProcessor()
-        self.processor_factory.register_processor("obstacle", obstacleProcessor)
+        self.processor_factory.register("obstacle", obstacleProcessor)
            
 
     def register_gui_processor(self, window_class):
         gui_viewer_processor = GUIViewerProcessor()
         gui_viewer_processor.frontView.connect(window_class.update_front_view)
         gui_viewer_processor.laneView.connect(window_class.update_lane_view)
-        self.processor_factory.register_processor("viewer", gui_viewer_processor)
+        self.processor_factory.register("viewer", gui_viewer_processor)
 
         gui_processor = GUIProcessor()
         # gui_processor.speedfunc.connect(window_class)
-        self.processor_factory.register_processor("gui", gui_processor)
+        self.processor_factory.register("gui", gui_processor)
+
+    def register_tcp_receive_handle(self):
+        self.data_handler_factory.register("obstacle", ObstacleImageHandler())
+        self.data_handler_factory.register("lane", LaneImageHandler())
+        self.data_handler_factory.register("speed", SpeedDataHandler())
 
 
     def set_client(self, client:FlaskClient):
@@ -79,29 +94,43 @@ class IVService:
             return
 
         try:
-            processor = self.processor_factory.get_processor(key)
+            processor = self.processor_factory.get(key)
             processor.execute(data)
 
         except ValueError as e:
             print(f"Error processing data: {e}")
+         
+    def handle_receive_tcp_data(self, data_type, data, client_address):
+        # print(f"receive_tcp: 클라이언트 {client_address}로부터 {data} 데이터 수신")
+        # key = data['key']
+        # data_type : 1-str, 2-image
 
+        if data[0] is None:
+            print(f"경고: {client_address}로부터 키 없이 데이터를 받았습니다.")
+            return
 
-    def handle_receive_tcp_data(self, data, client_address):
-        print(f"receive_tcp: 클라이언트 {client_address}로부터 {data} 데이터 수신")
+        try:
+            handler = self.data_handler_factory.get(data[0])
+            handler.handle(data, client_address=client_address)
 
-        # 로봇에게 속도 값을 통신을 받으면
-        # GUI 에게 속도를 전송하고
-        # self.client.send_data(f"http://localhost:{self.client_addresses['GUI']}", "gui", {"data":{"type": "speed", "data":data}})
+        except ValueError as e:
+            print(f"Error processing data: {e}")
 
-        # DB에 값을 저장하고
-        # self.client.send_data(f"http://localhost:{self.client_addresses['DB']}", "db", {"data":{"type":"insert", "table":"DrivingLog","data":data}})
+        # 로봇에게 이미지를 받으면
+        # identifier, image_data = data
+        # print(f"이미지: {type(image_data)}")
 
+        # threading.Thread(target=display_image, args=(identifier, image_data)).start()
+        # if identifier == 'IF':
+        #     print("정면 카메라 이미지 수신")
+        # elif identifier == 'IL':
+        #     print("차선 카메라 이미지 수신")
         
     def handle_lane_error_update(self, error: float):
         print(f"Lane error updated: {error}")
 
         # Robot에게 에러값 전달하고 
-        self.tcp_error_client.send_message(str(error))
+        # self.tcp_error_client.send_message(str(error))
 
         # db 에게 에러값 전달하자.
         

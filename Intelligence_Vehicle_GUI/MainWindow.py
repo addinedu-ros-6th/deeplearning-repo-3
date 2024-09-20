@@ -5,7 +5,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from ultralytics import YOLO
 import mysql.connector
-#from Intelligence_Vehicle_AI.Perception.Object.ObstacleDetector import ObstacleDetector
+# from Intelligence_Vehicle_AI.Perception.Object.ObstacleDetector import ObstacleDetector
 import numpy as np
 from Observer import *
 from PyQt5 import uic
@@ -150,8 +150,6 @@ class SecondWindow(QMainWindow,from_class2):
 
 class WindowClass(QMainWindow, from_class):
 
-    
-    
     def __init__(self):
         super().__init__()
         self.setupUi(self)

@@ -15,7 +15,7 @@ from Intelligence_Vehicle_Communicator.TCPConnectionNewVersion import TCPConnect
 class TCPClient:
     def __init__(self, client_id, data_type, host='localhost', port=12345, max_retries=120, retry_delay=1):
         self.client_id = client_id
-        self.data_type = data_type  # 'image' or 'str' or 'json'
+        self.data_type = data_type  # 'image' or 'str' or ''
         self.tcp_connection = TCPConnection(host, port)
         self.running = False
         self.thread = None
@@ -36,24 +36,22 @@ class TCPClient:
                 self.tcp_connection.connect_to_server()
                 print(f"클라이언트 {self.client_id}가 서버에 성공적으로 연결되었습니다.")
                 return True
+            
             except ConnectionRefusedError:
                 print(f"연결 시도 {retries + 1}에 실패했습니다. 서버가 실행되고 있지 않을 수 있습니다. {self.retry_delay}초 후에 재시도 중...")
                 time.sleep(self.retry_delay)
                 retries += 1
+
         print(f"{self.max_retries} 시도 후 연결에 실패했습니다. 서버가 실행 중인지 확인하세요.")
         return False
     
 
-    def send_data(self, data):
+    def send_data(self, data, identifier=''):
         try:
-            self.tcp_connection.send_data(data, self.data_type)
-            print(f"Client {self.client_id} sent {self.data_type}")
-
+            self.tcp_connection.send_data(data, self.data_type, identifier)
+            print(f"Client {self.client_id} sent {self.data_type} with identifier {identifier}")
         except Exception as e:
             print(f"Error sending {self.data_type}: {e}")
-            print(f"오류 유형: {type(e).__name__}")
-            print(f"오류 상세 정보: {str(e)}")
-
 
 
     def send_message(self, data):
@@ -66,9 +64,14 @@ class TCPClient:
         while self.running:
             try:
                 data = self.data_queue.get_nowait() # queue에 데이터가 있을때만 전송한다.
-                self.send_data(data)
+                if isinstance(data, tuple) and len(data) == 2:
+                    self.send_data(data[0], data[1])
+                else:
+                    self.send_data(data)
+
             except queue.Empty:
                 time.sleep(0.03)  # queue에 데이터가 없으면 대기한다. 대충 30프레임으로 맞춰놓음. 
+
 
     def start(self):
         # 클라이언트마다 개별 스레드에서 동작한다.
@@ -92,13 +95,17 @@ class TCPClient:
             response = self.tcp_connection.receive_data()
             if response:
                 print(f"Server response on exit: {response}")
+
         except Exception as e:
             print(f"Error during client shutdown: {e}")
+            
         finally:
             self.tcp_connection.close()
     
+
     def queue_data(self, data):
         self.data_queue.put(data)
+
 
 
 class TCPClientManager:
@@ -161,6 +168,7 @@ class TCPClientManager:
             client = self.clients[client_id]
             client.stop()
             print(f"중지된 클라이언트 {client_id}")
+            
         else:
             print(f"클라이언트 {client_id}이(가) 존재하지 않습니다.t")
 
@@ -192,7 +200,6 @@ class TCPClientManager:
 
 
 # 아래는 예제 코드입니다. ##############################################################################################
-# 주의 사항: Server가 먼저 열려있어야 합니다. 
 if __name__ == "__main__":
     print("메인 프로그램 시작")
     
@@ -209,19 +216,16 @@ if __name__ == "__main__":
     # 이미지와 텍스트를 보내는 클라이언트를 개별적으로 만듭니다.
     try:
         print("클라이언트 생성 및 시작")
-        client1 = manager.get_client("test_image_client", 'json')
+        client1 = manager.get_client("test_image_client", 'image')
         client2 = manager.get_client("test_text_client", 'str')
         client1.start()
         client2.start()
         
-        # JSON 형식으로 이미지 전송
-        client1.send_message({'key': 'IL', 'image': get_image()})
-        client2.send_message(get_text())
-        
         for _ in range(10):
-            client1.send_message({'key': 'IL', 'image': get_image()})
-            client2.send_message(get_text())
             time.sleep(1)
+            client1.queue_data((get_image(), 'IF'))  # 정면 카메라 이미지
+            client1.queue_data((get_image(), 'IL'))  # 차선 카메라 이미지
+            client2.queue_data(get_text())
         print("모든 메시지 전송 완료")
     
     except KeyboardInterrupt:
