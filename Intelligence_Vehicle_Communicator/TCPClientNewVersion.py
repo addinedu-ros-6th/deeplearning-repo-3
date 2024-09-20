@@ -54,7 +54,7 @@ class TCPClient:
             print(f"Error sending {self.data_type}: {e}")
 
 
-    def send_message(self, data):
+    def send_message(self, data, identifier=''):
         """Queue a message for sending"""
         self.queue_data(data)
 
