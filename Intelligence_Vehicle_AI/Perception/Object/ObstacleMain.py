@@ -42,8 +42,6 @@ if __name__ == "__main__":
     obstacle_detector = ObstacleDetector('Intelligence_Vehicle_AI/Perception/Object/obstacle_n.pt',
                                  'Intelligence_Vehicle_AI/Dataset/Object_dataset/object.mp4')
     
-    service.register_receive_image_processor(obstacle_detector.get_results)
-
     for results, image in obstacle_detector.get_results():
         obstacle_data = {
             "results": results[0].tojson() # results 변환
@@ -51,7 +49,7 @@ if __name__ == "__main__":
         encodeimage = encode_image(image)
 
         client.send_data(f"http://localhost:{clients['Service']}", "obstacle", {"data":obstacle_data})
-        # client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "front", "image":encodeimage}})
+        client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "front", "image":encodeimage}})
 
 
 

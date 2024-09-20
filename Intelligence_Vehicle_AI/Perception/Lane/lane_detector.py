@@ -1,8 +1,19 @@
+import base64
+import pickle
 import cv2
 import numpy as np
 from ultralytics import YOLO
 
+from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
+
 class LaneDetector:
+    clients = {
+        "Lane": 5001,
+        "Obstacle": 5002,
+        "DB": 5003,
+        "Service": 5004,
+        "GUI": 5005
+    }
     def __init__(self, model_path, video_path):
         self.model = YOLO(model_path)
         self.cap = cv2.VideoCapture(video_path)
@@ -32,23 +43,40 @@ class LaneDetector:
         right_lane_center = np.mean(right_lane_points, axis=0) if right_lane_points else None
 
         return left_lane_center, right_lane_center
+    
+    def start_lane_result(self, image, send_func):
+        send_func("viewer", pickle.dumps(image), "GUI")
 
-    def get_results(self):
-        # results_list = []
+        results = self.model(image, verbose=False)
+        # print(f' ==> Line 37: \033[38;2;178;216;121m[results]\033[0m({type(results).__name__}) = \033[38;2;86;33;128m{results}\033[0m')
+        lane_data = {
+            "results": results[0].tojson() # results 변환
+        }
 
-        while self.cap.isOpened():
-            ret, image = self.cap.read()
-            if not ret:
-                break
-            results = self.model(image, verbose=False)
-            # self.testAddFunc(results)
-            # yield image, results  # 각 프레임의 이미지와 결과를 반환
-            yield results, image
+        send_func("lane",lane_data, "Service")
 
-        self.cap.release()
+
+
+        # yield results, image
+
+
+
+    # def get_results(self):
+    #     # results_list = []
+
+    #     while self.cap.isOpened():
+    #         ret, image = self.cap.read()
+    #         if not ret:
+    #             break
+    #         results = self.model(image, verbose=False)
+    #         # self.testAddFunc(results)
+    #         # yield image, results  # 각 프레임의 이미지와 결과를 반환
+    #         yield results, image
+
+    #     self.cap.release()
 
     def process_video(self):
-        results_list = self.get_results()  # 비디오에서 결과를 가져옴
+        results_list = self.start_lane_result()  # 비디오에서 결과를 가져옴
 
         for image, results in results_list:
             self.stop_line_flag = 1 if 'Stop_Line' in self.newlist else 0

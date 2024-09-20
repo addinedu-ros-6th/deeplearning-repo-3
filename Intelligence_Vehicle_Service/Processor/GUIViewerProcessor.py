@@ -1,4 +1,5 @@
 import base64
+import pickle
 import sys
 import os
 
@@ -26,6 +27,7 @@ class GUIViewerProcessor(QObject, Processor, metaclass=ProcessorMeta):
         image_type = data['data']['type']
         print('\033[38;2;77;5;108m'+'image_type: ' + '\033[38;2;20;121;218m', image_type, '\033[0m')
         image_data = data['data']['image']
+        image_data = pickle.loads(image_data)
         
         # Base64 디코딩 및 이미지로 변환
         image_bytes = base64.b64decode(image_data)

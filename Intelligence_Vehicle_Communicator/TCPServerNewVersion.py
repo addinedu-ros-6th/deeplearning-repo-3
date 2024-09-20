@@ -65,7 +65,9 @@ class TCPServer:
         while self.running:
             try:
                 data_type, data = tcp_connection.receive_data()
-
+                print(f' ==> Line 67: \033[38;2;146;1;186m[data_type]\033[0m({type(data_type).__name__}) = \033[38;2;146;200;253m{data_type}\033[0m')
+                print(f' ==> Line 67: \033[38;2;108;50;29m[data]\033[0m({type(data).__name__}) = \033[38;2;229;96;125m{data}\033[0m')
+                
                 if data is None:
                     break
                 

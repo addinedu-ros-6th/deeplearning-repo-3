@@ -11,6 +11,7 @@ from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClien
 from lane_detector import LaneDetector 
 import base64
 
+
 clients = {
     "Lane": 5001,
     "Obstacle": 5002,
@@ -19,18 +20,18 @@ clients = {
     "GUI": 5005
 }
 
-def encode_image(image):
-    _, buffer = cv2.imencode('.jpg', image)
-    jpg_as_text = base64.b64encode(buffer).decode('utf-8')
-    return jpg_as_text
-
 if __name__ == "__main__":
+
+    detector = LaneDetector(model_path='Intelligence_Vehicle_AI/Perception/Lane/best_v8n_seg.pt',
+                                video_path='Intelligence_Vehicle_AI/Dataset/Lane_dataset/30_only_lane_video.mp4')
+
     service = IVService()
-    
+    service.register_tcp_receive_handle()
+    service.set_tcp_data_handler_callback("lane", (detector.start_lane_result, service.send_data_http))
 
     client = FlaskClient(client_id="Lane", port=clients["Lane"])
+    service.set_client(client)
     client.set_callback(service.handle_receive_http_data)
-
 
     while True:
         # , clients["GUI"]
@@ -39,38 +40,4 @@ if __name__ == "__main__":
         print("Waiting for a server response.")
         time.sleep(1)
 
-    lane_detector = LaneDetector(model_path='Intelligence_Vehicle_AI/Perception/Lane/best_v8n_seg.pt',
-                                 video_path='Intelligence_Vehicle_AI/Dataset/Lane_dataset/30_only_lane_video.mp4')
-    
-    service.register_receive_image_processor(lane_detector.get_results)
-    
-    for results, image in lane_detector.get_results():
-        lane_data = {
-            "results": results[0].tojson() # results 변환
-        }
-        
-        encodeimage = encode_image(image)
-
-        client.send_data(f"http://localhost:{clients['Service']}", "lane", {"data":lane_data})
-        # client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "lane", "image":encodeimage}})
-
-
-    # 1. Json으로 만들기
-    """
-        lane_data = {
-        "lane_position": random.uniform(-1.0, 1.0),
-        "lane_curvature": random.uniform(0, 0.001)
-    }
-    """
-
-    # 2. Service에 데이터 전송하기
-    """
-        client.send_data(f"http://localhost:{clients['Service']}", {"data": lane_data})
-    """
-
-    # 3. 터미널에서 실행
-    # 아래의 경로에서 터미널에 실행하면 main.py 2개가 각각의 터미널에서 실행됨.
-    ## (yolo) mr@mr:~/dev_ws/deeplearning-repo-3$ 
-    """
-gnome-terminal -- bash -c "python3 Intelligence_Vehicle_Service/Main.py; exec bash" & gnome-terminal -- bash -c "python3 Intelligence_Vehicle_AI/Perception/Lane/Main_test.py; exec bash"
-    """
+    service.start_tcp_server(host='192.168.0.22', port=4001)
