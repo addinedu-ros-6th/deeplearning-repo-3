@@ -162,6 +162,9 @@ class WindowClass(QMainWindow, from_class):
         self.current_number=0
         self.speed = Speed(self)
         self.speed.start()
+
+        self.frontCameraPixmap = QPixmap()
+        self.laneCameraPixmap = QPixmap()
         
         self.camera = Camera(self)
         self.camera.running = False
@@ -193,10 +196,10 @@ class WindowClass(QMainWindow, from_class):
         pixmap = pixmap.scaled(view.width(), view.height())
         view.setPixmap(pixmap)
 
-        self.track_ids = results[0].boxes.cls.int().cpu().tolist()
-        print(self.track_ids)
-        self.printObstacleImage()
-        self.printSpeedImage() 
+        # self.track_ids = results[0].boxes.cls.int().cpu().tolist()
+        # print(self.track_ids)
+        # self.printObstacleImage()
+        # self.printSpeedImage() 
 
 
     def updateCamera(self):
