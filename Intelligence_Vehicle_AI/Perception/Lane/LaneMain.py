@@ -26,17 +26,23 @@ def encode_image(image):
 
 if __name__ == "__main__":
     service = IVService()
+    
+
     client = FlaskClient(client_id="Lane", port=clients["Lane"])
-    client.set_callback(service.handle_receive_data)
+    client.set_callback(service.handle_receive_http_data)
+
 
     while True:
-        if client.is_port_open(host='localhost', ports=[clients["Service"], clients["GUI"]]):
+        # , clients["GUI"]
+        if client.is_port_open(host='localhost', ports=[clients["Service"]]):
             break
         print("Waiting for a server response.")
         time.sleep(1)
 
     lane_detector = LaneDetector(model_path='Intelligence_Vehicle_AI/Perception/Lane/best_v8n_seg.pt',
                                  video_path='Intelligence_Vehicle_AI/Dataset/Lane_dataset/30_only_lane_video.mp4')
+    
+    service.register_receive_image_processor(lane_detector.get_results)
     
     for results, image in lane_detector.get_results():
         lane_data = {
@@ -46,7 +52,7 @@ if __name__ == "__main__":
         encodeimage = encode_image(image)
 
         client.send_data(f"http://localhost:{clients['Service']}", "lane", {"data":lane_data})
-        client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "lane", "image":encodeimage}})
+        # client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "lane", "image":encodeimage}})
 
 
     # 1. Json으로 만들기

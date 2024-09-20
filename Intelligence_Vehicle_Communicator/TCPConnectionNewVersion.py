@@ -1,3 +1,6 @@
+import base64
+import binascii
+import json
 import socket
 import struct
 import pickle
@@ -17,15 +20,17 @@ class TCPConnection:
         self.sock.connect((self.host, self.port))
         print(f"{self.host}:{self.port}에 연결 성공.")
 
-    def send_data(self, data, data_type):
+    def send_data(self, data, data_type, identifier=''):
         if self.sock is None and self.conn is None:
             raise ConnectionError("연결이 설정되지 않았습니다.")
         
         if data_type == 'str':
             if not isinstance(data, bytes):
                 data = data.encode('utf-8')
+
         elif data_type == 'image':
-            data = pickle.dumps(data)
+            data = pickle.dumps((identifier, data))
+
         else:
             raise ValueError("지원하지 않는 데이터 유형입니다.")
 
@@ -40,22 +45,31 @@ class TCPConnection:
             print(f"데이터 전송 오류: {e}")
             raise
 
+
     def receive_data(self, timeout=5):
         if self.sock is None and self.conn is None:
             raise ConnectionError("연결이 설정되지 않았습니다.")
         
         try:
             connection = self.conn if self.conn else self.sock
+            # select.select
+            # - I/O 멀티플렉싱을 위해 사용되는 Python의 저수준 함수
+            # - 이 함수는 여러 소켓이나 파일 디스크립터를 동시에 모니터링하고, 
+            # - 그 중 하나라도 읽기, 쓰기 또는 예외 상태가 되면 알려줍니다.
             ready = select.select([connection], [], [], timeout)
+            
             if ready[0]:
                 packed_type = connection.recv(4)
+
                 if not packed_type:
                     return None
+                
                 data_type = struct.unpack('!I', packed_type)[0]
-
                 packed_length = connection.recv(4)
+
                 if not packed_length:
                     return None
+                
                 data_length = struct.unpack('!I', packed_length)[0]
 
                 data = b""
@@ -66,13 +80,16 @@ class TCPConnection:
                     data += chunk
 
                 if data_type == 1:
-                    return data.decode('utf-8')
+                    return 1, data.decode('utf-8')
+                
                 elif data_type == 2:
                     try:
-                        return pickle.loads(data)
+                        identifier, image_data = pickle.loads(data)
+                        return 2, (identifier, image_data)
                     except pickle.UnpicklingError:
                         print("이미지 데이터 언피클링 오류")
                         return None
+                                            
                 else:
                     raise ValueError("알 수 없는 데이터 유형입니다.")
             else:
