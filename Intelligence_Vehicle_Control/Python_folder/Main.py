@@ -3,6 +3,7 @@ import os
 current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
 relative_path = os.path.join(current_dir, '../..')  # 상위 폴더로 이동
 sys.path.append(relative_path)
+from Intelligence_Vehicle_Communicator.UDPClient import UDPClientManager
 from Intelligence_Vehicle_Service.IVService import IVService
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
 import time
@@ -88,6 +89,7 @@ if __name__ == "__main__":
                 speed_data ={"encoder":cur_speed}
                 # encoder_data =str(encoder_value)
                 # speed_response = requests.post(encoder_url,json=speed_data)
+                client_speed.queue_data((str(cur_speed),"speed"))
                 print(cur_speed)
                 print(speed_data)
                 # print(speed_response.status_code)
@@ -153,6 +155,7 @@ if __name__ == "__main__":
     # 엔코더 모니터링을 위한 스레드 실행
     encoder_thread = threading.Thread(target=encoder_monitor)
     encoder_thread.daemon = True  # 메인 프로그램이 종료되면 스레드도 종료
+
     # encoder_thread.start()
 
     # # GET 요청을 주기적으로 보내는 스레드 실행
@@ -162,10 +165,13 @@ if __name__ == "__main__":
 
     #TCP_server_열기 명령 받는 작업
     
-    error_server = TCPServerManager()
+    # error_server = TCPServerManager()
     # tcp_server_manager = TCPServerManager()
-    error_server.start_server(host='192.168.0.12', port=4006, data_handler=handle_receive_tcp_data)
+    # error_server.start_server(host='192.168.0.12', port=4006, data_handler=handle_receive_tcp_data)
 
+    udp_client_manager = UDPClientManager()
+    client_speed = udp_client_manager.get_client("speed", 'str')
+    client_speed.start()
 
     # 메인 스레드는 다른 작업을 수행할 수 있으나, 현재는 대기 상태로 두어야 합니다.
     try:
