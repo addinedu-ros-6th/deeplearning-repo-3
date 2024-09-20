@@ -21,12 +21,15 @@ class TCPClient:
         self.running = False
         self.thread = None
         self.data_queue = queue.Queue()
+        self.socket_type = None
 
         # 최대 120초 동안 1초에 한번씩 서버 오픈 되기를 기다립니다.
         self.max_retries = max_retries
         self.retry_delay = retry_delay
 
     def connect(self, sock_type=socket.SOCK_STREAM):
+        self.socket_type = sock_type
+        self.tcp_connection.connect_to_server(sock_type)
         if not self.connect_with_retry(sock_type):
             raise ConnectionError("여러 번 시도한 후 서버에 연결하지 못했습니다.")
     
@@ -35,7 +38,10 @@ class TCPClient:
         while retries < self.max_retries:
             try:
                 self.tcp_connection.connect_to_server(sock_type)
-                print(f"클라이언트 {self.client_id}가 서버에 성공적으로 연결되었습니다.")
+                if sock_type == socket.SOCK_STREAM:
+                    print(f"클라이언트 {self.client_id}가 서버에 성공적으로 TCP 연결되었습니다.")
+                else:
+                    print(f"클라이언트 {self.client_id}가 UDP 소켓을 성공적으로 생성했습니다.")
                 return True
             
             except ConnectionRefusedError:
@@ -75,7 +81,6 @@ class TCPClient:
 
 
     def start(self, sock_type=socket.SOCK_STREAM):
-        # 클라이언트마다 개별 스레드에서 동작한다.
         self.connect(sock_type)
         self.thread = threading.Thread(target=self.run)
         self.thread.start()

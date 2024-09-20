@@ -43,14 +43,14 @@ if __name__ == "__main__":
 
 
     
-    for results, image in detector.get_results():
-        obstacle_data = {
-            "results": results[0].tojson() # results 변환
-        }
-        encodeimage = encode_image(image)
+    # for results, image in detector.get_results():
+    #     obstacle_data = {
+    #         "results": results[0].tojson() # results 변환
+    #     }
+    #     encodeimage = encode_image(image)
 
-        client.send_data(f"http://localhost:{clients['Service']}", "obstacle", {"data":obstacle_data})
-        client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "front", "image":encodeimage}})
+    #     client.send_data(f"http://localhost:{clients['Service']}", "obstacle", {"data":obstacle_data})
+    #     client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "front", "image":encodeimage}})
 
 
 

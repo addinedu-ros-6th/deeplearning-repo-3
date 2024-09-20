@@ -16,7 +16,6 @@ def is_port_in_use(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         return s.connect_ex(('localhost', port)) == 0
 
-
 def get_image():
     video_path = 'Intelligence_Vehicle_AI/Dataset/Lane_dataset/30_only_lane_video.mp4'
     cap = cv2.VideoCapture(video_path)
@@ -25,7 +24,12 @@ def get_image():
     cap.set(cv2.CAP_PROP_POS_FRAMES, random_frame)
     ret, frame = cap.read()
     cap.release()
-    return frame
+    
+    if ret:
+        return frame  # frame은 이미 numpy 배열입니다
+    else:
+        # 비디오에서 프레임을 읽지 못한 경우 빈 이미지 반환
+        return np.zeros((480, 640, 3), dtype=np.uint8)
 
 def get_text():
     return "Hello"
@@ -38,11 +42,14 @@ def start_tcp_client():
     try:
         client_manager = TCPClientManager()
         client1 = client_manager.get_client("image_client", 'image', host=HOST, port=PORT)
-        client1.start(socket.SOCK_STREAM)
+        client1.start(socket.SOCK_DGRAM)
+        # client1.start(socket.SOCK_STREAM)
+        time.sleep(1)  # 1초 대기
+        
 
         for _ in range(10):
             time.sleep(1)
-            client1.queue_data((get_image(), 'obstacle'))  # 정면 카메라 이미지
+            # client1.queue_data((get_image(), 'obstacle'))  # 정면 카메라 이미지
             client1.queue_data((get_image(), 'lane'))  # 차선 카메라 이미지
         print("모든 메시지 전송 완료")
 
