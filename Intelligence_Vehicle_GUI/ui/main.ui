@@ -1,282 +1,281 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1050</width>
-    <height>709</height>
+    <width>1053</width>
+    <height>740</height>
    </rect>
   </property>
+  <property name="mouseTracking">
+   <bool>false</bool>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>MainWindow</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QPushButton {
-    border-radius: 10px;
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 5px 10px;
-}</string>
-  </property>
-  <widget class="QTabWidget" name="tabWidget">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1051</width>
-     <height>711</height>
-    </rect>
+  <widget class="QWidget" name="centralwidget">
+   <property name="mouseTracking">
+    <bool>false</bool>
    </property>
-   <property name="currentIndex">
-    <number>0</number>
-   </property>
-   <widget class="QWidget" name="main_tab">
-    <attribute name="title">
-     <string>main</string>
-    </attribute>
-    <widget class="QLabel" name="label_Obstacle_Camera">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>591</width>
-       <height>361</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>10</y>
+      <width>1051</width>
+      <height>721</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="main_tab">
+     <attribute name="title">
+      <string>main</string>
+     </attribute>
+     <widget class="QLabel" name="label_Obstacle_Camera">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>10</y>
+        <width>841</width>
+        <height>411</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_Lane_Camera">
+      <property name="geometry">
+       <rect>
+        <x>350</x>
+        <y>440</y>
+        <width>341</width>
+        <height>240</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_obstacle">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>320</y>
+        <width>101</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLCDNumber" name="lcdNumber_speed">
+      <property name="geometry">
+       <rect>
+        <x>420</x>
+        <y>290</y>
+        <width>181</width>
+        <height>111</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_child_sign">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>160</y>
+        <width>71</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_speed_sign">
+      <property name="geometry">
+       <rect>
+        <x>850</x>
+        <y>160</y>
+        <width>71</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
     </widget>
-    <widget class="QLabel" name="label_Lane_Camera">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>410</y>
-       <width>341</width>
-       <height>240</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_obstacle">
-     <property name="geometry">
-      <rect>
-       <x>630</x>
-       <y>10</y>
-       <width>181</width>
-       <height>171</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_camera">
-     <property name="geometry">
-      <rect>
-       <x>920</x>
-       <y>10</y>
-       <width>111</width>
-       <height>101</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>PushButton</string>
-     </property>
-    </widget>
-    <widget class="QLCDNumber" name="lcdNumber_speed">
-     <property name="geometry">
-      <rect>
-       <x>840</x>
-       <y>550</y>
-       <width>181</width>
-       <height>111</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_child_sign">
-     <property name="geometry">
-      <rect>
-       <x>630</x>
-       <y>400</y>
-       <width>181</width>
-       <height>131</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_speed_sign">
-     <property name="geometry">
-      <rect>
-       <x>840</x>
-       <y>400</y>
-       <width>181</width>
-       <height>131</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
+    <widget class="QWidget" name="log_tab">
+     <attribute name="title">
+      <string>log</string>
+     </attribute>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>181</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>18</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Driving Record</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_search">
+      <property name="geometry">
+       <rect>
+        <x>400</x>
+        <y>500</y>
+        <width>89</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(246, 245, 244);</string>
+      </property>
+      <property name="text">
+       <string>Search</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_start">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>460</y>
+        <width>67</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Start</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_end">
+      <property name="geometry">
+       <rect>
+        <x>290</x>
+        <y>460</y>
+        <width>67</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>End</string>
+      </property>
+     </widget>
+     <widget class="QDateTimeEdit" name="dte_start">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>460</y>
+        <width>141</width>
+        <height>26</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QWidget" name="widget_chart" native="true">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>58</y>
+        <width>1011</width>
+        <height>391</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(119, 118, 123);</string>
+      </property>
+     </widget>
+     <widget class="QDateTimeEdit" name="dte_end">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>460</y>
+        <width>151</width>
+        <height>26</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QTableWidget" name="tableWidget">
+      <property name="geometry">
+       <rect>
+        <x>510</x>
+        <y>460</y>
+        <width>521</width>
+        <height>211</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
+      <column>
+       <property name="text">
+        <string>ID</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>SPEED</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>DISTANCE</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>TIME</string>
+       </property>
+      </column>
+     </widget>
     </widget>
    </widget>
-   <widget class="QWidget" name="log_tab">
-    <attribute name="title">
-     <string>log</string>
-    </attribute>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>181</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>18</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Driving Record</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_search">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>500</y>
-       <width>89</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(246, 245, 244);</string>
-     </property>
-     <property name="text">
-      <string>Search</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_start">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>460</y>
-       <width>67</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Start</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_end">
-     <property name="geometry">
-      <rect>
-       <x>290</x>
-       <y>460</y>
-       <width>67</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>End</string>
-     </property>
-    </widget>
-    <widget class="QDateTimeEdit" name="dte_start">
-     <property name="geometry">
-      <rect>
-       <x>80</x>
-       <y>460</y>
-       <width>141</width>
-       <height>26</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QWidget" name="widget_chart" native="true">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>58</y>
-       <width>1011</width>
-       <height>391</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(119, 118, 123);</string>
-     </property>
-    </widget>
-    <widget class="QDateTimeEdit" name="dte_end">
-     <property name="geometry">
-      <rect>
-       <x>340</x>
-       <y>460</y>
-       <width>151</width>
-       <height>26</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QTableWidget" name="tableWidget">
-     <property name="geometry">
-      <rect>
-       <x>510</x>
-       <y>460</y>
-       <width>521</width>
-       <height>211</height>
-      </rect>
-     </property>
-     <property name="autoFillBackground">
-      <bool>false</bool>
-     </property>
-     <property name="sortingEnabled">
-      <bool>true</bool>
-     </property>
-     <column>
-      <property name="text">
-       <string>ID</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>SPEED</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>DISTANCE</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>TIME</string>
-      </property>
-     </column>
-    </widget>
+   <widget class="QPushButton" name="pushButton_camera">
+    <property name="geometry">
+     <rect>
+      <x>940</x>
+      <y>0</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PushButton</string>
+    </property>
    </widget>
   </widget>
  </widget>
