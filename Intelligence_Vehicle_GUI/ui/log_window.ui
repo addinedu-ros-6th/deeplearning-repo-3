@@ -125,17 +125,17 @@
    </property>
    <column>
     <property name="text">
-     <string>ID</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
      <string>SPEED</string>
     </property>
    </column>
    <column>
     <property name="text">
-     <string>DISTANCE</string>
+     <string>OBSTACLE</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>TYPE</string>
     </property>
    </column>
    <column>

@@ -24,6 +24,7 @@ import pandas as pd
 import matplotlib.dates as mdates
 from Intelligence_Vehicle_ETC.DBmanager import MySQLConnection
 import math
+from qt_material import apply_stylesheet
 
 class Camera(QThread):
     update = pyqtSignal()
@@ -64,7 +65,7 @@ class MainWindow(QDialog):
         super().__init__()
         uic.loadUi("./Intelligence_Vehicle_GUI/ui/main.ui", self)
 
-        self.setWindowTitle("Test11")
+        self.setWindowTitle("Ferrari 488")
 
         self.label = QLabel(self)
 
@@ -95,9 +96,6 @@ class MainWindow(QDialog):
         
         self.dbm.db_connect("192.168.0.130", 3306, "deep_project", "yhc", "1234")
         
-        self.pushButton_search.clicked.connect(self.print_driving)
-
-
         self.graph_widget = PlotWidget()
         layout = QVBoxLayout(self.widget_chart)  # QLabel에 레이아웃 설정
         layout.addWidget(self.graph_widget.canvas)
@@ -150,24 +148,24 @@ class MainWindow(QDialog):
         self.label_obstacle.setPixmap(self.pixmap)
 
     def printSpeedImage(self):
-        self.pixmap = QPixmap()
+        self.pixmap2 = QPixmap()
         for i in self.track_ids:
             if(i ==0):
-                self.pixmap.load("./Intelligence_Vehicle_GUI/ui/image/child_clear.jpg")
+                self.pixmap2.load("./Intelligence_Vehicle_GUI/ui/image/child_clear.jpg")
                 self.label_child_sign.setScaledContents(True)
-                self.label_child_sign.setPixmap(self.pixmap)
+                self.label_child_sign.setPixmap(self.pixmap2)
             elif(i==3):
-                self.pixmap.load("./Intelligence_Vehicle_GUI/ui/image/child.jpg")
+                self.pixmap2.load("./Intelligence_Vehicle_GUI/ui/image/child.jpg")
                 self.label_child_sign.setScaledContents(True)
-                self.label_child_sign.setPixmap(self.pixmap)
+                self.label_child_sign.setPixmap(self.pixmap2)
             elif(i==7):
-                self.pixmap.load("./Intelligence_Vehicle_GUI/ui/image/50speed.jpg")
+                self.pixmap2.load("./Intelligence_Vehicle_GUI/ui/image/50speed.jpg")
                 self.label_speed_sign.setScaledContents(True)
-                self.label_speed_sign.setPixmap(self.pixmap)
+                self.label_speed_sign.setPixmap(self.pixmap2)
             elif(i==8):
-                self.pixmap.load("./Intelligence_Vehicle_GUI/ui/image/50speed_clear.jpg")
+                self.pixmap2.load("./Intelligence_Vehicle_GUI/ui/image/50speed_clear.jpg")
                 self.label_speed_sign.setScaledContents(True)
-                self.label_speed_sign.setPixmap(self.pixmap)
+                self.label_speed_sign.setPixmap(self.pixmap2)
             else:
                 self.label_speed_sign.clear()
                 self.label_child_sign.clear()
@@ -205,6 +203,7 @@ class MainWindow(QDialog):
 
         sql_results = self.dbm.get_obstacle_by_time(selected_start_time,selected_end_time)
 
+
         self.tableWidget.setRowCount(0)
         if(len(sql_results)!=0):
             for value in sql_results:
@@ -215,7 +214,10 @@ class MainWindow(QDialog):
                 self.tableWidget.setItem(row, 1, QTableWidgetItem(str(value[1])))
                 self.tableWidget.setItem(row, 2, QTableWidgetItem(str(value[2])))
                 self.tableWidget.setItem(row, 3, QTableWidgetItem(str(value[3])))
+
         self.graph_widget.plot(sql_results)
+        #occurtime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        #self.dbm.set_eventlog("obstacle", "person",occurtime,5)
 
     def closeEvent(self, event):
             # 윈도우 종료 시 데이터베이스 연결 종료
@@ -229,19 +231,13 @@ class PlotWidget(QWidget):
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
 
-        
         # 레이아웃 설정
         layout = QVBoxLayout()
         layout.addWidget(self.canvas)
         self.setLayout(layout)
 
-        # 그래프 그리기
-        #self.plot(cursor)
 
     def plot(self,plot_results):
-        # 랜덤 데이터 생성
-        #plot_results=cursor.select_data("DrivingLog",columns=("speed", "time"))
-        plt.rcParams['font.family'] = 'Malgun Gothic'
 
         x = np.array([value[3] for value in plot_results])
         y = np.array([value[0] for value in plot_results]).astype(int)
@@ -262,7 +258,8 @@ class PlotWidget(QWidget):
 
             index = sel.index
             decimal_part = index - int(index)
-            if(decimal_part >0.9):
+           
+            if(decimal_part >0.98):
                index=  math.ceil(index)
             else:
                 index=  round(index)   
@@ -276,7 +273,7 @@ class PlotWidget(QWidget):
                        fontsize=12,
                        bbox=dict(facecolor='lightyellow', alpha=0.8))
         
-        threshold = ["장애물","표지판"]   # 임계값
+        threshold = ["obstacle","signs"]   # 임계값
         for i in range(len(y)):
             
             if obs[i] in threshold:  # 조건: y 값이 임계값을 초과할 때
@@ -297,8 +294,37 @@ class PlotWidget(QWidget):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
+
+    #apply_stylesheet(app, theme='dark_amber.xml')
+
     window.show()
     sys.exit(app.exec_())
-
+#['dark_amber.xml', 
+#'dark_blue.xml', 
+#'dark_cyan.xml', 
+#'dark_lightgreen.xml', 
+#'dark_medical.xml', 
+#'dark_pink.xml', 
+#'dark_purple.xml',
+#'dark_red.xml', 
+#'dark_teal.xml',
+#'dark_yellow.xml',
+#'light_amber.xml', 
+#'light_blue.xml', 
+#'light_blue_500.xml', 
+#'light_cyan.xml', 
+#'light_cyan_500.xml', 
+#'light_lightgreen.xml', 
+#'light_lightgreen_500.xml', 
+#'light_orange.xml', 
+#'light_pink.xml', 
+#'light_pink_500.xml',
+#'light_purple.xml', 
+#'light_purple_500.xml', 
+#'light_red.xml', 
+#'light_red_500.xml',
+#'light_teal.xml', 
+#'light_teal_500.xml', 
+#'light_yellow.xml']
 
 
