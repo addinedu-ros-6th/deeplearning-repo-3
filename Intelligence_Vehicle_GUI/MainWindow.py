@@ -60,13 +60,13 @@ class Speed(QThread):
     def stop(self):
         self.running = False   
 
-class MainWindow(QDialog):
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi("./Intelligence_Vehicle_GUI/ui/main.ui", self)
 
-        self.setWindowTitle("Ferrari 488")
 
+        self.setWindowTitle("Ferrari 488")
         self.label = QLabel(self)
 
         #main tab
@@ -86,6 +86,7 @@ class MainWindow(QDialog):
         self.speed.update.connect(self.speed_update)
 
         #log tab
+        self.initSQL()
         self.pushButton_search.clicked.connect(self.print_driving)
         self.dte_start.setDateTime(QDateTime.currentDateTime())
         self.dte_end.setDateTime(QDateTime.currentDateTime()) 
@@ -97,6 +98,7 @@ class MainWindow(QDialog):
         self.dbm.db_connect("192.168.0.130", 3306, "deep_project", "yhc", "1234")
         
         self.graph_widget = PlotWidget()
+
         layout = QVBoxLayout(self.widget_chart)  # QLabel에 레이아웃 설정
         layout.addWidget(self.graph_widget.canvas)
 
@@ -197,17 +199,15 @@ class MainWindow(QDialog):
         self.lcdNumber_speed.display(self.current_number)
     
     def print_driving(self):
-
         selected_start_time = self.dte_start.dateTime().toString("yyyy-MM-dd HH:mm:ss")
         selected_end_time = self.dte_end.dateTime().toString("yyyy-MM-dd HH:mm:ss")
 
+
         sql_results = self.dbm.get_obstacle_by_time(selected_start_time,selected_end_time)
 
-
         self.tableWidget.setRowCount(0)
-        if(len(sql_results)!=0):
-            for value in sql_results:
-                print(value)
+        if(len(results)!=0):
+            for value in results:  
                 row  = self.tableWidget.rowCount() 
                 self.tableWidget.insertRow(row)
                 self.tableWidget.setItem(row, 0, QTableWidgetItem(str(value[0])))
@@ -225,7 +225,7 @@ class MainWindow(QDialog):
         event.accept()
 
 class PlotWidget(QWidget):
-    def __init__(self):
+    def __init__(self ,cursor):
         super().__init__()
         # 그래프를 그릴 Figure 객체 생성
         self.figure = Figure()
@@ -236,7 +236,6 @@ class PlotWidget(QWidget):
         layout.addWidget(self.canvas)
         self.setLayout(layout)
 
-
     def plot(self,plot_results):
 
         x = np.array([value[3] for value in plot_results])
@@ -246,11 +245,10 @@ class PlotWidget(QWidget):
 
         # 그래프 그리기
         ax = self.figure.add_subplot(111)  # 1x1 그리드의 첫 번째 서브플롯
-        
         #fig, ax = self.figure.subplots()
         line, =ax.plot(x, y, label="Ferrari")
         mpl=mplcursors.cursor(line, hover=True)
-       
+
         @mpl.connect("add")
         def on_add(sel): 
             
@@ -274,21 +272,15 @@ class PlotWidget(QWidget):
                        bbox=dict(facecolor='lightyellow', alpha=0.8))
         
         threshold = ["obstacle","signs"]   # 임계값
-        for i in range(len(y)):
-            
-            if obs[i] in threshold:  # 조건: y 값이 임계값을 초과할 때
-                ax.plot(x[i], y[i], marker='o', markersize=8, color='blue')  # 마커 추가
 
+        for i in range(len(y)):
+            if y[i] > threshold:  # 조건: y 값이 임계값을 초과할 때
+                ax.plot(x[i], y[i], marker='o', markersize=8, color='blue')  # 마커 추가
                 
         ax.set_title("speed record")
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
-        #plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, ha='right')
         ax.set_xlabel("time")
         ax.set_ylabel('speed')
-
         ax.legend()
-
-        # 캔버스에 그린 내용을 업데이트
         self.canvas.draw()
 
 if __name__ == "__main__":
@@ -298,6 +290,7 @@ if __name__ == "__main__":
     #apply_stylesheet(app, theme='dark_amber.xml')
 
     window.show()
+
     sys.exit(app.exec_())
 #['dark_amber.xml', 
 #'dark_blue.xml', 
@@ -326,5 +319,3 @@ if __name__ == "__main__":
 #'light_teal.xml', 
 #'light_teal_500.xml', 
 #'light_yellow.xml']
-
-
