@@ -3,6 +3,7 @@ import os
 import cv2
 
 from Intelligence_Vehicle_Communicator.TCPServerNewVersion import TCPServerManager
+from Intelligence_Vehicle_Communicator.UDPServer import UDPServerManager
 
 current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
 relative_path = os.path.join(current_dir, '..')  # 상위 폴더로 이동
@@ -19,7 +20,7 @@ from Intelligence_Vehicle_Service.Processor.GUIProcessor import GUIProcessor
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
 from Intelligence_Vehicle_Communicator.TCPClientNewVersion import TCPClientManager
 from Intelligence_Vehicle_Service.DataHandler.DataHandler import *
-
+from Intelligence_Vehicle_Communicator.UDPConnection import UDPConnection
 
 class IVService:
 
@@ -32,16 +33,20 @@ class IVService:
     def start_tcp_server(self, host = 'localhost', port=4001):
         
         try:
-            tcp_server_manager = TCPServerManager()
-            tcp_server_manager.start_server(host= host, port=port, data_handler=self.handle_receive_tcp_data)
+            upd_manager = UDPServerManager()
+            upd_manager.start_server(data_handler=self.handle_receive_socket_data)
+
+
+            # tcp_server_manager = TCPServerManager()
+            # tcp_server_manager.start_server(host= host, port=port, data_handler=self.handle_receive_tcp_data)
         
             # client_manager = TCPClientManager()
-            # self.tcp_client = client_manager.get_client("speed", 'str', host='192.168.26.178', port=4006)
+            # self.tcp_client = client_manager.get_client("speed", 'str', host='192.168.0.1', port=4006)
             # self.tcp_client.start()
         
         except KeyboardInterrupt:
             print("사용자로부터 종료 요청을 받았습니다.")
-            tcp_server_manager.stop_all_clients()
+            upd_manager.stop_server()
         
 
     def register_ai_processor(self):
@@ -101,13 +106,9 @@ class IVService:
             print(f"Error processing data: {e}")
          
 
-    def handle_receive_tcp_data(self, data_type, data, client_address):
+    def handle_receive_socket_data(self, data_type, data, client_address):
         print(f' ==> Line 104: \033[38;2;207;145;97m[data]\033[0m({type(data).__name__}) = \033[38;2;24;234;176m{data}\033[0m')
-        print(f' ==> Line 104: \033[38;2;105;105;238m[data_type]\033[0m({type(data_type).__name__}) = \033[38;2;147;51;77m{data_type}\033[0m')
-        # print(f"receive_tcp: 클라이언트 {client_address}로부터 {data} 데이터 수신")
-        # key = data['key']
-        # data_type : 1-str, 2-image
-        
+        print(f' ==> Line 104: \033[38;2;105;105;238m[data_type]\033[0m({type(data_type).__name__}) = \033[38;2;147;51;77m{data_type}\033[0m')      
 
         if data[0] is None:
             print(f"경고: {client_address}로부터 키 없이 데이터를 받았습니다.")

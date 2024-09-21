@@ -21,13 +21,15 @@ clients = {
     "GUI": 5005
 }
 
-def encode_image(image):
-    _, buffer = cv2.imencode('.jpg', image)
-    jpg_as_text = base64.b64encode(buffer).decode('utf-8')
-    return jpg_as_text
-
 if __name__ == "__main__":
+
+    detector = ObstacleDetector('Intelligence_Vehicle_AI/Perception/Object/obstacle_n.pt',
+                                'Intelligence_Vehicle_AI/Dataset/Object_dataset/object.mp4')
+
     service = IVService()
+    service.register_tcp_receive_handle()
+    service.set_tcp_data_handler_callback("obstacle", (detector.start_detect_result, service.send_data_http))
+
     client = FlaskClient(client_id="Obstacle", port=clients["Obstacle"])
     client.set_callback(service.handle_receive_http_data)
 
@@ -39,17 +41,16 @@ if __name__ == "__main__":
         print("Waiting for a server response.")
         time.sleep(1)
 
-    obstacle_detector = ObstacleDetector('Intelligence_Vehicle_AI/Perception/Object/obstacle_n.pt',
-                                 'Intelligence_Vehicle_AI/Dataset/Object_dataset/object.mp4')
-    
-    for results, image in obstacle_detector.get_results():
-        obstacle_data = {
-            "results": results[0].tojson() # results 변환
-        }
-        encodeimage = encode_image(image)
 
-        client.send_data(f"http://localhost:{clients['Service']}", "obstacle", {"data":obstacle_data})
-        client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "front", "image":encodeimage}})
+    
+    # for results, image in detector.get_results():
+    #     obstacle_data = {
+    #         "results": results[0].tojson() # results 변환
+    #     }
+    #     encodeimage = encode_image(image)
+
+    #     client.send_data(f"http://localhost:{clients['Service']}", "obstacle", {"data":obstacle_data})
+    #     client.send_data(f"http://localhost:{clients['GUI']}", "viewer", {"data":{"type": "front", "image":encodeimage}})
 
 
 

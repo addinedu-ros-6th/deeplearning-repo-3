@@ -81,11 +81,11 @@ class TCPConnection:
 
                 if data_type == 1:
                     # data_type, data = identifier, data.decode('utf-8')
-                    identifier, str = pickle.loads(data)
+                    identifier, value = pickle.loads(data)
                     print(f' ==> Line 84: \033[38;2;119;23;116m[identifier]\033[0m({type(identifier).__name__}) = \033[38;2;243;234;167m{identifier}\033[0m')
-                    print(f' ==> Line 84: \033[38;2;175;88;199m[image_data]\033[0m({type(str).__name__}) = \033[38;2;144;229;107m{str}\033[0m')
+                    print(f' ==> Line 84: \033[38;2;175;88;199m[image_data]\033[0m({type(value).__name__}) = \033[38;2;144;229;107m{str}\033[0m')
                     
-                    return 1, (identifier, data.decode('utf-8'))
+                    return 1, (identifier, value)
                 elif data_type == 2:
                     try:
                         identifier, image_data = pickle.loads(data)
