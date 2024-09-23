@@ -108,7 +108,7 @@ def fetch_commands(command):
     except requests.RequestException as e:
         print(f"GET 요청 중 오류 발생: {e}")
 
-    command_error_flag = not command_error_flag
+    # command_error_flag = not command_error_flag
     time.sleep(0.1)  # 5초마다 GET 요청
 
 def custom_data_handler(data_type, data, client_address):
@@ -234,18 +234,19 @@ if __name__ == "__main__":
     # 만약 위의 인덱스로 열리지 않는다면 아래를 시도해 보세요
     # front_cam = cv2.VideoCapture(2)  # 또는 cv2.VideoCapture('/dev/video2')
 
-    host = '192.168.0.11'  # 서버를 실행할 IP 주소
-    # host = '192.168.26.178'
+    # host = '192.168.0.11'  # 서버를 실행할 IP 주소
+    host = '192.168.26.178'
     port = 4002  # 서버 포트
 #___________________________________________________________-
-    HOST='192.168.0.22' # 클라이언트 전송 할 ip
-    # HOST = '192.168.26.136'
+    # HOST='192.168.0.22' # 클라이언트 전송 할 ip
+    # HOST = '192.168.26.136' # 전욱
+    HOST = '192.168.26.232' #희천
     PORT= 4001 #클라이언트 전송 포트 
     # 아두이노가 연결된 시리얼 포트와 통신 속도(baud rate) 설정
     ser = serial.Serial('/dev/ttyArduino', 9600, timeout=1)
     time.sleep(2)  # 시리얼 연결 안정화를 위한 대기 시간
 
-    # pre_command = 'F10'
+    pre_command = 'S'
     # 메인 스레드에서 TCPClientManager 인스턴스 생성
     # client_manager = TCPClientManager()
     
@@ -271,9 +272,9 @@ if __name__ == "__main__":
     encoder_thread.daemon = True  # 메인 프로그램이 종료되면 스레드도 종료
     encoder_thread.start()
 
-
-    upd_manager = UDPServerManager()
-    upd_manager.start_server(host=host, port=port,data_handler=custom_data_handler)
+    print("hello000000000000000000000000000")
+    udp_manager = UDPServerManager()
+    udp_manager.start_server(host=host, port=port,data_handler=custom_data_handler)
 
 
     # error_server = TCPServerManager()
@@ -300,7 +301,7 @@ if __name__ == "__main__":
         ser.close()
         lane_cam.release()
         front_cam.release()
-        upd_manager.stop_server()
+        udp_manager.stop_server()
         udp_client_manager.stop_all_clients()
 
 
