@@ -112,6 +112,7 @@ def fetch_commands(command):
     time.sleep(0.1)  # 5초마다 GET 요청
 
 def custom_data_handler(data_type, data, client_address):
+    print(data_type,data,client_address)
     if data_type == 1:  # 스트링 데이터
         identifier, str_data = data
         print(f"텍스트: {type(str_data)}")
@@ -121,13 +122,14 @@ def custom_data_handler(data_type, data, client_address):
         else:
             print("error identifier")
 
-        if data[:2] == "ER":
-            command = "C"+data[2:]
-        elif data[:2] == "DF":
-            command == "F"+data[2:]
-        elif data[:2] == "ST":
-            command == "S"
-        fetch_commands(command)
+        if data[0] == "ER":
+            command = "C"+str(int(float(data[1])))
+        elif data[0] == "DF":
+            command = "F"+str(int(float(data[1])))
+        elif data[0] == "ST":
+            command = "S"
+        if command :
+            fetch_commands(command)
 
         print(data)
     else:
@@ -220,23 +222,24 @@ def get_front_frame():
 #     return cur_speed
 
 if __name__ == "__main__":
+    command = "S"
     lane_cam = cv2.VideoCapture(0)
     front_cam = cv2.VideoCapture(1)
     # 만약 위의 인덱스로 열리지 않는다면 아래를 시도해 보세요
     # front_cam = cv2.VideoCapture(2)  # 또는 cv2.VideoCapture('/dev/video2')
 
-    # host = '192.168.0.11'  # 서버를 실행할 IP 주소
-    host = '192.168.26.178'
+    host = '192.168.0.11'  # 서버를 실행할 IP 주소
+    # host = '192.168.26.178'
     port = 4002  # 서버 포트
 #___________________________________________________________-
-    # HOST='192.168.0.22' # 클라이언트 전송 할 ip
-    HOST = '192.168.26.136'
+    HOST='192.168.0.22' # 클라이언트 전송 할 ip
+    # HOST = '192.168.26.136'
     PORT= 4001 #클라이언트 전송 포트 
     # 아두이노가 연결된 시리얼 포트와 통신 속도(baud rate) 설정
     ser = serial.Serial('/dev/ttyArduino', 9600, timeout=1)
     time.sleep(2)  # 시리얼 연결 안정화를 위한 대기 시간
 
-    pre_command = 'S'
+    # pre_command = 'F10'
     # 메인 스레드에서 TCPClientManager 인스턴스 생성
     # client_manager = TCPClientManager()
     
