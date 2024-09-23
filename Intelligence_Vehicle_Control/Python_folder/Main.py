@@ -187,7 +187,7 @@ def send_cam_frame():
             encode_param_front = cv2.imencode('.jpg', front_frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
             cleint_front.queue_data((encode_param_front,'obstacle'))
 
-            time.sleep(0.05)
+            time.sleep(0.1)
         # speed_client.queue_data((get_speed(),'speed'))
         print("모든 메시지 전송 완료")
 
@@ -200,7 +200,7 @@ def send_cam_frame():
     #         # client_manager.stop_all_clients()
 
 def resize_frame(frame):
-    frame_width, frame_height = 640, 480
+    frame_width, frame_height = 320, 240
     decimg1 = cv2.resize(frame, (frame_width, frame_height))
     return decimg1
 
@@ -208,14 +208,14 @@ def get_lane_frame():
     ret, frame = lane_cam.read()
     if not ret:
         pass
-    frame = resize_frame(frame)
+    frame = resize_frame(frame) #----------------------------------------------------
     return frame
 
 def get_front_frame():
     ret, frame = front_cam.read()
     if not ret:
         pass
-    frame = resize_frame(frame)
+    frame = resize_frame(frame) #-------------------------------------------------------- 
     return frame
 
 # def get_speed():
@@ -224,7 +224,13 @@ def get_front_frame():
 if __name__ == "__main__":
     command = "S"
     lane_cam = cv2.VideoCapture(0)
+    width = 320
+    height = 240
+    lane_cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+    lane_cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
     front_cam = cv2.VideoCapture(1)
+    front_cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+    front_cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
     # 만약 위의 인덱스로 열리지 않는다면 아래를 시도해 보세요
     # front_cam = cv2.VideoCapture(2)  # 또는 cv2.VideoCapture('/dev/video2')
 
