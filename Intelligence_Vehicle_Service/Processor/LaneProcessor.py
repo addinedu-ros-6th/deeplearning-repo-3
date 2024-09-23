@@ -46,8 +46,10 @@ class LaneProcessor(Processor):
       
 
     def process_lane_data(self, lane_masks, results):
-        if lane_masks:
-            print(f"감지된 차선 수: {len(lane_masks)}")
+        if not results:
+            return;
+        # if lane_masks:
+        #     print(f"감지된 차선 수: {len(lane_masks)}")
 
         left_center, right_center = self.find_lane_centers(lane_masks)
         print(f' ==> Line 52: \033[38;2;118;75;166m[right_center]\033[0m({type(right_center).__name__}) = \033[38;2;39;214;70m{right_center}\033[0m')

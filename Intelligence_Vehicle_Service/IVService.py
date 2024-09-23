@@ -24,8 +24,8 @@ from Intelligence_Vehicle_Communicator.UDPConnection import UDPConnection
 
 class SocketConfig:
     # '192.168.0.22'
-    SERVER_HOST = '192.168.26.136'
-    CLIENT_HOST = '192.168.26.178'
+    SERVER_HOST = '192.168.0.22'
+    CLIENT_HOST = '192.168.0.11'
 
     @classmethod
     def get_host(cls):
@@ -43,6 +43,8 @@ class IVService:
     def start_socket_client(self, port=4001):
         udp_client_manager = UDPClientManager()
         self.client_error = udp_client_manager.get_client("error", "str", host= SocketConfig.CLIENT_HOST, port=port)
+        self.client_error.start()
+
     
     def start_socket_server(self, port=4001):
         
@@ -136,7 +138,7 @@ class IVService:
 
     def receive_lane_error(self, error: float):
         print(f' ==> Line 137: \033[38;2;33;220;13m[error]\033[0m({type(error).__name__}) = \033[38;2;84;176;68m{error}\033[0m')
-        self.client_error.queue_data((str(error), "error"))
+        self.client_error.queue_data((str(error), "ER"))
         # db 에게 에러값 전달하자.
 
 

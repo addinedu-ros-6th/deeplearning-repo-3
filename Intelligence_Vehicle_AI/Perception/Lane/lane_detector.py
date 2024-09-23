@@ -49,10 +49,7 @@ class LaneDetector:
     
     def start_detect_result(self, image, send_func):
 
-
-
         copy_image = image.copy()
-
         _, buffer = cv2.imencode('.jpg', copy_image)
 
         encoded_image = base64.b64encode(buffer).decode('utf-8')
