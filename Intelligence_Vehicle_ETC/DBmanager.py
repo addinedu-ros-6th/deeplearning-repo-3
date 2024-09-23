@@ -42,7 +42,7 @@ class MySQLConnection:
 
     def get_obstacle_by_time(self,selected_start_time,selected_end_time):
         sql= f"""
-             SELECT 
+        SELECT 
             COALESCE(CAST(DrivingLog.speed AS SIGNED), 'N/A') AS speed, 
             COALESCE(EventLog.category, 'N/A') AS category,  
             COALESCE(EventLog.type, 'N/A') AS type, 
@@ -60,6 +60,32 @@ class MySQLConnection:
         self.cursor.execute(sql)
         obstacle_results = self.cursor.fetchall()
         return obstacle_results
+    
+    def get_drivinglog_id_time(self):
+        sql= f"""SELECT id, time FROM DrivingLog ORDER BY time DESC LIMIT 1"""
+        
+        print("select_data: ", sql)
+        self.cursor.execute(sql)
+        get_results = self.cursor.fetchall()
+        return get_results
+    
+    def set_eventlog(self,category,type, occurtime,mid):
+        sql= """INSERT INTO EventLog (category, type, occurtime, mid)
+          VALUES(%s, %s, %s,%s)"""
+        
+        val = (category, type, occurtime, mid)
+        print("select_data: ", sql)
+        self.cursor.execute(sql,val)
+        self.connection.commit()
+
+    def set_drivinglog(self,speed,distance, time):
+        sql= """INSERT INTO DrivingLog (speed, distance, time)
+          VALUES(%s, %s, %s) """
+        val = (speed, distance, time)
+        print("select_data: ", sql)
+        self.cursor.execute(sql, val)
+        self.connection.commit()    
+
 
     def select_data(self, table, columns= ("*",), where = None, order = None, limit=None):
         columns_str = ', '.join(columns)

@@ -1,11 +1,14 @@
 import base64
+import os
 import pickle
 import cv2
 import numpy as np
+import torch
 from ultralytics import YOLO
-
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
-
+from numba import cuda
+device = cuda.get_current_device()
+device.reset()
 class LaneDetector:
     clients = {
         "Lane": 5001,
@@ -45,21 +48,29 @@ class LaneDetector:
         return left_lane_center, right_lane_center
     
     def start_detect_result(self, image, send_func):
-        _, buffer = cv2.imencode('.jpg', image)
-        encoded_image = base64.b64encode(buffer).decode('utf-8')
 
+
+
+        copy_image = image.copy()
+
+        _, buffer = cv2.imencode('.jpg', copy_image)
+
+        encoded_image = base64.b64encode(buffer).decode('utf-8')
+        
         data = {
             "type": "lane",
             "image": encoded_image
         }
         send_func("viewer", data, "GUI")
 
-        results = self.model(image, verbose=False)
-        # print(f' ==> Line 37: \033[38;2;178;216;121m[results]\033[0m({type(results).__name__}) = \033[38;2;86;33;128m{results}\033[0m')
-        lane_data = {
-            "results": results[0].tojson() # results 변환
-        }
-
+        try:
+            results = self.model(image, verbose=False)
+            lane_data = {
+                "results": results[0].tojson() # results 변환
+            }
+        except Exception as e:
+            print(f"Error processing image: {e}")
+            lane_data = {"error": str(e)}
         send_func("lane", lane_data, "Service")
 
 

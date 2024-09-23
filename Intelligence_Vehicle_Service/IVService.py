@@ -3,6 +3,7 @@ import os
 import cv2
 
 from Intelligence_Vehicle_Communicator.TCPServerNewVersion import TCPServerManager
+from Intelligence_Vehicle_Communicator.UDPClient import UDPClientManager
 from Intelligence_Vehicle_Communicator.UDPServer import UDPServerManager
 
 current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
@@ -12,7 +13,6 @@ sys.path.append(relative_path)
 from typing import Any, Dict, List
 from flask import Flask, request, jsonify
 from Intelligence_Vehicle_Service.Factory import ProcessorFactory, DataHandlerFactory
-from Intelligence_Vehicle_Service.Processor.ReceiveImageProcessor import ReceiveImageProcessor
 from Intelligence_Vehicle_Service.Processor.LaneProcessor import LaneProcessor
 from Intelligence_Vehicle_Service.Processor.ObstacleProcessor import ObstacleProcessor
 from Intelligence_Vehicle_Service.Processor.GUIViewerProcessor import GUIViewerProcessor
@@ -22,21 +22,34 @@ from Intelligence_Vehicle_Communicator.TCPClientNewVersion import TCPClientManag
 from Intelligence_Vehicle_Service.DataHandler.DataHandler import *
 from Intelligence_Vehicle_Communicator.UDPConnection import UDPConnection
 
+class SocketConfig:
+    # '192.168.0.22'
+    SERVER_HOST = '192.168.26.136'
+    CLIENT_HOST = '192.168.26.178'
+
+    @classmethod
+    def get_host(cls):
+        return cls.HOST
+
+
 class IVService:
 
     def __init__(self) -> None:
-        self.client : FlaskClient = None
+        self.http_client : FlaskClient = None
         self.client_addresses = self.set_clinet_addresses()
         self.processor_factory = ProcessorFactory()
         self.data_handler_factory = DataHandlerFactory()
+
+    def start_socket_client(self, port=4001):
+        udp_client_manager = UDPClientManager()
+        self.client_error = udp_client_manager.get_client("error", "str", host= SocketConfig.CLIENT_HOST, port=port)
     
-    def start_tcp_server(self, host = 'localhost', port=4001):
+    def start_socket_server(self, port=4001):
         
         try:
-            upd_manager = UDPServerManager()
-            upd_manager.start_server(data_handler=self.handle_receive_socket_data)
-
-
+            udp_server_manager = UDPServerManager()
+            udp_server_manager.start_server(host=SocketConfig.SERVER_HOST, port=port,data_handler=self.handle_receive_socket_data)
+            
             # tcp_server_manager = TCPServerManager()
             # tcp_server_manager.start_server(host= host, port=port, data_handler=self.handle_receive_tcp_data)
         
@@ -46,7 +59,7 @@ class IVService:
         
         except KeyboardInterrupt:
             print("사용자로부터 종료 요청을 받았습니다.")
-            upd_manager.stop_server()
+            udp_server_manager.stop_server()
         
 
     def register_ai_processor(self):
@@ -79,9 +92,10 @@ class IVService:
         data_handle.register_data_received_callback((func_tuple[0], func_tuple[1]))
 
 
+
     def set_client(self, client:FlaskClient):
         print("set_client")
-        self.client = client
+        self.http_client = client
 
     def set_clinet_addresses(self):
         return {
@@ -107,41 +121,29 @@ class IVService:
          
 
     def handle_receive_socket_data(self, data_type, data, client_address):
-        print(f' ==> Line 104: \033[38;2;207;145;97m[data]\033[0m({type(data).__name__}) = \033[38;2;24;234;176m{data}\033[0m')
-        print(f' ==> Line 104: \033[38;2;105;105;238m[data_type]\033[0m({type(data_type).__name__}) = \033[38;2;147;51;77m{data_type}\033[0m')      
+        if data_type == 2:  # 이미지 데이터
+            identifier, image = data
+            # print(f' ==> Line 112: \033[38;2;16;122;195m[image]\033[0m({type(image).__name__}) = \033[38;2;185;179;31m{image}\033[0m')
+            # print(f' ==> Line 112: \033[38;2;52;183;82m[identifier]\033[0m({type(identifier).__name__}) = \033[38;2;228;53;84m{identifier}\033[0m')
 
-        if data[0] is None:
-            print(f"경고: {client_address}로부터 키 없이 데이터를 받았습니다.")
-            return
+            try:
+                handler = self.data_handler_factory.get(identifier)
+                handler.handle(data, client_address=client_address)
 
-        try:
-            handler = self.data_handler_factory.get(data[0])
-            handler.handle(data, client_address=client_address)
-
-        except ValueError as e:
-            print(f"Error processing data: {e}")
-
-        # 로봇에게 이미지를 받으면
-        # identifier, image_data = data
-        # print(f"이미지: {type(image_data)}")
-
-        # threading.Thread(target=display_image, args=(identifier, image_data)).start()
-        # if identifier == 'IF':
-        #     print("정면 카메라 이미지 수신")
-        # elif identifier == 'IL':
-        #     print("차선 카메라 이미지 수신")
-        
+            except ValueError as e:
+                print(f"Error processing data: {e}")
 
 
     def receive_lane_error(self, error: float):
-        print(f"Lane error updated: {error}")
-        # self.tcp_client.queue_data(str(error), 'error')
+        print(f' ==> Line 137: \033[38;2;33;220;13m[error]\033[0m({type(error).__name__}) = \033[38;2;84;176;68m{error}\033[0m')
+        self.client_error.queue_data((str(error), "error"))
         # db 에게 에러값 전달하자.
 
 
 
     def send_data_http(self, key, data, send_client_id):
-        self.client.send_data(f"http://localhost:{self.client_addresses[send_client_id]}", key, {"data":data})
+        print(f' ==> Line 145: \033[38;2;112;249;126m[key]\033[0m({type(key).__name__}) = \033[38;2;16;208;72m{key}\033[0m')
+        self.http_client.send_data(f"http://localhost:{self.client_addresses[send_client_id]}", key, {"data":data})
 
 
         # client.send_data(f"http://localhost:{clients['Service']}", "obstacle", {"data":obstacle_data})

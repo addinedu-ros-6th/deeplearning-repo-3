@@ -23,7 +23,7 @@ PORT = 4001
 
 if __name__== "__main__":
     service = IVService()
-    service.start_tcp_server()
+    service.start_socket_server()
 
 
 

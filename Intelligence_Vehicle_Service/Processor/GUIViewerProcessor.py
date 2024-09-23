@@ -20,14 +20,12 @@ class GUIViewerProcessor(QObject, Processor, metaclass=ProcessorMeta):
         super().__init__(parent)
 
     def execute(self, data):
-        key_list = list(data.keys())
-        print("키 리스트: ", key_list)
+        # key_list = list(data.keys())
+        # print("키 리스트: ", key_list)
 
         image_type = data['data']['type']
         print('\033[38;2;77;5;108m'+'image_type: ' + '\033[38;2;20;121;218m', image_type, '\033[0m')
         encoded_image = data['data']['image']
-        
-        print(f"Encoded image data (first 100 chars): {encoded_image[:100]}")
         
         try:
             # Base64 디코딩
@@ -50,7 +48,8 @@ class GUIViewerProcessor(QObject, Processor, metaclass=ProcessorMeta):
             traceback.print_exc()
             return
 
-        if image_type == 'front':
+        print(f' ==> Line 51: \033[38;2;64;154;133m[image_type]\033[0m({type(image_type).__name__}) = \033[38;2;69;139;240m{image_type}\033[0m')
+        if image_type == 'obstacle':
             self.frontView.emit(image)
         elif image_type == 'lane':
             self.laneView.emit(image)

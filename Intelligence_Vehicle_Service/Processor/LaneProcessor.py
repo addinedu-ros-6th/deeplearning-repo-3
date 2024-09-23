@@ -24,7 +24,7 @@ class LaneProcessor(Processor):
         results_json = data['data']['results']
         results = json.loads(results_json)
 
-        # print("LaneProcessor")
+        print("\033[94mLaneProcessor\033[0m")
 
         lane_masks = []
         class_ids = []
@@ -46,10 +46,12 @@ class LaneProcessor(Processor):
       
 
     def process_lane_data(self, lane_masks, results):
-        # if lane_masks:
-        #     print(f"감지된 차선 수: {len(lane_masks)}")
+        if lane_masks:
+            print(f"감지된 차선 수: {len(lane_masks)}")
 
         left_center, right_center = self.find_lane_centers(lane_masks)
+        print(f' ==> Line 52: \033[38;2;118;75;166m[right_center]\033[0m({type(right_center).__name__}) = \033[38;2;39;214;70m{right_center}\033[0m')
+        print(f' ==> Line 52: \033[38;2;1;44;64m[left_center]\033[0m({type(left_center).__name__}) = \033[38;2;21;58;104m{left_center}\033[0m')
         
         if left_center is not None and right_center is not None:
 
@@ -71,7 +73,6 @@ class LaneProcessor(Processor):
         # print(f"평균 신뢰도: {avg_confidence:.2f}")
 
     def find_lane_centers(self, lane_masks):
-        # 왼쪽과 오른쪽 차선의 중심점을 찾는 로직
         left_points = []
         right_points = []
         
@@ -82,8 +83,16 @@ class LaneProcessor(Processor):
             else:
                 right_points.append(mask)
         
-        left_center = np.mean(left_points, axis=(0, 1)) if left_points else None
-        right_center = np.mean(right_points, axis=(0, 1)) if right_points else None
+        left_center = None
+        right_center = None
+
+        if left_points:
+            left_points_array = np.concatenate(left_points, axis=0)
+            left_center = np.mean(left_points_array, axis=0)
+
+        if right_points:
+            right_points_array = np.concatenate(right_points, axis=0)
+            right_center = np.mean(right_points_array, axis=0)
         
         return left_center, right_center
 

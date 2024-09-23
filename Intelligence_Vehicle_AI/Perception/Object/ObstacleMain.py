@@ -6,7 +6,7 @@ relative_path = os.path.join(current_dir, '../../..')  # 상위 폴더로 이동
 sys.path.append(relative_path)
 
 import time
-from Intelligence_Vehicle_Service.IVService import IVService
+from Intelligence_Vehicle_Service.IVService import IVService, SocketConfig
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
 from ObstacleDetector import ObstacleDetector 
 import random
@@ -31,6 +31,7 @@ if __name__ == "__main__":
     service.set_tcp_data_handler_callback("obstacle", (detector.start_detect_result, service.send_data_http))
 
     client = FlaskClient(client_id="Obstacle", port=clients["Obstacle"])
+    service.set_client(client)
     client.set_callback(service.handle_receive_http_data)
 
     while True:
@@ -40,6 +41,8 @@ if __name__ == "__main__":
             break
         print("Waiting for a server response.")
         time.sleep(1)
+
+    service.start_socket_server(port=4000)
 
 
     
