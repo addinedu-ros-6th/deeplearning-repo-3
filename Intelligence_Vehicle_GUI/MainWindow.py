@@ -8,7 +8,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from ultralytics import YOLO
 import mysql.connector
-#from Intelligence_Vehicle_AI.Perception.Object.ObstacleDetector import ObstacleDetector
 import numpy as np
 from Observer import *
 from PyQt5 import uic
@@ -80,13 +79,14 @@ class MainWindow(QMainWindow):
         self.camera.running = False
         self.pixmap = QPixmap()
         self.model = YOLO("./Intelligence_Vehicle_AI/Perception/Object/obstacle_n.pt")
-
+        self.dbm = MySQLConnection.getInstance()
+        self.dbm.db_connect("192.168.0.130", 3306, "deep_project", "yhc", "1234")
         self.pushButton_camera.clicked.connect(self.clickCamera)
         self.camera.update.connect(self.updateCamera)
         self.speed.update.connect(self.speed_update)
 
         #log tab
-        self.initSQL()
+        # self.initSQL()
         self.pushButton_search.clicked.connect(self.print_driving)
         self.dte_start.setDateTime(QDateTime.currentDateTime())
         self.dte_end.setDateTime(QDateTime.currentDateTime()) 
@@ -225,7 +225,7 @@ class MainWindow(QMainWindow):
         event.accept()
 
 class PlotWidget(QWidget):
-    def __init__(self ,cursor):
+    def __init__(self):
         super().__init__()
         # 그래프를 그릴 Figure 객체 생성
         self.figure = Figure()

@@ -92,7 +92,7 @@ class ObstacleProcessor(Processor):
 
         # for objName in ALL_OBJECTS: # dictionary
         #     print(objName, " : ", detection_status_dict[objName])
-        print("Detection status list:", detection_status_list) # list
+        # print("Detection status list:", detection_status_list) # list
 
 
 
