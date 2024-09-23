@@ -79,6 +79,17 @@ void loop()
             digitalWrite(R_MOTOR_IN2, HIGH);
             analogWrite(R_MOTOR_PWM, motorSpeed+right_motor_correction);
         }
+        else if (command == 'T') 
+        {// 제자리 좌회전
+            // 모터 후진
+            digitalWrite(L_MOTOR_IN1, HIGH);
+            digitalWrite(L_MOTOR_IN2, LOW);
+            analogWrite(L_MOTOR_PWM, motorSpeed);
+            // 설정된 속도로 모터 전진
+            digitalWrite(R_MOTOR_IN1, HIGH);
+            digitalWrite(R_MOTOR_IN2, LOW);
+            analogWrite(R_MOTOR_PWM, motorSpeed+right_motor_correction);
+        }
         else if (command == 'S') 
         {
             // 모터 정지
