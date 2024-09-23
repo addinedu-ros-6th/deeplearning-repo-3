@@ -27,14 +27,17 @@ class UDPServer:
         while self.running:
             try:
                 data_type, data, address = self.udp_connection.receive_data()
+                # print(f' ==> Line 29: \033[38;2;236;228;197m[data]\033[0m({type(data).__name__}) = \033[38;2;239;252;79m{data}\033[0m')
+                print(f' ==> Line 29: \033[38;2;151;13;153m[data_type]\033[0m({type(data_type).__name__}) = \033[38;2;3;110;17m{data_type}\033[0m')
                 
                 if data is None:
                     continue
                 
-                if isinstance(data, tuple) and len(data) == 2 and data[1] == 'exit':
-                    print(f"클라이언트 {address}가 정상적으로 연결 종료를 요청했습니다.")
-                    continue
-
+                if isinstance(data, tuple) and len(data) == 2:
+                    if isinstance(data[1], str) and data[1] == 'exit':
+                        print(f"클라이언트 {address}가 정상적으로 연결 종료를 요청했습니다.")
+                        continue
+                
                 # 외부 데이터 핸들러 호출
                 response = self.data_handler(data_type, data, address)
                 

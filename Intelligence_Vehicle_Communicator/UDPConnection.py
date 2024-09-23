@@ -3,12 +3,17 @@ import pickle
 import socket
 import uuid
 
+import cv2
+import numpy as np
+
 MAX_PACKET_SIZE = 60000  # UDP 패킷의 최대 크기를 60KB로 설정
 
 class UDPConnection:
     def __init__(self, host='localhost', port=12345):
         self.host = host
+        print(f' ==> Line 13: \033[38;2;30;136;101m[host]\033[0m({type(host).__name__}) = \033[38;2;82;143;131m{host}\033[0m')
         self.port = port
+        print(f' ==> Line 15: \033[38;2;242;133;230m[port]\033[0m({type(port).__name__}) = \033[38;2;145;192;100m{port}\033[0m')
         self.sock = None
 
     def create_socket(self):
@@ -27,7 +32,8 @@ class UDPConnection:
                 data = pickle.dumps((identifier, data))
         elif data_type == 'image':
             data_type_int = 2
-            data = pickle.dumps((identifier, data))
+            if isinstance(data, np.ndarray):
+                data = pickle.dumps((identifier, data))
         else:
             raise ValueError("지원하지 않는 데이터 유형입니다.")
 
@@ -76,7 +82,20 @@ class UDPConnection:
                     elif data_type == 2:
                         try:
                             identifier, image_data = pickle.loads(data)
-                            return 2, (identifier, image_data), address
+
+                            # 이미지 데이터가 이미 numpy 배열인 경우 바로 반환
+                            if isinstance(image_data, np.ndarray):
+                                return 2, (identifier, image_data), address
+                            
+                            # JPEG 데이터인 경우 디코딩
+                            elif isinstance(image_data, tuple) and len(image_data) == 2:
+                                decoded_image = cv2.imdecode(np.frombuffer(image_data[1], np.uint8), cv2.IMREAD_COLOR)
+                                return 2, (identifier, decoded_image), address
+                        
+                            else:
+                                print(f"알 수 없는 이미지 데이터 형식: {type(image_data)}")
+                                return None, None, address
+                            
                         except pickle.UnpicklingError:
                             print("이미지 데이터 언피클링 오류")
                             return None, None, address

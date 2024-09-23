@@ -18,6 +18,7 @@ class GUIProcessor(QObject, Processor, metaclass=ProcessorMeta):
         super().__init__(parent)
 
     def execute(self, data):
-        print(data)
+        # print(f' ==> Line 20: \033[38;2;24;120;43m[data]\033[0m({type(data).__name__}) = \033[38;2;109;167;63m{data}\033[0m')
+        print()
         # self.speedfunc.emit(data)
 

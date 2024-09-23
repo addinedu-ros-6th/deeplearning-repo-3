@@ -12,30 +12,35 @@ relative_path = os.path.join(current_dir, '..')  # 상위 폴더로 이동
 sys.path.append(relative_path)
 
 from Intelligence_Vehicle_Communicator.TCPClientNewVersion import TCPClientManager
-from Intelligence_Vehicle_Service.IVService import IVService
+from Intelligence_Vehicle_Service.IVService import IVService, SocketConfig
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
 from Intelligence_Vehicle_Communicator.TCPServerNewVersion import TCPServerManager, TCPServer
 
 
 if __name__ == "__main__":
+    
+    
+
     service = IVService()
     service.register_ai_processor()
     service.register_tcp_receive_handle()
-    service.start_tcp_server(host='192.168.0.22', port=4003)
+    # service.start_socket_server(host=SocketConfig.HOST, port=4003)
 
     client = FlaskClient(client_id="Service", port=service.client_addresses["Service"])
     service.set_client(client)
-    service.client.set_callback(service.handle_receive_http_data)
+    service.http_client.set_callback(service.handle_receive_http_data)
 
     wait_ports = []
     # wait_ports.append(service.client_addresses["GUI"])
     # wait_ports.append(service.client_addresses["DB"])
 
     while True:
-        if service.client.is_port_open(host='localhost', ports=wait_ports):
+        if service.http_client.is_port_open(host='localhost', ports=wait_ports):
             break
         print("Waiting for a server response.")
         time.sleep(1)
+
+    service.start_socket_client(port=4002)
 
 
 

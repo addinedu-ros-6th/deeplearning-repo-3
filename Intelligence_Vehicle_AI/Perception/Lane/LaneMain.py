@@ -6,7 +6,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트�
 relative_path = os.path.join(current_dir, '../../..')  # 상위 폴더로 이동
 sys.path.append(relative_path)
 import time
-from Intelligence_Vehicle_Service.IVService import IVService
+from Intelligence_Vehicle_Service.IVService import IVService, SocketConfig
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
 from lane_detector import LaneDetector 
 import base64
@@ -40,4 +40,4 @@ if __name__ == "__main__":
         print("Waiting for a server response.")
         time.sleep(1)
 
-    service.start_tcp_server(host='192.168.0.22', port=4001)
+    service.start_socket_server(port=4001)
