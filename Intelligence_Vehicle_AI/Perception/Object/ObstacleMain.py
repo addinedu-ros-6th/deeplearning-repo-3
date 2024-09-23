@@ -9,8 +9,6 @@ import time
 from Intelligence_Vehicle_Service.IVService import IVService, SocketConfig
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
 from ObstacleDetector import ObstacleDetector 
-import random
-import base64
 
 
 clients = {

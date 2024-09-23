@@ -10,6 +10,9 @@ from Intelligence_Vehicle_Service.Processor.Processor import Processor
 import numpy as np
 import json
 
+WIDTH = 320
+
+
 class LaneProcessor(Processor):
     def __init__(self):
         self.newlist = []
@@ -24,7 +27,7 @@ class LaneProcessor(Processor):
         results_json = data['data']['results']
         results = json.loads(results_json)
 
-        print("\033[94mLaneProcessor\033[0m")
+        # print("\033[94mLaneProcessor\033[0m")
 
         lane_masks = []
         class_ids = []
@@ -53,18 +56,18 @@ class LaneProcessor(Processor):
 
         left_center, right_center = self.find_lane_centers(lane_masks)
         print(f' ==> Line 52: \033[38;2;118;75;166m[right_center]\033[0m({type(right_center).__name__}) = \033[38;2;39;214;70m{right_center}\033[0m')
-        print(f' ==> Line 52: \033[38;2;1;44;64m[left_center]\033[0m({type(left_center).__name__}) = \033[38;2;21;58;104m{left_center}\033[0m')
+        print(f' ==> Line 52: \033[93m[left_center]\033[0m({type(left_center).__name__}) = \033[38;2;21;58;104m{left_center}\033[0m')
         
         if left_center is not None and right_center is not None:
 
-            image_width = 640  
+            image_width = WIDTH
             middle_point = ((left_center[0] + right_center[0]) / 2, (left_center[1] + right_center[1]) / 2)
             center_x = image_width // 2
             self.error = round((center_x - middle_point[0]), 1)
             self.error_callback(self.error)
 
             # print(f"차선 중앙점: {middle_point}")
-            # print(f"오차(error): {self.error}")
+            print(f"오차(error): {self.error}")
             
 
         # for result in results:
@@ -80,7 +83,7 @@ class LaneProcessor(Processor):
         
         for mask in lane_masks:
             x_mean = np.mean(mask[:, 0])
-            if x_mean < 320:  # 이미지 중앙을 기준으로 왼쪽/오른쪽 구분
+            if x_mean < WIDTH/2:  # 이미지 중앙을 기준으로 왼쪽/오른쪽 구분
                 left_points.append(mask)
             else:
                 right_points.append(mask)
@@ -98,7 +101,24 @@ class LaneProcessor(Processor):
         
         return left_center, right_center
 
+
     def update_object_list(self, current_objects):
+        """
+        Update the list of objects which have been detected in the current frame.
+
+        Args:
+            current_objects (list): List of objects detected in the current frame.
+
+        This function updates the list of objects which have been detected in the current frame.
+        It adds any new objects to the list, and removes any objects that are no longer detected.
+        """
+        for obj in current_objects:
+            if obj not in self.newlist:
+                self.newlist.append(obj)
+
+        for obj in self.newlist[:]:
+            if obj not in current_objects:
+                self.newlist.remove(obj)
         for obj in current_objects:
             if obj not in self.newlist:
                 self.newlist.append(obj)
