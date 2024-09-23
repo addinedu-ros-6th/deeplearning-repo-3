@@ -2,7 +2,7 @@ import datetime
 import sys
 import os
 current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
-relative_path = os.path.join(current_dir, '../../..')  # 상위 폴더로 이동
+relative_path = os.path.join(current_dir, '../..')  # 상위 폴더로 이동
 sys.path.append(relative_path)
 from Intelligence_Vehicle_Service.IVService import IVService
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
@@ -244,13 +244,13 @@ if __name__ == "__main__":
     # speed_client.start(socket.SOCK_DGRAM)
 
     udp_client_manager = UDPClientManager()
-    client_speed = udp_client_manager.get_client("speed", 'str', '192.168.26.136', 4003)
+    client_speed = udp_client_manager.get_client(client_id = "speed", data_type = 'str', host = HOST, port = 4003)
     client_speed.start()
 
-    cleint_front = udp_client_manager.get_client("front", 'image', '192.168.26.136', 4000)
+    cleint_front = udp_client_manager.get_client(client_id = "front", data_type = 'image', host = HOST, port = 4000)
     cleint_front.start()
 
-    client_lane = udp_client_manager.get_client("lane", 'image', '192.168.26.136', 4001)
+    client_lane = udp_client_manager.get_client(client_id = "lane", data_type = 'image', host = HOST, port = 4001)
     client_lane.start()
 
 
