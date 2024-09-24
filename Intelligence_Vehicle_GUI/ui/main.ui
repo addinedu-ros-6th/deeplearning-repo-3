@@ -126,6 +126,22 @@
        <string/>
       </property>
      </widget>
+     <widget class="QLabel" name="label_blinker">
+      <property name="geometry">
+       <rect>
+        <x>720</x>
+        <y>320</y>
+        <width>101</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="log_tab">
      <attribute name="title">

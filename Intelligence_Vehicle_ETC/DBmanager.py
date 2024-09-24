@@ -84,9 +84,12 @@ class MySQLConnection:
         self.cursor.execute(sql,val)
         self.connection.commit()
 
-    def set_drivinglog(self,speed, time):
+    def set_drivinglog(self,speed):
         sql= """INSERT INTO DrivingLog (speed, time)
           VALUES(%s, %s) """
+        
+        time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         val = (speed, time)
         print("select_data: ", sql)
         self.cursor.execute(sql, val)
