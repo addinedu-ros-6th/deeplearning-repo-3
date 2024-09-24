@@ -136,6 +136,7 @@ def fetch_commands(command):
 
 def custom_data_handler(data_type, data, client_address):
     print(data_type,data,client_address)
+    command = None
     if data_type == 1:  # 스트링 데이터
         identifier, str_data = data
         print(f"텍스트: {type(str_data)}")
