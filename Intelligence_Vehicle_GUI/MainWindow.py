@@ -289,7 +289,7 @@ class PlotWidget(QWidget):
         # 그래프 그리기
         ax = self.figure.add_subplot(111)  # 1x1 그리드의 첫 번째 서브플롯
         
-        line, =ax.plot(x, y, label="Ferrari")
+        line, =ax.plot(x, y, label="IV")
     
         ax.xaxis.set_major_locator(mdates.AutoDateLocator())
         #ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=1))
