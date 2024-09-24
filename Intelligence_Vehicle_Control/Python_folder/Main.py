@@ -80,9 +80,12 @@ def fetch_commands(command):
         # 명령을 파싱하여 모터 제어 함수 호출
         def process_command(cmd):
             if cmd[0] == 'F':
-                speed = int(cmd[1:])  # 속도 값 추출
-                motor_forward(speed)
-                print(f"모터 전진 중 - 속도: {speed}")
+                if int(cmd[1:]) == 0:
+                    motor_stop()
+                else:
+                    speed = int(cmd[1:])  # 속도 값 추출
+                    motor_forward(speed)
+                    print(f"모터 전진 중 - 속도: {speed}")
             elif cmd[0] == 'B':
                 speed = int(cmd[1:])  # 속도 값 추출
                 motor_backward(speed)
