@@ -128,7 +128,7 @@ class IVService:
             return
 
         try:
-            print(f"handle_receive_http_data {key}")
+            print(f"handle_receive_http_data {key, data}")
             processor = self.processor_factory.get(key)
             processor.execute(data)
 
@@ -157,7 +157,6 @@ class IVService:
 
 
     def send_data_http(self, key, data, send_client_id):
-        print(key, data, send_client_id)
         self.http_client.send_data(f"http://localhost:{self.client_addresses[send_client_id]}", key, {"data":data})
 
 
