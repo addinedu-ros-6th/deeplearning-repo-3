@@ -41,6 +41,7 @@ class LaneImageHandler(DataHandler):
 class SpeedDataHandler(DataHandler):
     def __init__(self):
         self.send_func = None
+
     def register_data_received_callback(self, func_tuple):
         self.send_func = func_tuple[0]
 
