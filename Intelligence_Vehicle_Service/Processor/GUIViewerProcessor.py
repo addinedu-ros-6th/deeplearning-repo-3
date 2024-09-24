@@ -24,7 +24,7 @@ class GUIViewerProcessor(QObject, Processor, metaclass=ProcessorMeta):
         # print("키 리스트: ", key_list)
 
         image_type = data['data']['type']
-        print('\033[38;2;77;5;108m'+'image_type: ' + '\033[38;2;20;121;218m', image_type, '\033[0m')
+        # print('\033[38;2;77;5;108m'+'image_type: ' + '\033[38;2;20;121;218m', image_type, '\033[0m')
         encoded_image = data['data']['image']
         
         try:
@@ -40,7 +40,7 @@ class GUIViewerProcessor(QObject, Processor, metaclass=ProcessorMeta):
             if image is None:
                 raise ValueError("Failed to decode image")
             
-            print(f"Decoded image shape: {image.shape}")
+            # print(f"Decoded image shape: {image.shape}")
             
         except Exception as e:
             print(f"\033[93mError decoding image: {e}\033[0m")
@@ -48,7 +48,7 @@ class GUIViewerProcessor(QObject, Processor, metaclass=ProcessorMeta):
             traceback.print_exc()
             return
 
-        print(f' ==> Line 51: \033[38;2;64;154;133m[image_type]\033[0m({type(image_type).__name__}) = \033[38;2;69;139;240m{image_type}\033[0m')
+        # print(f' ==> Line 51: \033[38;2;64;154;133m[image_type]\033[0m({type(image_type).__name__}) = \033[38;2;69;139;240m{image_type}\033[0m')
         if image_type == 'obstacle':
             self.frontView.emit(image)
         elif image_type == 'lane':

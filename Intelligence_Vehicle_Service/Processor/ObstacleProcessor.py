@@ -103,15 +103,18 @@ class ObstacleProcessor(Processor):
                 case "stop" : toggledSigns_dict["Barricade"] = obj.detection_status
                 case "dog" : toggledSigns_dict["WildAnimal"] = obj.detection_status
 
+
         self.check_detection_timeout(current_time) # 검출 시간 초과 여부 확인
         # update list
         for i, obj_name in enumerate(REFINED_OBJECTS):
             toggledSigns_list[i] = toggledSigns_dict[obj_name]
         # compare present list with previous list, print present list if they are different
+        # FIXME: 주석 처리된 텍스트 정리 해 주세요.
+
         if toggledSigns_prev != toggledSigns_list:
             print("time: ", current_time, "list : ", toggledSigns_list)
             self.obstacle_callback("icon",toggledSigns_list, "GUI")
-
+            # TODO : 재창님 여기에 limit_speed 값 넣어 주세요.
 
 ## TEST ##
 # import cv2

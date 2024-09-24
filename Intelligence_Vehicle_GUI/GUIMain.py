@@ -7,10 +7,9 @@ from Intelligence_Vehicle_Service.IVService import IVService
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
 from Intelligence_Vehicle_GUI.MainWindow import MainWindow 
 
-from PyQt5 import uic
+
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+
 
 clients = {
     "Lane": 5001,

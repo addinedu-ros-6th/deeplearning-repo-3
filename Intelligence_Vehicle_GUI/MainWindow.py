@@ -142,7 +142,7 @@ class MainWindow(QMainWindow):
     
 
     def display_road_images(self, road_info_array):
-        
+        print(road_info_array)
         if road_info_array[1] == True: # ChildZone
             self.signpixmap.load("./Intelligence_Vehicle_GUI/ui/image/child.jpg")
             self.label_child_sign.setScaledContents(True)
@@ -236,7 +236,7 @@ class MainWindow(QMainWindow):
 
     def speed_update(self):
         self.current_number += 1  # 숫자 증가
-        self.lcdNumber_speed.display(self.current_number)
+        self.lcdNumber_speed.hudSignal(self.current_number)
     
     def print_driving(self):
         selected_start_time = self.dte_start.dateTime().toString("yyyy-MM-dd HH:mm:ss")
