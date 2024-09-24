@@ -58,7 +58,6 @@ class IVService:
 
     
     def start_socket_server(self, port=4001):
-        
         try:
             udp_server_manager = UDPServerManager()
             udp_server_manager.start_server(host=SocketConfig.SERVER_HOST, port=port, data_handler=self.handle_receive_socket_data)
@@ -90,7 +89,7 @@ class IVService:
         self.processor_factory.register("icon", gui_icon_processor)
 
         gui_speed_processor = GUISpeedProcessor()
-        gui_speed_processor.hudSignal.connect(window_class.print_speed)
+        gui_speed_processor.speed.connect(window_class.print_speed)
         self.processor_factory.register("gui_speed", gui_speed_processor)
 
 

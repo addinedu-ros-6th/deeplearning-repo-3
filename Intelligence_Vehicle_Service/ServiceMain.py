@@ -34,7 +34,7 @@ if __name__ == "__main__":
         print("Waiting for a server response.")
         time.sleep(1)
 
-    service.start_socket_client(port=4002)
+    service.start_socket_client(port=4003)
     service.start_socket_server(port=4003)
 
 
