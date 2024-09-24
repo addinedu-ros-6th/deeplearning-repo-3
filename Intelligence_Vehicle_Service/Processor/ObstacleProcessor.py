@@ -123,11 +123,17 @@ class ObstacleProcessor(Processor):
 
         prev_speedLimit = curr_speedLimit
 
+        # if (toggledSigns_list[3] or toggledSigns_list[4] or toggledSigns_list[5]) == True:
+        #     curr_speedLimit = 0
+        # elif toggledSigns_list[1] == True: curr_speedLimit = 30
+        # elif toggledSigns_list[2] == True: curr_speedLimit = 50
+        # else: curr_speedLimit = 100
+
         if (toggledSigns_list[3] or toggledSigns_list[4] or toggledSigns_list[5]) == True:
             curr_speedLimit = 0
-        elif toggledSigns_list[1] == True: curr_speedLimit = 30
-        elif toggledSigns_list[2] == True: curr_speedLimit = 50
-        else: curr_speedLimit = 100
+        elif toggledSigns_list[1] == True: curr_speedLimit = 20
+        # elif toggledSigns_list[2] == True: curr_speedLimit = 30
+        else: curr_speedLimit = 30
         
         if prev_speedLimit != curr_speedLimit:
             self.socket_send_func("DF", str(curr_speedLimit))
