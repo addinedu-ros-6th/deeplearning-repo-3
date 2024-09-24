@@ -146,7 +146,7 @@ def custom_data_handler(data_type, data, client_address):
         else:
             print("error identifier")
 
-        if data[0] == "ER":
+        if data[0] == "error":
             # command = "C"+str(int(float(data[1])/5+40))
             command = "C"+str(int((float(data[1]))))
         elif data[0] == "DF":
@@ -274,8 +274,8 @@ if __name__ == "__main__":
     ser = serial.Serial('/dev/ttyArduino', 9600, timeout=1)
     time.sleep(2)  # 시리얼 연결 안정화를 위한 대기 시간
 
-    pre_command = 'S'
-    # pre_command = 'F30'
+    # pre_command = 'S'
+    pre_command = 'F30'
 
     udp_client_manager = UDPClientManager()
     client_speed = udp_client_manager.get_client(client_id = "speed", data_type = 'str', host = HOST, port = 4003)
