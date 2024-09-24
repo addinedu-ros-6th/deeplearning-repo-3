@@ -245,12 +245,12 @@ def get_front_frame():
 
 if __name__ == "__main__":
     command = "S"
-    lane_cam = cv2.VideoCapture(0)
+    lane_cam = cv2.VideoCapture(1)
     width = 640
     height = 480
     lane_cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
     lane_cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-    front_cam = cv2.VideoCapture(1)
+    front_cam = cv2.VideoCapture(0)
 
     front_cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
     front_cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
