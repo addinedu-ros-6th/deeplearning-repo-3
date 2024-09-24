@@ -19,9 +19,11 @@ from Intelligence_Vehicle_Service.Processor.ObstacleProcessor import ObstaclePro
 from Intelligence_Vehicle_Service.Processor.GUIViewerProcessor import GUIViewerProcessor
 from Intelligence_Vehicle_Service.Processor.GUIIconProcessor import GUIIconProcessor
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
-from Intelligence_Vehicle_Communicator.TCPClientNewVersion import TCPClientManager
 from Intelligence_Vehicle_Service.DataHandler.DataHandler import *
-from Intelligence_Vehicle_Communicator.UDPConnection import UDPConnection
+from Custom_print import custom_print
+
+
+
 
 class SocketConfig:
     # SERVER_HOST = '192.168.0.22'
@@ -40,11 +42,14 @@ class SocketConfig:
 class IVService:
 
     def __init__(self) -> None:
+        self.udp_client = None
         self.http_client : FlaskClient = None
         self.client_addresses = self.set_clinet_addresses()
         self.processor_factory = ProcessorFactory()
         self.data_handler_factory = DataHandlerFactory()
         self.udp_client_str = None
+
+
 
     def start_socket_client(self, port=4001):
         print("start_socket_client")
