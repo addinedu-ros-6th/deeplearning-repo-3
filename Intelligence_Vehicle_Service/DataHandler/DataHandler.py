@@ -20,7 +20,7 @@ class ObstacleImageHandler(DataHandler):
 
 
     def handle(self, data, client_address):
-        print(f"Handling data from {client_address}: {data}")
+        # print(f"Handling data from {client_address}: {data}")
         image = data[1]
         threading.Thread(target=self.dect_func, args=(image, self.send_func, )).start()
 
@@ -33,7 +33,7 @@ class LaneImageHandler(DataHandler):
 
 
     def handle(self, data, client_address):
-        print(f"Handling data from {client_address}: {data}")
+        # print(f"Handling data from {client_address}: {data}")
         image = data[1]
         threading.Thread(target=self.dect_func, args=(image, self.send_func, )).start()
 

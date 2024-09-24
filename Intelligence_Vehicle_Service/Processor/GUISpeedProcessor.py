@@ -11,13 +11,14 @@ from PyQt5.QtCore import QObject, pyqtSignal
 from Custom_print  import custom_print
 
 class GUISpeedProcessor(QObject, Processor, metaclass=ProcessorMeta):
-    hudSignal = pyqtSignal(str)
+    speed = pyqtSignal(str)
 
     def __init__(self, parent: QObject = None) -> None:
         super().__init__(parent)
 
     def execute(self, data):
         print(f"GUISpeedProcessor: {data}")
-        self.hudSignal.emit(data['data'])
+        # self.speed.emit(data)
+        self.speed.emit(data['data'][1])
 
 
