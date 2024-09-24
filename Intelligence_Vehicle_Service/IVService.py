@@ -158,6 +158,7 @@ class IVService:
 
 
     def send_data_socket(self, key, data):
+        print(f"send_data_socket key:{key} data:{data}")
         self.udp_client_str.queue_data((str(data), key))
 
 

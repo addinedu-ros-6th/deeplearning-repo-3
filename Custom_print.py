@@ -13,6 +13,11 @@ def get_color_from_hash(text):
     g = int(hash_hex[2:4], 16)
     b = int(hash_hex[4:6], 16)
 
+    # 밝은 계열 색상으로 조정 (RGB 값이 일정 이상이도록)
+    r = 128 + r // 2  # 128 ~ 255 범위로 조정
+    g = 128 + g // 2
+    b = 128 + b // 2
+
     return r, g, b
 
 def colored_text(text, color_code):
