@@ -38,7 +38,7 @@ class FlaskClient(metaclass = SingletonMeta):
         from_client = data.get('from')
         receive_data = data.get('data')
         recevie_key = data.get('key')
-        print('\033[91m'+'recevie_key: ' + '\033[92m', recevie_key, '\033[0m')
+        # print('\033[91m'+'recevie_key: ' + '\033[92m', recevie_key, '\033[0m')
 
         # print(f"Received data from {from_client}: {data}")
         if self.callback:

@@ -128,7 +128,7 @@ class IVService:
             return
 
         try:
-            print(f"handle_receive_http_data {key, data}")
+            #print(f"handle_receive_http_data {key, data}")
             processor = self.processor_factory.get(key)
             processor.execute(data)
 
@@ -140,8 +140,14 @@ class IVService:
         """
         socket통신으로 데이터를 받으면, 데이터의 key에 따라 적절한 프로세서를 찾아 실행합니다.
         """
-        if data_type == 2:  # 이미지 데이터
-            identifier, image = data
+        identifier, image = data
+        # print(f"handle_receive_socket_data{data_type}, {data}")
+        if data_type==1:
+            
+            handler = self.data_handler_factory.get(identifier)
+            handler.handle(data, client_address=client_address)
+        elif data_type == 2:  # 이미지 데이터
+            
 
             try:
                 handler = self.data_handler_factory.get(identifier)
