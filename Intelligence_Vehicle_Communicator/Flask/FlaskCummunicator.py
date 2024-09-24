@@ -13,7 +13,11 @@ class SingletonMeta(type):
             instance = super().__call__(*args, **kwargs)
             cls._instances[cls] = instance
         return cls._instances[cls]
-    
+
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
+
 class FlaskClient(metaclass = SingletonMeta):
 
     def __init__(self, client_id, port):
@@ -21,9 +25,9 @@ class FlaskClient(metaclass = SingletonMeta):
         print(f' ==> Line 19: \033[38;2;214;177;68m[client_id]\033[0m({type(client_id).__name__}) = \033[38;2;234;176;129m{client_id}\033[0m')
         self.port = port
         self.app = Flask(__name__)
+        self.app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
+        self.callback = None
 
-        log = logging.getLogger('werkzeug')
-        log.setLevel(logging.ERROR)  # 기본 로깅 레벨을 ERROR로 변경하여 정보 로그를 비활성화
 
         # 클라이언트의 메시지 수신 라우트 설정
         self.setup_routes()
@@ -68,7 +72,7 @@ class FlaskClient(metaclass = SingletonMeta):
 
     # 클라이언트 실행 (별도의 스레드에서 Flask 실행)
     def run(self):
-        Thread(target=lambda: self.app.run(host='0.0.0.0', port=self.port, debug=False, use_reloader=False)).start()
+        Thread(target=lambda: self.app.run(host='0.0.0.0', port=self.port, debug=False, use_reloader=False, use_evalex=False)).start()
 
     def is_port_open(self, host, ports):
         """해당 호스트의 포트가 열려 있는지 확인"""
