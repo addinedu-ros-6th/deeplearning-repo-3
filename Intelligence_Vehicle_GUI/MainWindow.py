@@ -9,7 +9,6 @@ from PyQt5.QtCore import *
 from ultralytics import YOLO
 import mysql.connector
 import numpy as np
-from Observer import *
 from PyQt5 import uic
 import time
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -237,6 +236,7 @@ class MainWindow(QMainWindow):
     def speed_update(self):
         self.current_number += 1  # 숫자 증가
         self.lcdNumber_speed.hudSignal(self.current_number)
+
     
     def print_driving(self):
         selected_start_time = self.dte_start.dateTime().toString("yyyy-MM-dd HH:mm:ss")

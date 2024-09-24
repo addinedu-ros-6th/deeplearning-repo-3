@@ -48,12 +48,10 @@ class IVService:
         self.data_handler_factory = DataHandlerFactory()
         self.udp_client_str = None
 
-
-
     def start_socket_client(self, port=4001):
         print("start_socket_client")
         udp_client_manager = UDPClientManager()
-        self.udp_client_str = udp_client_manager.get_client("error", "str", host= SocketConfig.CLIENT_HOST, port=port)
+        self.udp_client_str = udp_client_manager.get_client("data", "str", host= SocketConfig.CLIENT_HOST, port=port)
         self.udp_client_str.start()
 
     
@@ -71,7 +69,7 @@ class IVService:
     def register_ai_processor(self):
 
         laneProcessor = LaneProcessor()
-        laneProcessor.set_error_callback(self.send_lane_error)
+        laneProcessor.set_error_callback(self.send_data_socket)
         self.processor_factory.register("lane", laneProcessor)
 
         obstacleProcessor = ObstacleProcessor()
@@ -146,13 +144,11 @@ class IVService:
 
 
 
-    def send_lane_error(self, error: float):
-        # print(f' ==> Line 137: \033[38;2;33;220;13m[error]\033[0m({type(error).__name__}) = \033[38;2;84;176;68m{error}\033[0m')
-        self.udp_client_str.queue_data((str(error), "ER"))
+    def send_data_socket(self, key, data):
+        self.udp_client_str.queue_data((str(data), key))
 
 
     def send_data_http(self, key, data, send_client_id):
-        # print(f' ==> Line 145: \033[38;2;112;249;126m[key]\033[0m({type(key).__name__}) = \033[38;2;16;208;72m{key}\033[0m')
         self.http_client.send_data(f"http://localhost:{self.client_addresses[send_client_id]}", key, {"data":data})
 
 

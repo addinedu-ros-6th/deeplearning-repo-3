@@ -33,7 +33,7 @@ class ObstacleDetector:
             }
         except Exception as e:
             print(f"Error processing image: {e}")
-            obstacle_data = {"error": str(e)}
+            obstacle_data = {"data": str(e)}
         send_func("obstacle", obstacle_data, "Service")
 
 

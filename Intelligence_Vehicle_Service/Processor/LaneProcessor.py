@@ -328,7 +328,7 @@ class LaneProcessor(Processor):
         middle_point = ((left_center[0] + right_center[0]) / 2, (left_center[1] + right_center[1]) / 2)
         center_x = WIDTH / 2
         self.error = round((center_x - middle_point[0] + error_correction), 1)
-        self.error_callback(self.error)
+        self.error_callback("error",self.error)
 
         print(f"오차(error): {self.error}")
 
