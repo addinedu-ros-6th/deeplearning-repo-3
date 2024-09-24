@@ -18,6 +18,7 @@ class GUISpeedProcessor(QObject, Processor, metaclass=ProcessorMeta):
 
     def execute(self, data):
         print(f"GUISpeedProcessor: {data}")
-        self.speed.emit(data)
+        # self.speed.emit(data)
+        self.speed.emit(data['data'][1])
 
 
