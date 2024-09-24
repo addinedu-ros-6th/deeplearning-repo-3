@@ -37,10 +37,10 @@ class LaneProcessor(Processor):
         self.newlist = []
         self.stop_line_flag = 0
         self.error = 0
-        self.error_callback = None
+        self.socket_send_func = None
 
     def set_error_callback(self, callback):
-        self.error_callback = callback
+        self.socket_send_func = callback
         
     def execute(self, data):
         results_json = data['data']['results']
@@ -60,6 +60,9 @@ class LaneProcessor(Processor):
                     class_ids.append(result['class'])
 
         self.stop_line_flag = 1 if 'Stop_Line' in self.newlist else 0
+        if self.stop_line_flag == 1:
+            self.socket_send_func("stop_line", self.stop_line_flag)
+
 
         # 차선 데이터 처리
         self.process_lane_data(lane_masks, results)
@@ -82,7 +85,7 @@ class LaneProcessor(Processor):
             middle_point = ((left_center[0] + right_center[0]) / 2, (left_center[1] + right_center[1]) / 2)
             center_x = image_width // 2
             self.error = round((center_x - middle_point[0] + error_correction) / error_divide, 1)
-            self.error_callback("error", self.error)
+            self.socket_send_func("error", self.error)
 
             print(f"오차(error): {self.error}")
 

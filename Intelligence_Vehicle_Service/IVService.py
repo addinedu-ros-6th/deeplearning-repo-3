@@ -90,7 +90,7 @@ class IVService:
         self.processor_factory.register("icon", gui_icon_processor)
 
         gui_speed_processor = GUISpeedProcessor()
-        gui_speed_processor.speed.connect(window_class.print_speed)
+        gui_speed_processor.hudSignal.connect(window_class.print_speed)
         self.processor_factory.register("gui_speed", gui_speed_processor)
 
 
@@ -128,6 +128,7 @@ class IVService:
             return
 
         try:
+            print(key)
             processor = self.processor_factory.get(key)
             processor.execute(data)
 

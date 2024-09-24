@@ -119,6 +119,7 @@ class ObstacleProcessor(Processor):
         if toggledSigns_prev != toggledSigns_list:
             print("time: ", current_time, "list : ", toggledSigns_list)
             self.http_send_func("icon", toggledSigns_list, "GUI")
+            self.socket_send_func("red_light", str(toggledSigns_list[0]))
 
         prev_speedLimit = curr_speedLimit
 

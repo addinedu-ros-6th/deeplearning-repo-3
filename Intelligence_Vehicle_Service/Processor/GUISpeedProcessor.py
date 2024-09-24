@@ -11,7 +11,8 @@ from PyQt5.QtCore import QObject, pyqtSignal
 from Custom_print  import custom_print
 
 class GUISpeedProcessor(QObject, Processor, metaclass=ProcessorMeta):
-    speed = pyqtSignal(str)
+    hudSignal = pyqtSignal(str)
+
     def __init__(self, parent: QObject = None) -> None:
         super().__init__(parent)
 
