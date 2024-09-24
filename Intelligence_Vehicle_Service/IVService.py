@@ -97,7 +97,7 @@ class IVService:
 
     def set_socket_data_handler_callback(self, key, func_tuple):
         data_handle = self.data_handler_factory.get(key)
-        data_handle.register_data_received_callback((func_tuple[0], func_tuple[1]))
+        data_handle.register_data_received_callback(func_tuple)
 
 
     def set_client(self, client:FlaskClient):
