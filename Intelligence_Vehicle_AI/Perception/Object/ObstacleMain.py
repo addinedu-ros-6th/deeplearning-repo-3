@@ -25,8 +25,8 @@ if __name__ == "__main__":
                                 'Intelligence_Vehicle_AI/Dataset/Object_dataset/object.mp4')
 
     service = IVService()
-    service.register_tcp_receive_handle()
-    service.set_tcp_data_handler_callback("obstacle", (detector.start_detect_result, service.send_data_http))
+    service.register_socket_receive_handle()
+    service.set_socket_data_handler_callback("obstacle", (detector.start_detect_result, service.send_data_http))
 
     client = FlaskClient(client_id="Obstacle", port=clients["Obstacle"])
     service.set_client(client)

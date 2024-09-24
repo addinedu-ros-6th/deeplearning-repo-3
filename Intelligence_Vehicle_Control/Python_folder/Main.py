@@ -43,6 +43,10 @@ def right_motor_correction(right_motor_correction):
     command = f'C{right_motor_correction}\n'.encode()
     ser.write(command)  # 'C' + 오른쪽 보정 값 전송
 
+def motor_turn(speed):
+    command = f'T{speed}\n'.encode()
+    ser.write(command)  # 'T' + 속도 값 전송
+
 def encoder_reset():
     ser.write(b'E\n')  # 엔코더 0으로 초기화
 
@@ -92,6 +96,11 @@ def fetch_commands(command):
                 print(f"오른 모터 보정값: {right_motor_correction_value}")
                 # if right_motor_correction_value > 18:
                 #     command
+            elif cmd[0] == 'T':
+                speed = int(cmd[1:])  # 속도 값 추출
+                motor_turn(speed)
+                print(f"모터 회전 중 - 속도: {speed}")
+
             elif cmd[0] == 'E':
                 encoder_reset()
                 print("엔코더 리셋")
@@ -103,7 +112,7 @@ def fetch_commands(command):
         if command[0] == 'C':
             right_motor_correction_value = int(command[1:])
             if right_motor_correction_value>12:
-                pre_command = "F0"
+                pre_command = "T20"
             else:
                 pre_command="F30"
 
@@ -248,8 +257,8 @@ if __name__ == "__main__":
     port = 4002  # 서버 포트
 #___________________________________________________________-
     # HOST='192.168.0.22' # 클라이언트 전송 할 ip
-    HOST = '192.168.26.136' # 전욱
-    # HOST = '192.168.26.232' #희천
+    # HOST = '192.168.26.136' # 전욱
+    HOST = '192.168.26.232' #희천
     # HOST = '192.168.26.32' # 재창
 
     PORT= 4001 #클라이언트 전송 포트 

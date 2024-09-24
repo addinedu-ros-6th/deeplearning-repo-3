@@ -26,8 +26,8 @@ if __name__ == "__main__":
                                 video_path='Intelligence_Vehicle_AI/Dataset/Lane_dataset/30_only_lane_video.mp4')
 
     service = IVService()
-    service.register_tcp_receive_handle()
-    service.set_tcp_data_handler_callback("lane", (detector.start_detect_result, service.send_data_http))
+    service.register_socket_receive_handle()
+    service.set_socket_data_handler_callback("lane", (detector.start_detect_result, service.send_data_http))
 
     client = FlaskClient(client_id="Lane", port=clients["Lane"])
     service.set_client(client)
