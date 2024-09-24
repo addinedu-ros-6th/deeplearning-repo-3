@@ -123,7 +123,9 @@ class ObstacleProcessor(Processor):
 
         prev_speedLimit = curr_speedLimit
 
-        if toggledSigns_list[1] == True: curr_speedLimit = 30
+        if (toggledSigns_list[3] or toggledSigns_list[4] or toggledSigns_list[5]) == True:
+            curr_speedLimit = 0
+        elif toggledSigns_list[1] == True: curr_speedLimit = 30
         elif toggledSigns_list[2] == True: curr_speedLimit = 50
         else: curr_speedLimit = 100
         
