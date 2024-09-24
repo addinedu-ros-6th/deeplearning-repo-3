@@ -114,12 +114,12 @@ void loop()
         rightEncoderValue = rightEncoder.read();
 
         // 엔코더 값 시리얼로 전송
-        // Serial.print("L:");
-        // Serial.print(leftEncoderValue);
-        // Serial.print(" R:");
-        // Serial.println(rightEncoderValue);
-        Serial.print("L - R:");
-        Serial.println(leftEncoderValue+rightEncoderValue);
+        Serial.print("L:");
+        Serial.print(leftEncoderValue);
+        Serial.print(" R:");
+        Serial.println(rightEncoderValue);
+        // Serial.print("L - R:");
+        // Serial.println(leftEncoderValue+rightEncoderValue);
         previousMillis = currentMillis;
         // delay(100);    // 0.1초마다 엔코더 값 전송
     }
