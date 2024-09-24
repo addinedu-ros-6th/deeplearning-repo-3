@@ -20,17 +20,17 @@ from Intelligence_Vehicle_Service.Processor.Processor import Processor
 # -> 일단 성공적이긴 했음
 
 # 전역 변수 설정 - 제일 성공적인 세팅임
-# WIDTH = 640
-# error_correction = 0
-# error_divide = 2.25
-# Y_MIN = 10  # y 좌표 최소값
-# Y_MAX = 400  # y 좌표 최대값
-
 WIDTH = 640
 error_correction = 0
-error_divide = 2
+error_divide = 2.25
 Y_MIN = 10  # y 좌표 최소값
-Y_MAX = 360  # y 좌표 최대값
+Y_MAX = 400  # y 좌표 최대값
+
+# WIDTH = 640
+# error_correction = 0
+# error_divide = 2
+# Y_MIN = 10  # y 좌표 최소값
+# Y_MAX = 360  # y 좌표 최대값
 
 class LaneProcessor(Processor):
     def __init__(self):
