@@ -19,17 +19,17 @@ from Intelligence_Vehicle_Service.Processor.ObstacleProcessor import ObstaclePro
 from Intelligence_Vehicle_Service.Processor.GUIViewerProcessor import GUIViewerProcessor
 from Intelligence_Vehicle_Service.Processor.GUIIconProcessor import GUIIconProcessor
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
-from Intelligence_Vehicle_Communicator.TCPClientNewVersion import TCPClientManager
 from Intelligence_Vehicle_Service.DataHandler.DataHandler import *
-from Intelligence_Vehicle_Communicator.UDPConnection import UDPConnection
+from Custom_print import custom_print
 
 class SocketConfig:
     # SERVER_HOST = '192.168.0.22'
     # CLIENT_HOST = '192.168.0.11'
 
     # SERVER_HOST = '192.168.26.136' #전욱
-    SERVER_HOST = '192.168.26.232' #희천
-    CLIENT_HOST = '192.168.26.178'
+    SERVER_HOST = '172.20.10.4' #희천
+    # CLIENT_HOST = '192.168.26.178'
+    CLIENT_HOST = '172.20.10.5' #희천
     @classmethod
     def get_server_host(cls):
         return cls.SERVER_HOST
@@ -42,11 +42,14 @@ class SocketConfig:
 class IVService:
 
     def __init__(self) -> None:
+        self.udp_client = None
         self.http_client : FlaskClient = None
         self.client_addresses = self.set_clinet_addresses()
         self.processor_factory = ProcessorFactory()
         self.data_handler_factory = DataHandlerFactory()
         self.udp_client_str = None
+
+
 
     def start_socket_client(self, port=4001):
         print("start_socket_client")
@@ -60,14 +63,7 @@ class IVService:
         try:
             udp_server_manager = UDPServerManager()
             udp_server_manager.start_server(host=SocketConfig.SERVER_HOST, port=port, data_handler=self.handle_receive_socket_data)
-            
-            # tcp_server_manager = TCPServerManager()
-            # tcp_server_manager.start_server(host= host, port=port, data_handler=self.handle_receive_tcp_data)
-        
-            # client_manager = TCPClientManager()
-            # self.tcp_client = client_manager.get_client("speed", 'str', host='192.168.0.1', port=4006)
-            # self.tcp_client.start()
-        
+
         except KeyboardInterrupt:
             print("사용자로부터 종료 요청을 받았습니다.")
             udp_server_manager.stop_server()
@@ -91,8 +87,8 @@ class IVService:
         self.processor_factory.register("viewer", gui_viewer_processor)
 
         gui_processor = GUIIconProcessor()
+        gui_processor.hudSignal.connect(window_class.display_road_images)
         self.processor_factory.register("icon", gui_processor)
-
 
 
     def register_socket_receive_handle(self):
@@ -104,7 +100,6 @@ class IVService:
     def set_socket_data_handler_callback(self, key, func_tuple):
         data_handle = self.data_handler_factory.get(key)
         data_handle.register_data_received_callback((func_tuple[0], func_tuple[1]))
-
 
 
     def set_client(self, client:FlaskClient):
@@ -124,7 +119,6 @@ class IVService:
         """
         http통신으로 데이터를 받으면, 데이터의 key에 따라 적절한 프로세서를 찾아 실행합니다.
         """
-        # print('\033[91m'+"Received data: from_client=" +'\033[92m'+f"{from_client}, key={key}," +'\033[96m'+ f"data={data}", '\033[0m')
         if key is None:
             print(f"경고: {from_client}로부터 키 없이 데이터를 받았습니다.")
             return
@@ -156,7 +150,6 @@ class IVService:
     def send_lane_error(self, error: float):
         # print(f' ==> Line 137: \033[38;2;33;220;13m[error]\033[0m({type(error).__name__}) = \033[38;2;84;176;68m{error}\033[0m')
         self.udp_client_str.queue_data((str(error), "ER"))
-
 
 
     def send_data_http(self, key, data, send_client_id):

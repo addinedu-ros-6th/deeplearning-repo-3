@@ -8,14 +8,15 @@ relative_path = os.path.join(current_dir, '../../')  # 상위 폴더로 이동
 sys.path.append(relative_path)
 from Intelligence_Vehicle_Service.Processor.Processor import Processor, ProcessorMeta
 from PyQt5.QtCore import QObject, pyqtSignal
-import numpy as np
+from Custom_print  import custom_print
 
 class GUIIconProcessor(QObject, Processor, metaclass=ProcessorMeta):
-
+    hudSignal = pyqtSignal(list)
     def __init__(self, parent: QObject = None) -> None:
         super().__init__(parent)
 
     def execute(self, data):
-        print(f"GUIIconProcessor=> 21{data}")
+        print(f"GUIIconProcessor: {data}")
+        self.hudSignal.emit(data)
 
 

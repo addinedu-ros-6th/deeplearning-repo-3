@@ -20,7 +20,7 @@ class ObstacleImageHandler(DataHandler):
 
 
     def handle(self, data, client_address):
-        print("\033[96mObstacleImageHandler\033[0m")
+        # print("\033[96mObstacleImageHandler\033[0m")
         image = data[1]
         threading.Thread(target=self.dect_func, args=(image, self.send_func, )).start()
 
@@ -39,10 +39,13 @@ class LaneImageHandler(DataHandler):
 
 
 class SpeedDataHandler(DataHandler):
+    def __init__(self):
+        self.send_func = None
     def register_data_received_callback(self, func_tuple):
-        pass
+        self.send_func = func_tuple[0]
 
     def handle(self, data, client_address):
         print(f"Handling data from {client_address}: {data}")
+        self.send_func("speed", data , "GUI")
 
 

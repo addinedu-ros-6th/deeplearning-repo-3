@@ -66,7 +66,7 @@ class MainWindow(QMainWindow):
         uic.loadUi("./Intelligence_Vehicle_GUI/ui/main.ui", self)
 
 
-        self.setWindowTitle("Ferrari 488")
+        self.setWindowTitle("IV GUI")
         self.label = QLabel(self)
 
         #main tab
@@ -142,7 +142,7 @@ class MainWindow(QMainWindow):
     
 
     def display_road_images(self, road_info_array):
-        
+        print(road_info_array)
         if road_info_array[1] == True: # ChildZone
             self.signpixmap.load("./Intelligence_Vehicle_GUI/ui/image/child.jpg")
             self.label_child_sign.setScaledContents(True)
@@ -234,8 +234,14 @@ class MainWindow(QMainWindow):
         self.video.release()
         self.label_camera.clear()
 
+<<<<<<< HEAD
     def print_speed(self, speed):
         self.lcdNumber_speed.display(speed)
+=======
+    def speed_update(self):
+        self.current_number += 1  # 숫자 증가
+        self.lcdNumber_speed.hudSignal(self.current_number)
+>>>>>>> ec11069c2912a864b74440f4ae8dcb195bb3e869
     
     def print_driving(self):
         selected_start_time = self.dte_start.dateTime().toString("yyyy-MM-dd HH:mm:ss")
@@ -333,7 +339,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
 
-    apply_stylesheet(app, theme='dark_amber.xml')
+    # apply_stylesheet(app, theme='dark_amber.xml')
 
     window.show()
 

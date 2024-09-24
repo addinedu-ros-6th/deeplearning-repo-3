@@ -11,16 +11,11 @@ current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트�
 relative_path = os.path.join(current_dir, '..')  # 상위 폴더로 이동
 sys.path.append(relative_path)
 
-from Intelligence_Vehicle_Communicator.TCPClientNewVersion import TCPClientManager
 from Intelligence_Vehicle_Service.IVService import IVService, SocketConfig
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
-from Intelligence_Vehicle_Communicator.TCPServerNewVersion import TCPServerManager, TCPServer
-
+from Custom_print import custom_print
 
 if __name__ == "__main__":
-    
-    
-
     service = IVService()
     service.register_ai_processor()
     service.register_socket_receive_handle()
@@ -32,7 +27,6 @@ if __name__ == "__main__":
 
     wait_ports = []
     wait_ports.append(service.client_addresses["GUI"])
-
 
     while True:
         if service.http_client.is_port_open(host='localhost', ports=wait_ports):

@@ -57,7 +57,7 @@ class FlaskClient(metaclass = SingletonMeta):
 
         try:
             response = requests.post(f"{to_client_url}/receive_data", json=payload)
-            print(f"Response from {to_client_url}: {response.json()}")
+            # print(f"Response from {to_client_url}: {response.json()}")
         except requests.exceptions.RequestException as e:
             print(f"Error sending message: {e}")
 
