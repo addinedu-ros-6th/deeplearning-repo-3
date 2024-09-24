@@ -90,8 +90,9 @@ def fetch_commands(command):
             elif cmd[0] == 'S':
                 motor_stop()
                 print("모터 정지")
-            elif cmd[0] == 'C':
+            elif cmd[0] == 'C': ######################### 5 이상이면 2배
                 right_motor_correction_value = int(cmd[1:])  # 오른쪽 보정 값 추출
+                # if right_motor_correction_value
                 right_motor_correction(right_motor_correction_value)
                 print(f"오른 모터 보정값: {right_motor_correction_value}")
                 # if right_motor_correction_value > 18:
@@ -240,12 +241,12 @@ def get_front_frame():
 
 if __name__ == "__main__":
     command = "S"
-    lane_cam = cv2.VideoCapture(1)
+    lane_cam = cv2.VideoCapture(0)
     width = 640
     height = 480
     lane_cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
     lane_cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-    front_cam = cv2.VideoCapture(0)
+    front_cam = cv2.VideoCapture(1)
 
     front_cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
     front_cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
@@ -253,14 +254,17 @@ if __name__ == "__main__":
     # front_cam = cv2.VideoCapture(2)  # 또는 cv2.VideoCapture('/dev/video2')
 
     # host = '192.168.0.11'  # 서버를 실행할 IP 주소
-    host = '192.168.26.178'
+    # host = '192.168.26.178' #경민 핫스팟
+    host = '172.20.10.5' #츼천 핫스팟
     port = 4002  # 서버 포트
 #___________________________________________________________-
     # HOST='192.168.0.22' # 클라이언트 전송 할 ip
-    HOST = '192.168.26.136' # 전욱
+    #경민 핫스팟
+    # HOST = '192.168.26.136' # 전욱
     # HOST = '192.168.26.232' #희천
     # HOST = '192.168.26.32' # 재창
 
+    HOST = '172.20.10.4' #희천컴 희천 핫스팟
     PORT= 4001 #클라이언트 전송 포트 
     # 아두이노가 연결된 시리얼 포트와 통신 속도(baud rate) 설정
     ser = serial.Serial('/dev/ttyArduino', 9600, timeout=1)
