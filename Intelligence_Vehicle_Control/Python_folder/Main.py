@@ -109,12 +109,12 @@ def fetch_commands(command):
         process_command(command)
 
         # 자동 command 없을 때  최대한 제자리 회전 구현
-        if command[0] == 'C':
-            right_motor_correction_value = int(command[1:])
-            if right_motor_correction_value>12:
-                pre_command = "T20"
-            else:
-                pre_command="F30"
+        # if command[0] == 'C':
+        #     right_motor_correction_value = int(command[1:])
+        #     if right_motor_correction_value>12:
+        #         pre_command = "T20"
+        #     else:
+        #         pre_command="F30"
 
         # 'C' 또는 'E'일 경우, 이전 명령도 처리
         if command[0] in ['C', 'E']:
@@ -143,7 +143,7 @@ def custom_data_handler(data_type, data, client_address):
 
         if data[0] == "ER":
             # command = "C"+str(int(float(data[1])/5+40))
-            command = "C"+str(int((float(data[1])+170)/5))
+            command = "C"+str(int((float(data[1]))))
         elif data[0] == "DF":
             command = "F"+str(int(float(data[1])))
         elif data[0] == "ST":
@@ -257,8 +257,8 @@ if __name__ == "__main__":
     port = 4002  # 서버 포트
 #___________________________________________________________-
     # HOST='192.168.0.22' # 클라이언트 전송 할 ip
-    # HOST = '192.168.26.136' # 전욱
-    HOST = '192.168.26.232' #희천
+    HOST = '192.168.26.136' # 전욱
+    # HOST = '192.168.26.232' #희천
     # HOST = '192.168.26.32' # 재창
 
     PORT= 4001 #클라이언트 전송 포트 
