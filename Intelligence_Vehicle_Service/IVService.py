@@ -28,7 +28,9 @@ from Custom_print import custom_print
 class SocketConfig:
     # SERVER_HOST = '192.168.0.22'
     # CLIENT_HOST = '192.168.0.11'
-    SERVER_HOST = '192.168.26.136'
+
+    # SERVER_HOST = '192.168.26.136' #전욱
+    SERVER_HOST = '192.168.26.232' #희천
     CLIENT_HOST = '192.168.26.178'
     @classmethod
     def get_server_host(cls):
