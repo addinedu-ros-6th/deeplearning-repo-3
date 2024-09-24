@@ -83,7 +83,7 @@ class MainWindow(QMainWindow):
         self.model = YOLO("./Intelligence_Vehicle_AI/Perception/Object/obstacle_n.pt")
         self.dbm = MySQLConnection.getInstance()
         self.dbm.db_connect("172.20.10.6", 3306, "deep_project", "yhc", "1234")
-        self.pushButton_camera.clicked.connect(self.clickCamera)
+        # self.pushButton_camera.clicked.connect(self.clickCamera)
         #self.camera.update.connect(self.updateCamera)
         #self.speed.update.connect(self.speed_update)
 
@@ -212,26 +212,26 @@ class MainWindow(QMainWindow):
                 self.label_child_sign.clear()
 
 
-    def clickCamera(self):
-        if self.camera.running  == False:
-            self.isCameraOn = True
-            self.cameraStart()
-        else:
-            self.isCameraOn = False
-            self.cameraStop()
+    # def clickCamera(self):
+    #     if self.camera.running  == False:
+    #         self.isCameraOn = True
+    #         self.cameraStart()
+    #     else:
+    #         self.isCameraOn = False
+    #         self.cameraStop()
 
-    def cameraStart(self):
-        # if self.playvideo.running == True:
-        #     self.mp4Stop()
-        self.camera.running = True
-        self.camera.start()
-        self.video = cv2.VideoCapture(-1)
+    # def cameraStart(self):
+    #     # if self.playvideo.running == True:
+    #     #     self.mp4Stop()
+    #     self.camera.running = True
+    #     self.camera.start()
+    #     self.video = cv2.VideoCapture(-1)
 
-    def cameraStop(self):
-        self.camera.running = False
-        self.count = 0
-        self.video.release()
-        self.label_camera.clear()
+    # def cameraStop(self):
+    #     self.camera.running = False
+    #     self.count = 0
+    #     self.video.release()
+    #     self.label_camera.clear()
 
 
     def print_speed(self, speed):
