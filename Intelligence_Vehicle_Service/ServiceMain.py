@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     service = IVService()
     service.register_ai_processor()
-    service.register_tcp_receive_handle()
+    service.register_socket_receive_handle()
     # service.start_socket_server(host=SocketConfig.HOST, port=4003)
 
     client = FlaskClient(client_id="Service", port=service.client_addresses["Service"])
@@ -31,8 +31,8 @@ if __name__ == "__main__":
     service.http_client.set_callback(service.handle_receive_http_data)
 
     wait_ports = []
-    # wait_ports.append(service.client_addresses["GUI"])
-    # wait_ports.append(service.client_addresses["DB"])
+    wait_ports.append(service.client_addresses["GUI"])
+
 
     while True:
         if service.http_client.is_port_open(host='localhost', ports=wait_ports):

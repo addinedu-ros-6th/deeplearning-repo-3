@@ -90,6 +90,9 @@ class UDPConnection:
                             # JPEG 데이터인 경우 디코딩
                             elif isinstance(image_data, tuple) and len(image_data) == 2:
                                 decoded_image = cv2.imdecode(np.frombuffer(image_data[1], np.uint8), cv2.IMREAD_COLOR)
+                                # cv2.imshow("lane", decoded_image)
+                                # cv2.waitKey(100)
+
                                 return 2, (identifier, decoded_image), address
                         
                             else:
