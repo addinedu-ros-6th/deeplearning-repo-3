@@ -235,6 +235,7 @@ class MainWindow(QMainWindow):
 
 
     def print_speed(self, speed):
+        print(speed)
         self.lcdNumber_speed.display(speed)
 
 
