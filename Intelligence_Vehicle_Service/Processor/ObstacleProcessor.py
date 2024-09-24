@@ -34,8 +34,8 @@ class ObstacleProcessor(Processor):
     def __init__(self):
         self.alert_threshold = 20 #반복 검출 조건(횟수)
         self.detection_timeout = 3 #검출 해제 조건(시간)
-        self.yLimit_signs = 0 #표지판 y조건
-        self.yLimit_obstacle = 0 #장애물 y조건
+        self.yLimit_signs = 120 #표지판 y조건
+        self.yLimit_obstacle = 240 #장애물 y조건
         self.http_send_func = None
         self.socket_send_func = None
 
@@ -116,6 +116,9 @@ class ObstacleProcessor(Processor):
             toggledSigns_list[i] = toggledSigns_dict[obj_name]
         # compare present list with previous list, print present list if they are different
 
+        ################## fix temporary bug
+        toggledSigns_list[0] = detected_objects["Red_sign"].detection_status
+        ##################
         if toggledSigns_prev != toggledSigns_list:
             print("time: ", current_time, "list : ", toggledSigns_list)
             self.http_send_func("icon", toggledSigns_list, "GUI")
@@ -137,8 +140,6 @@ class ObstacleProcessor(Processor):
         
         if prev_speedLimit != curr_speedLimit:
             self.socket_send_func("DF", str(curr_speedLimit))
-
-
 
 
 

@@ -74,7 +74,7 @@ class MySQLConnection:
           VALUES(%s, %s, %s,%s)"""
         occurtime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         result = self.get_logmessage(type)
-        
+        mid=0
         for val in result:
             mid = val[0]
             

@@ -130,9 +130,9 @@
       <property name="geometry">
        <rect>
         <x>720</x>
-        <y>320</y>
-        <width>101</width>
-        <height>81</height>
+        <y>300</y>
+        <width>181</width>
+        <height>101</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -279,6 +279,19 @@
       </column>
      </widget>
     </widget>
+   </widget>
+   <widget class="QPushButton" name="pushButton_camera">
+    <property name="geometry">
+     <rect>
+      <x>930</x>
+      <y>10</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PushButton</string>
+    </property>
    </widget>
   </widget>
  </widget>
