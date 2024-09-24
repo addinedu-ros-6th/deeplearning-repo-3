@@ -83,7 +83,7 @@ class MainWindow(QMainWindow):
 
         self.model = YOLO("./Intelligence_Vehicle_AI/Perception/Object/obstacle_n.pt")
         self.dbm = MySQLConnection.getInstance()
-        self.dbm.db_connect("192.168.0.130", 3306, "deep_project", "yhc", "1234")
+        self.dbm.db_connect("172.20.10.6", 3306, "deep_project", "yhc", "1234")
         self.pushButton_camera.clicked.connect(self.clickCamera)
         self.camera.update.connect(self.updateCamera)
         self.speed.update.connect(self.speed_update)
@@ -310,7 +310,7 @@ class PlotWidget(QWidget):
             # 변환
             date_time = pd.to_datetime('1970-01-01') + pd.to_timedelta(serial_value, unit='D')
             time_value = date_time.strftime('%Y-%m-%d %H:%M:%S')
-            print(time_value)
+            
             sel.annotation.set(text=f'time: {time_value}\nSpeed: {sel.target[1]}\n obstacle : {obs[index]}\n type : {type[index]}',
                        fontsize=12,
                        bbox=dict(facecolor='lightyellow', alpha=0.8))
