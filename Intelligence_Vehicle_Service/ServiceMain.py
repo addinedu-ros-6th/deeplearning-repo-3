@@ -19,7 +19,7 @@ if __name__ == "__main__":
     service = IVService()
     service.register_ai_processor()
     service.register_socket_receive_handle()
-    service.set_socket_data_handler_callback("speed", (service.send_data_http()))
+    service.set_socket_data_handler_callback("speed", (service.send_data_http))
 
     client = FlaskClient(client_id="Service", port=service.client_addresses["Service"])
     service.set_client(client)
