@@ -117,7 +117,8 @@ class ObstacleProcessor(Processor):
         # compare present list with previous list, print present list if they are different
 
         ################## fix temporary bug
-        toggledSigns_list[0] = detected_objects["Red_sign"].detection_status
+        if "Red_sign" in detected_objects.keys():
+            toggledSigns_list[0] = detected_objects["Red_sign"].detection_status
         ##################
         if toggledSigns_prev != toggledSigns_list:
             print("time: ", current_time, "list : ", toggledSigns_list)
