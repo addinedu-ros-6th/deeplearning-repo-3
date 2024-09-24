@@ -61,27 +61,33 @@ class MySQLConnection:
         obstacle_results = self.cursor.fetchall()
         return obstacle_results
     
-    def get_drivinglog_id_time(self):
-        sql= f"""SELECT id, time FROM DrivingLog ORDER BY time DESC LIMIT 1"""
+    def get_logmessage(self, type):
+        sql= f"""SELECT id FROM LogMessage where type='{type}'"""
         
         print("select_data: ", sql)
         self.cursor.execute(sql)
         get_results = self.cursor.fetchall()
         return get_results
     
-    def set_eventlog(self,category,type, occurtime,mid):
+    def set_eventlog(self,category,type):
         sql= """INSERT INTO EventLog (category, type, occurtime, mid)
           VALUES(%s, %s, %s,%s)"""
+        occurtime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        result = self.get_logmessage(type)
         
+        for val in result:
+            mid = val[0]
+            
+
         val = (category, type, occurtime, mid)
         print("select_data: ", sql)
         self.cursor.execute(sql,val)
         self.connection.commit()
 
-    def set_drivinglog(self,speed,distance, time):
-        sql= """INSERT INTO DrivingLog (speed, distance, time)
-          VALUES(%s, %s, %s) """
-        val = (speed, distance, time)
+    def set_drivinglog(self,speed, time):
+        sql= """INSERT INTO DrivingLog (speed, time)
+          VALUES(%s, %s) """
+        val = (speed, time)
         print("select_data: ", sql)
         self.cursor.execute(sql, val)
         self.connection.commit()    
