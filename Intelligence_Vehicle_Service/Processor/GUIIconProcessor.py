@@ -16,7 +16,7 @@ class GUIIconProcessor(QObject, Processor, metaclass=ProcessorMeta):
         super().__init__(parent)
 
     def execute(self, data):
-        print(f"GUIIconProcessor: {data}")
+        # print(f"GUIIconProcessor: {data}")
         self.hudSignal.emit(data['data'])
 
 

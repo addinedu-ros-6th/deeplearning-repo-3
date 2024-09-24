@@ -17,7 +17,7 @@ class GUISpeedProcessor(QObject, Processor, metaclass=ProcessorMeta):
         super().__init__(parent)
 
     def execute(self, data):
-        print(f"GUIIconProcessor: {data}")
+        print(f"GUISpeedProcessor: {data}")
         self.hudSignal.emit(data['data'])
 
 
