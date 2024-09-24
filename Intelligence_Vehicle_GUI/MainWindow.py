@@ -26,6 +26,7 @@ from Intelligence_Vehicle_ETC.DBmanager import MySQLConnection
 import math
 from qt_material import apply_stylesheet
 
+
 class Camera(QThread):
     update = pyqtSignal()
 
@@ -86,7 +87,7 @@ class MainWindow(QMainWindow):
         self.speed.update.connect(self.speed_update)
 
         #log tab
-        self.initSQL()
+        
         self.pushButton_search.clicked.connect(self.print_driving)
         self.dte_start.setDateTime(QDateTime.currentDateTime())
         self.dte_end.setDateTime(QDateTime.currentDateTime()) 
@@ -102,6 +103,7 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout(self.widget_chart)  # QLabel에 레이아웃 설정
         layout.addWidget(self.graph_widget.canvas)
 
+
     #main tab
     def update_front_view(self, image):
         self.update_camera_view(self.label_Obstacle_Camera, image, self.frontCameraPixmap)
@@ -116,6 +118,7 @@ class MainWindow(QMainWindow):
         pixmap = pixmap.fromImage(qimage)
         pixmap = pixmap.scaled(view.width(), view.height())
         view.setPixmap(pixmap)
+        
 
     def updateCamera(self):
         retval,frame= self.video.read()
@@ -202,12 +205,12 @@ class MainWindow(QMainWindow):
         selected_start_time = self.dte_start.dateTime().toString("yyyy-MM-dd HH:mm:ss")
         selected_end_time = self.dte_end.dateTime().toString("yyyy-MM-dd HH:mm:ss")
 
-
         sql_results = self.dbm.get_obstacle_by_time(selected_start_time,selected_end_time)
 
         self.tableWidget.setRowCount(0)
-        if(len(results)!=0):
-            for value in results:  
+        if(len(sql_results)!=0):
+            for value in sql_results:
+                print(value)  
                 row  = self.tableWidget.rowCount() 
                 self.tableWidget.insertRow(row)
                 self.tableWidget.setItem(row, 0, QTableWidgetItem(str(value[0])))
@@ -217,7 +220,7 @@ class MainWindow(QMainWindow):
 
         self.graph_widget.plot(sql_results)
         #occurtime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        #self.dbm.set_eventlog("obstacle", "person",occurtime,5)
+        #self.dbm.set_eventlog("obstacle", "person")
 
     def closeEvent(self, event):
             # 윈도우 종료 시 데이터베이스 연결 종료
@@ -225,7 +228,7 @@ class MainWindow(QMainWindow):
         event.accept()
 
 class PlotWidget(QWidget):
-    def __init__(self ,cursor):
+    def __init__(self):
         super().__init__()
         # 그래프를 그릴 Figure 객체 생성
         self.figure = Figure()
@@ -237,23 +240,30 @@ class PlotWidget(QWidget):
         self.setLayout(layout)
 
     def plot(self,plot_results):
-
+        self.figure.clear()
+    
         x = np.array([value[3] for value in plot_results])
         y = np.array([value[0] for value in plot_results]).astype(int)
         obs = np.array([value[1] for value in plot_results])
         type = np.array([value[2] for value in plot_results])
-
+        
         # 그래프 그리기
         ax = self.figure.add_subplot(111)  # 1x1 그리드의 첫 번째 서브플롯
+        
         #fig, ax = self.figure.subplots()
+        
         line, =ax.plot(x, y, label="Ferrari")
+    
+        ax.xaxis.set_major_locator(mdates.AutoDateLocator())
+        #ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=1))
+        #ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))    
         mpl=mplcursors.cursor(line, hover=True)
 
         @mpl.connect("add")
-        def on_add(sel): 
+        def on_add(sel):
             
             serial_value = np.float64(sel.target[0])  # 예시 날짜 시리얼
-
+            
             index = sel.index
             decimal_part = index - int(index)
            
@@ -262,32 +272,39 @@ class PlotWidget(QWidget):
             else:
                 index=  round(index)   
             
-               
+            
             # 변환
             date_time = pd.to_datetime('1970-01-01') + pd.to_timedelta(serial_value, unit='D')
             time_value = date_time.strftime('%Y-%m-%d %H:%M:%S')
-            
+            print(time_value)
             sel.annotation.set(text=f'time: {time_value}\nSpeed: {sel.target[1]}\n obstacle : {obs[index]}\n type : {type[index]}',
                        fontsize=12,
                        bbox=dict(facecolor='lightyellow', alpha=0.8))
+
+            
         
         threshold = ["obstacle","signs"]   # 임계값
 
         for i in range(len(y)):
-            if y[i] > threshold:  # 조건: y 값이 임계값을 초과할 때
-                ax.plot(x[i], y[i], marker='o', markersize=8, color='blue')  # 마커 추가
+            if obs[i] in threshold:  # 조건: y 값이 임계값을 초과할 때
                 
+                ax.plot(x[i], y[i], marker='o', markersize=7, color='blue')
+               
+            
         ax.set_title("speed record")
         ax.set_xlabel("time")
         ax.set_ylabel('speed')
+
         ax.legend()
         self.canvas.draw()
+        
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
 
-    #apply_stylesheet(app, theme='dark_amber.xml')
+    apply_stylesheet(app, theme='dark_amber.xml')
 
     window.show()
 
