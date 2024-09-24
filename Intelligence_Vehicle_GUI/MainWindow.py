@@ -66,7 +66,7 @@ class MainWindow(QMainWindow):
         uic.loadUi("./Intelligence_Vehicle_GUI/ui/main.ui", self)
 
 
-        self.setWindowTitle("Ferrari 488")
+        self.setWindowTitle("IV GUI")
         self.label = QLabel(self)
 
         #main tab
@@ -334,7 +334,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
 
-    apply_stylesheet(app, theme='dark_amber.xml')
+    # apply_stylesheet(app, theme='dark_amber.xml')
 
     window.show()
 

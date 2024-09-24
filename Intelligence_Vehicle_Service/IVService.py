@@ -27,8 +27,9 @@ class SocketConfig:
     # CLIENT_HOST = '192.168.0.11'
 
     # SERVER_HOST = '192.168.26.136' #전욱
-    SERVER_HOST = '192.168.26.232' #희천
-    CLIENT_HOST = '192.168.26.178'
+    SERVER_HOST = '172.20.10.4' #희천
+    # CLIENT_HOST = '192.168.26.178'
+    CLIENT_HOST = '172.20.10.5' #희천
     @classmethod
     def get_server_host(cls):
         return cls.SERVER_HOST
