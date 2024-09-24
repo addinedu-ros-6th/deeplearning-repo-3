@@ -24,6 +24,22 @@ from Intelligence_Vehicle_ETC.DBmanager import MySQLConnection
 import math
 from qt_material import apply_stylesheet
 import cv2
+class Camera(QThread):
+    update = pyqtSignal()
+
+    def __init__(self,sec=0.1, parent = None):
+        super().__init__()
+        self.main = parent
+        self.running = True
+    
+    def run(self):
+        count = 0 
+        while self.running == True:
+            self.update.emit()
+            time.sleep(0.1)
+    
+    def stop(self):
+        self.running = False
 
 
 class MainWindow(QMainWindow):
@@ -41,11 +57,21 @@ class MainWindow(QMainWindow):
         self.signpixmap = QPixmap()
         self.obstaclepixmap = QPixmap()
 
+        self.camera = Camera(self)
+        self.camera.running = False
+        self.pixmap = QPixmap()
+
+
+        self.model = YOLO("./Intelligence_Vehicle_AI/Perception/Object/obstacle_n.pt")
         self.dbm = MySQLConnection.getInstance()
         self.dbm.db_connect("172.20.10.6", 3306, "deep_project", "yhc", "1234")
 
+        self.pushButton_camera.clicked.connect(self.clickCamera)
+        self.camera.update.connect(self.updateCamera)
+
         self.obstacleFlag = False
         self.signsFlag =False
+        #log tab
 
         self.pushButton_search.clicked.connect(self.print_driving)
         self.dte_start.setDateTime(QDateTime.currentDateTime())
@@ -59,109 +85,87 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.graph_widget.canvas)
 
 
-    #main tab
-    def update_front_view(self, image):
-        self.update_camera_view(self.label_Obstacle_Camera, image, self.frontCameraPixmap)
+    def updateCamera(self):
+        retval,frame= self.video.read()
 
-    def update_lane_view(self, image):
-        self.update_camera_view(self.label_Lane_Camera, image, self.laneCameraPixmap)
+        results = self.model.track(frame, conf=0.3, imgsz=480,verbose=False)
+        if retval:
+            image = cv2.cvtColor(results[0].plot(), cv2.COLOR_BGR2RGB)
+            h,w,c = image.shape
+            qimage = QImage(image.data, w,h,w*c, QImage.Format_RGB888)
+            self.pixmap= self.pixmap.fromImage(qimage)
+            self.pixmap = self.pixmap.scaled(self.label_Obstacle_Camera.width(),self.label_Obstacle_Camera.height())
+            self.label_Obstacle_Camera.setPixmap(self.pixmap)
 
-    def update_camera_view(self, view:QLabel, image:np.ndarray, pixmap:QPixmap):
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        h, w, c = image.shape
-        qimage = QImage(image.data, w, h, w*c, QImage.Format_RGB888)
-        pixmap = pixmap.fromImage(qimage)
-        pixmap = pixmap.scaled(view.width(), view.height())
-        view.setPixmap(pixmap)
-        
-
-    def display_road_images(self, road_info_array):
-        print(road_info_array)
-        
-        if road_info_array[1] == True: # ChildZone
-            if(self.signsFlag ==False):
-                self.dbm.set_eventlog("signs", "ChildZone")
-                self.signsFlag  = True    
-            self.signpixmap.load("./Intelligence_Vehicle_GUI/ui/image/child.jpg")
-            self.label_child_sign.setScaledContents(True)
-            self.label_child_sign.setPixmap(self.signpixmap)
-
-        else:
-            self.label_child_sign.clear()
-            self.signsFlag =False
-
-        if road_info_array[2] == True: # SpeedLimit50
-            if(self.signsFlag ==False):
-                self.dbm.set_eventlog("signs", "SpeedLimit50")
-                self.signsFlag = True    
-            self.signpixmap.load("./Intelligence_Vehicle_GUI/ui/image/50speed.jpg")
-            self.label_speed_sign.setScaledContents(True)
-            self.label_speed_sign.setPixmap(self.signpixmap)
-        else:
-            self.label_speed_sign.clear()
-            self.signsFlag = False
-
-        # 여러 장애물 동시 검출 시 어떤 방식으로 GUI 상에 표현할지 고민 필요 
-        if road_info_array[3] == True: # Pedestrian
-            if(self.obstacleFlag ==False):
-                self.dbm.set_eventlog("obstacle", "Pedestrian")
-                self.obstacleFlag = True           
-            self.obstaclepixmap.load("./Intelligence_Vehicle_GUI/ui/image/person.png")
-            self.label_obstacle.setScaledContents(True)
-            self.label_obstacle.setPixmap(self.obstaclepixmap)           
-        elif road_info_array[4] == True: # Barricade
-            if(self.obstacleFlag ==False):
-                self.dbm.set_eventlog("obstacle", "Barricade")
-                self.obstacleFlag = True  
-            self.obstaclepixmap.load("./Intelligence_Vehicle_GUI/ui/image/stop.png")
-            self.label_obstacle.setScaledContents(True)
-            self.label_obstacle.setPixmap(self.obstaclepixmap)  
-        elif road_info_array[5] == True: # WildAnimal
-            if(self.obstacleFlag ==False):
-                self.dbm.set_eventlog("obstacle", "WildAnimal")
-                self.obstacleFlag = True  
-            self.obstaclepixmap.load("./Intelligence_Vehicle_GUI/ui/image/dog.png")
-            self.label_obstacle.setScaledContents(True)
-            self.label_obstacle.setPixmap(self.obstaclepixmap)  
-        else:
-            self.label_obstacle.clear()
-            self.obstacleFlag = False
-
-        if road_info_array[0] == True: # sign
-            self.obstaclepixmap.load("./Intelligence_Vehicle_GUI/ui/image/red_sign.png")
-            self.label_blincker.setScaledContents(True)
-            self.label_blincker.setPixmap(self.obstaclepixmap)  
-        else:
-            self.obstaclepixmap.load("./Intelligence_Vehicle_GUI/ui/image/blue_sign.png")
-            self.label_blincker.setScaledContents(True)
-            self.label_blincker.setPixmap(self.obstaclepixmap)    
-            
-
+        self.track_ids = results[0].boxes.cls.int().cpu().tolist()
+       
+        self.printObstacleImage()
+        self.printSpeedImage()
     
+    def printObstacleImage(self):
+        self.pixmap = QPixmap()
+        for i in self.track_ids:
+            if(i ==1):
+                self.obstaclepixmap.load("./Intelligence_Vehicle_GUI/ui/image/red_sign.jpg")
+                self.label_blinker.setScaledContents(True)
+                self.label_blinker.setPixmap(self.obstaclepixmap)  
+            elif(i==4):
+                self.obstaclepixmap.load("./Intelligence_Vehicle_GUI/ui/image/blue_sign.jpg")
+                self.label_blinker.setScaledContents(True)
+                self.label_blinker.setPixmap(self.obstaclepixmap) 
 
-#
-    #def printSpeedImage(self):
-    #    self.pixmap2 = QPixmap()
-    #    for i in self.track_ids:
-    #        if(i ==0):
-    #            self.pixmap2.load("./Intelligence_Vehicle_GUI/ui/image/child_clear.jpg")
-    #            self.label_child_sign.setScaledContents(True)
-    #            self.label_child_sign.setPixmap(self.pixmap2)
-    #        elif(i==3):
-    #            self.pixmap2.load("./Intelligence_Vehicle_GUI/ui/image/child.jpg")
-    #            self.label_child_sign.setScaledContents(True)
-    #            self.label_child_sign.setPixmap(self.pixmap2)
-    #        elif(i==7):
-    #            self.pixmap2.load("./Intelligence_Vehicle_GUI/ui/image/50speed.jpg")
-    #            self.label_speed_sign.setScaledContents(True)
-    #            self.label_speed_sign.setPixmap(self.pixmap2)
-    #        elif(i==8):
-    #            self.pixmap2.load("./Intelligence_Vehicle_GUI/ui/image/50speed_clear.jpg")
-    #            self.label_speed_sign.setScaledContents(True)
-    #            self.label_speed_sign.setPixmap(self.pixmap2)
-    #        else:
-    #            self.label_speed_sign.clear()
-    #            self.label_child_sign.clear()
+    def printSpeedImage(self):
+        for i in self.track_ids:
+            if(i ==0):
+                self.pixmap2.load("./Intelligence_Vehicle_GUI/ui/image/child_clear.jpg")
+                self.label_child_sign.setScaledContents(True)
+                self.label_child_sign.setPixmap(self.pixmap2)
+            elif(i==3):
+                if(self.signsFlag ==False):
+                    self.dbm.set_eventlog("signs", "ChildZone")
+                    self.signsFlag  = True    
+                self.signpixmap.load("./Intelligence_Vehicle_GUI/ui/image/child.jpg")
+                self.label_child_sign.setScaledContents(True)
+                self.label_child_sign.setPixmap(self.signpixmap)
+            elif(i==7):
+                if(self.signsFlag ==False):
+                    self.dbm.set_eventlog("signs", "SpeedLimit50")
+                    self.signsFlag = True    
+                self.signpixmap.load("./Intelligence_Vehicle_GUI/ui/image/50speed.jpg")
+                self.label_speed_sign.setScaledContents(True)
+                self.label_speed_sign.setPixmap(self.signpixmap)
+            elif(i==2):
+                if(self.obstacleFlag ==False):
+                    print("insert compledte")
+                    self.dbm.set_eventlog("obstacle", "WildAnimal")
+                    self.obstacleFlag = True           
+                self.obstaclepixmap.load("./Intelligence_Vehicle_GUI/ui/image/dog.png")
+                self.label_obstacle.setScaledContents(True)
+                self.label_obstacle.setPixmap(self.obstaclepixmap) 
+            else:
+                self.label_speed_sign.clear()
+                self.label_child_sign.clear()
+                self.obstacleFlag = False   
+          
+
+    def clickCamera(self):
+         if self.camera.running  == False:
+             self.isCameraOn = True
+             self.cameraStart()
+         else:
+             self.isCameraOn = False
+             self.cameraStop()
+    def cameraStart(self):
+         # if self.playvideo.running == True:
+         #     self.mp4Stop()
+         self.camera.running = True
+         self.camera.start()
+         self.video = cv2.VideoCapture(-1)
+    def cameraStop(self):
+         self.camera.running = False
+         self.count = 0
+         self.video.release()
+         self.label_camera.clear()
 
 
     def print_speed(self, speed):
