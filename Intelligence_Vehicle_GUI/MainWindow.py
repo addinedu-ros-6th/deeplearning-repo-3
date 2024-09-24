@@ -23,7 +23,7 @@ import matplotlib.dates as mdates
 from Intelligence_Vehicle_ETC.DBmanager import MySQLConnection
 import math
 from qt_material import apply_stylesheet
-
+import cv2
 
 class Camera(QThread):
     update = pyqtSignal()
@@ -235,6 +235,7 @@ class MainWindow(QMainWindow):
 
 
     def print_speed(self, speed):
+        print(speed)
         self.lcdNumber_speed.display(speed)
 
 

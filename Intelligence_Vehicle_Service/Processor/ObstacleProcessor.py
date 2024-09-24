@@ -13,6 +13,10 @@ REFINED_OBJECTS = ["RedSign", "ChildZone", "SpeedLimit50", "Pedestrian", "Barric
 toggledSigns_dict = {objType : False for objType in REFINED_OBJECTS}
 toggledSigns_list = [False] * len(REFINED_OBJECTS)
 toggledSigns_prev = []
+global curr_speedLimit
+curr_speedLimit = 100
+global prev_speedLimit
+prev_speedLimit = 100
 
 class DetectedObject:
     def __init__(self, detection_time, y_position):
@@ -32,11 +36,14 @@ class ObstacleProcessor(Processor):
         self.detection_timeout = 3 #검출 해제 조건(시간)
         self.yLimit_signs = 0 #표지판 y조건
         self.yLimit_obstacle = 0 #장애물 y조건
-        self.obstacle_callback = None
+        self.http_send_func = None
+        self.socket_send_func = None
 
 
-    def set_obstacle_callback(self, obstacle_callback):
-        self.obstacle_callback = obstacle_callback
+    def set_callback(self, http_send_func, socket_send_func):
+        self.http_send_func = http_send_func
+        self.socket_send_func = socket_send_func
+
 
 
     def check_detection_timeout(self, current_time): # 검출 시간이 초과되었는지 확인하고 객체의 상태를 업데이트하는 메소드
@@ -48,7 +55,7 @@ class ObstacleProcessor(Processor):
                     obj.detection_status = False
 
     def execute(self, data):
-
+        global curr_speedLimit, prev_speedLimit
         current_time = time.time()
         dList = data['data']["results"]
         toggledSigns_prev = toggledSigns_list.copy()
@@ -103,20 +110,30 @@ class ObstacleProcessor(Processor):
                 case "stop" : toggledSigns_dict["Barricade"] = obj.detection_status
                 case "dog" : toggledSigns_dict["WildAnimal"] = obj.detection_status
 
-
         self.check_detection_timeout(current_time) # 검출 시간 초과 여부 확인
         # update list
         for i, obj_name in enumerate(REFINED_OBJECTS):
             toggledSigns_list[i] = toggledSigns_dict[obj_name]
         # compare present list with previous list, print present list if they are different
-        # FIXME: 주석 처리된 텍스트 정리 해 주세요.
 
         if toggledSigns_prev != toggledSigns_list:
             print("time: ", current_time, "list : ", toggledSigns_list)
-            self.obstacle_callback("icon",toggledSigns_list, "GUI")
-            # TODO : 재창님 여기에 limit_speed 값 넣어 주세요.
+            self.http_send_func("icon", toggledSigns_list, "GUI")
 
-## TEST ##
+        prev_speedLimit = curr_speedLimit
+
+        if toggledSigns_list[1] == True: curr_speedLimit = 30
+        elif toggledSigns_list[2] == True: curr_speedLimit = 50
+        else: curr_speedLimit = 100
+        
+        if prev_speedLimit != curr_speedLimit:
+            self.socket_send_func("DF", str(curr_speedLimit))
+
+
+
+
+
+# # TEST ##
 # import cv2
 # from ultralytics import YOLO
 # import json
@@ -133,9 +150,10 @@ class ObstacleProcessor(Processor):
 #
 #     frame = cv2.resize(frame, (720, 480))
 #     results = model.track(frame, conf=0.3, imgsz=480, verbose=False)
-#     obstacle_data = {
-#             "results": results[0].tojson() # results 변환
+#     obstacle_data = { "data" : {"results": results[0].tojson() # results 변환
+#       }
 #     }
+#
 #     op.execute(obstacle_data)
 #     cv2.imshow("Live Camera", results[0].plot())
 #

@@ -11,7 +11,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 from Custom_print  import custom_print
 
 class GUIIconProcessor(QObject, Processor, metaclass=ProcessorMeta):
-    hudSignal = pyqtSignal(dict)
+    hudSignal = pyqtSignal(list)
     def __init__(self, parent: QObject = None) -> None:
         super().__init__(parent)
 

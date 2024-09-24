@@ -74,7 +74,7 @@ class IVService:
         self.processor_factory.register("lane", laneProcessor)
 
         obstacleProcessor = ObstacleProcessor()
-        obstacleProcessor.set_obstacle_callback(self.send_data_http)
+        obstacleProcessor.set_callback(self.send_data_http, )
         self.processor_factory.register("obstacle", obstacleProcessor)
 
 
