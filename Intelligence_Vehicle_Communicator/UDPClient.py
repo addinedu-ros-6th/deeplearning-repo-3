@@ -28,7 +28,7 @@ class UDPClient:
     def send_data(self, data, identifier=''):
         try:
             self.udp_connection.send_data(data, self.data_type, identifier)
-            print(f"Client {self.client_id} sent {self.data_type} with identifier {identifier}")
+            # print(f"Client {self.client_id} sent {self.data_type} with identifier {identifier}")
         except Exception as e:
             print(f"Error sending {self.data_type}: {e}")
 

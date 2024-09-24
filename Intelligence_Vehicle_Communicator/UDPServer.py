@@ -28,7 +28,7 @@ class UDPServer:
             try:
                 data_type, data, address = self.udp_connection.receive_data()
                 # print(f' ==> Line 29: \033[38;2;236;228;197m[data]\033[0m({type(data).__name__}) = \033[38;2;239;252;79m{data}\033[0m')
-                print(f' ==> Line 29: \033[38;2;151;13;153m[data_type]\033[0m({type(data_type).__name__}) = \033[38;2;3;110;17m{data_type}\033[0m')
+                # print(f' ==> Line 29: \033[38;2;151;13;153m[data_type]\033[0m({type(data_type).__name__}) = \033[38;2;3;110;17m{data_type}\033[0m')
                 
                 if data is None:
                     continue

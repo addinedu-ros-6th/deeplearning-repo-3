@@ -8,7 +8,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from ultralytics import YOLO
 import mysql.connector
-#from Intelligence_Vehicle_AI.Perception.Object.ObstacleDetector import ObstacleDetector
 import numpy as np
 from Observer import *
 from PyQt5 import uic
@@ -79,15 +78,18 @@ class MainWindow(QMainWindow):
         self.laneCameraPixmap = QPixmap()
         self.camera = Camera(self)
         self.camera.running = False
-        self.pixmap = QPixmap()
-        self.model = YOLO("./Intelligence_Vehicle_AI/Perception/Object/obstacle_n.pt")
+        self.signpixmap = QPixmap()
+        self.obstaclepixmap = QPixmap()
 
+        self.model = YOLO("./Intelligence_Vehicle_AI/Perception/Object/obstacle_n.pt")
+        self.dbm = MySQLConnection.getInstance()
+        self.dbm.db_connect("192.168.0.130", 3306, "deep_project", "yhc", "1234")
         self.pushButton_camera.clicked.connect(self.clickCamera)
         self.camera.update.connect(self.updateCamera)
         self.speed.update.connect(self.speed_update)
 
         #log tab
-        
+
         self.pushButton_search.clicked.connect(self.print_driving)
         self.dte_start.setDateTime(QDateTime.currentDateTime())
         self.dte_end.setDateTime(QDateTime.currentDateTime()) 
@@ -136,7 +138,42 @@ class MainWindow(QMainWindow):
        
         self.printObstacleImage()
         self.printSpeedImage() 
-                        
+
+    
+
+    def display_road_images(self, road_info_array):
+        
+        if road_info_array[1] == True: # ChildZone
+            self.signpixmap.load("./Intelligence_Vehicle_GUI/ui/image/child.jpg")
+            self.label_child_sign.setScaledContents(True)
+            self.label_child_sign.setPixmap(self.signpixmap)
+        else:
+            self.label_child_sign.clear()
+
+        if road_info_array[2] == True: # SpeedLimit50
+            self.signpixmap.load("./Intelligence_Vehicle_GUI/ui/image/50speed.jpg")
+            self.label_speed_sign.setScaledContents(True)
+            self.label_speed_sign.setPixmap(self.signpixmap)
+        else:
+            self.label_speed_sign.clear()
+
+        # 여러 장애물 동시 검출 시 어떤 방식으로 GUI 상에 표현할지 고민 필요 
+        if road_info_array[3] == True: # Pedestrian
+            self.obstaclepixmap.load("./Intelligence_Vehicle_GUI/ui/image/person.png")
+            self.label_obstacle.setScaledContents(True)
+            self.label_obstacle.setPixmap(self.obstaclepixmap)           
+        elif road_info_array[4] == True: # Barricade
+            self.obstaclepixmap.load("./Intelligence_Vehicle_GUI/ui/image/stop.png")
+            self.label_obstacle.setScaledContents(True)
+            self.label_obstacle.setPixmap(self.obstaclepixmap)  
+        elif road_info_array[5] == True: # WildAnimal
+            self.obstaclepixmap.load("./Intelligence_Vehicle_GUI/ui/image/dog.png")
+            self.label_obstacle.setScaledContents(True)
+            self.label_obstacle.setPixmap(self.obstaclepixmap)  
+        else:
+            self.label_obstacle.clear()
+    
+
     def printObstacleImage(self):
         self.pixmap = QPixmap()
         for i in self.track_ids:
@@ -250,8 +287,6 @@ class PlotWidget(QWidget):
         # 그래프 그리기
         ax = self.figure.add_subplot(111)  # 1x1 그리드의 첫 번째 서브플롯
         
-        #fig, ax = self.figure.subplots()
-        
         line, =ax.plot(x, y, label="Ferrari")
     
         ax.xaxis.set_major_locator(mdates.AutoDateLocator())
@@ -272,7 +307,6 @@ class PlotWidget(QWidget):
             else:
                 index=  round(index)   
             
-            
             # 변환
             date_time = pd.to_datetime('1970-01-01') + pd.to_timedelta(serial_value, unit='D')
             time_value = date_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -281,24 +315,20 @@ class PlotWidget(QWidget):
                        fontsize=12,
                        bbox=dict(facecolor='lightyellow', alpha=0.8))
 
-            
-        
         threshold = ["obstacle","signs"]   # 임계값
 
         for i in range(len(y)):
             if obs[i] in threshold:  # 조건: y 값이 임계값을 초과할 때
                 
                 ax.plot(x[i], y[i], marker='o', markersize=7, color='blue')
-               
-            
+                          
         ax.set_title("speed record")
         ax.set_xlabel("time")
         ax.set_ylabel('speed')
 
         ax.legend()
         self.canvas.draw()
-        
-
+    
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

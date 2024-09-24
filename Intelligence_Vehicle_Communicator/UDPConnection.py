@@ -32,7 +32,7 @@ class UDPConnection:
                 data = pickle.dumps((identifier, data))
         elif data_type == 'image':
             data_type_int = 2
-            if isinstance(data, np.ndarray):
+            if not isinstance(data, bytes):
                 data = pickle.dumps((identifier, data))
         else:
             raise ValueError("지원하지 않는 데이터 유형입니다.")

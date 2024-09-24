@@ -2,7 +2,7 @@ import datetime
 import sys
 import os
 current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
-relative_path = os.path.join(current_dir, '../../..')  # 상위 폴더로 이동
+relative_path = os.path.join(current_dir, '../..')  # 상위 폴더로 이동
 sys.path.append(relative_path)
 from Intelligence_Vehicle_Service.IVService import IVService
 from Intelligence_Vehicle_Communicator.Flask.FlaskCummunicator import FlaskClient
@@ -90,13 +90,23 @@ def fetch_commands(command):
                 right_motor_correction_value = int(cmd[1:])  # 오른쪽 보정 값 추출
                 right_motor_correction(right_motor_correction_value)
                 print(f"오른 모터 보정값: {right_motor_correction_value}")
+                # if right_motor_correction_value > 18:
+                #     command
             elif cmd[0] == 'E':
                 encoder_reset()
                 print("엔코더 리셋")
 
         # 현재 명령을 처리
         process_command(command)
-        
+
+        # 자동 command 없을 때  최대한 제자리 회전 구현
+        if command[0] == 'C':
+            right_motor_correction_value = int(command[1:])
+            if right_motor_correction_value>12:
+                pre_command = "F0"
+            else:
+                pre_command="F30"
+
         # 'C' 또는 'E'일 경우, 이전 명령도 처리
         if command[0] in ['C', 'E']:
             process_command(pre_command)
@@ -108,10 +118,11 @@ def fetch_commands(command):
     except requests.RequestException as e:
         print(f"GET 요청 중 오류 발생: {e}")
 
-    command_error_flag = not command_error_flag
+    # command_error_flag = not command_error_flag
     time.sleep(0.1)  # 5초마다 GET 요청
 
 def custom_data_handler(data_type, data, client_address):
+    print(data_type,data,client_address)
     if data_type == 1:  # 스트링 데이터
         identifier, str_data = data
         print(f"텍스트: {type(str_data)}")
@@ -121,13 +132,15 @@ def custom_data_handler(data_type, data, client_address):
         else:
             print("error identifier")
 
-        if data[:2] == "ER":
-            command = "C"+data[2:]
-        elif data[:2] == "DF":
-            command == "F"+data[2:]
-        elif data[:2] == "ST":
-            command == "S"
-        fetch_commands(command)
+        if data[0] == "ER":
+            # command = "C"+str(int(float(data[1])/5+40))
+            command = "C"+str(int((float(data[1])+170)/5))
+        elif data[0] == "DF":
+            command = "F"+str(int(float(data[1])))
+        elif data[0] == "ST":
+            command = "S"
+        if command :
+            fetch_commands(command)
 
         print(data)
     else:
@@ -185,8 +198,7 @@ def send_cam_frame():
             encode_param_front = cv2.imencode('.jpg', front_frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
             cleint_front.queue_data((encode_param_front,'obstacle'))
 
-            time.sleep(0.05)
-        # speed_client.queue_data((get_speed(),'speed'))
+            time.sleep(0.1)
         print("모든 메시지 전송 완료")
 
     except Exception as e:
@@ -198,7 +210,7 @@ def send_cam_frame():
     #         # client_manager.stop_all_clients()
 
 def resize_frame(frame):
-    frame_width, frame_height = 640, 480
+    frame_width, frame_height = 320, 240
     decimg1 = cv2.resize(frame, (frame_width, frame_height))
     return decimg1
 
@@ -206,22 +218,28 @@ def get_lane_frame():
     ret, frame = lane_cam.read()
     if not ret:
         pass
-    frame = resize_frame(frame)
+    # frame = resize_frame(frame) #----------------------------------------------------
     return frame
 
 def get_front_frame():
     ret, frame = front_cam.read()
     if not ret:
         pass
-    frame = resize_frame(frame)
+    # frame = resize_frame(frame) #-------------------------------------------------------- 
     return frame
 
-# def get_speed():
-#     return cur_speed
 
 if __name__ == "__main__":
-    lane_cam = cv2.VideoCapture(0)
-    front_cam = cv2.VideoCapture(1)
+    command = "S"
+    lane_cam = cv2.VideoCapture(1)
+    width = 640
+    height = 480
+    lane_cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+    lane_cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+    front_cam = cv2.VideoCapture(0)
+
+    front_cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+    front_cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
     # 만약 위의 인덱스로 열리지 않는다면 아래를 시도해 보세요
     # front_cam = cv2.VideoCapture(2)  # 또는 cv2.VideoCapture('/dev/video2')
 
@@ -230,27 +248,26 @@ if __name__ == "__main__":
     port = 4002  # 서버 포트
 #___________________________________________________________-
     # HOST='192.168.0.22' # 클라이언트 전송 할 ip
-    HOST = '192.168.26.136'
+    HOST = '192.168.26.136' # 전욱
+    # HOST = '192.168.26.232' #희천
+    # HOST = '192.168.26.32' # 재창
+
     PORT= 4001 #클라이언트 전송 포트 
     # 아두이노가 연결된 시리얼 포트와 통신 속도(baud rate) 설정
     ser = serial.Serial('/dev/ttyArduino', 9600, timeout=1)
     time.sleep(2)  # 시리얼 연결 안정화를 위한 대기 시간
 
-    pre_command = 'S'
-    # 메인 스레드에서 TCPClientManager 인스턴스 생성
-    # client_manager = TCPClientManager()
-    
-    # speed_client = client_manager.get_client("speed_client", data_type='str', host=HOST, port=4003)
-    # speed_client.start(socket.SOCK_DGRAM)
+    # pre_command = 'S'
+    pre_command = 'F30'
 
     udp_client_manager = UDPClientManager()
-    client_speed = udp_client_manager.get_client("speed", 'str', '192.168.26.136', 4003)
+    client_speed = udp_client_manager.get_client(client_id = "speed", data_type = 'str', host = HOST, port = 4003)
     client_speed.start()
 
-    cleint_front = udp_client_manager.get_client("front", 'image', '192.168.26.136', 4000)
+    cleint_front = udp_client_manager.get_client(client_id = "front", data_type = 'image', host = HOST, port = 4000)
     cleint_front.start()
 
-    client_lane = udp_client_manager.get_client("lane", 'image', '192.168.26.136', 4001)
+    client_lane = udp_client_manager.get_client(client_id = "lane", data_type = 'image', host = HOST, port = 4001)
     client_lane.start()
 
 
@@ -262,9 +279,9 @@ if __name__ == "__main__":
     encoder_thread.daemon = True  # 메인 프로그램이 종료되면 스레드도 종료
     encoder_thread.start()
 
-
-    upd_manager = UDPServerManager()
-    upd_manager.start_server(host=host, port=port,data_handler=custom_data_handler)
+    print("hello000000000000000000000000000")
+    udp_manager = UDPServerManager()
+    udp_manager.start_server(host=host, port=port,data_handler=custom_data_handler)
 
 
     # error_server = TCPServerManager()
@@ -286,13 +303,15 @@ if __name__ == "__main__":
             time.sleep(1)  # 메인 스레드는 계속 실행되도록 대기
     except KeyboardInterrupt:
         print("프로그램 종료")  # Ctrl+C로 종료
+        motor_stop()
     finally:
         motor_stop()
         ser.close()
         lane_cam.release()
         front_cam.release()
-        upd_manager.stop_server()
+        udp_manager.stop_server()
         udp_client_manager.stop_all_clients()
+
 
 
 

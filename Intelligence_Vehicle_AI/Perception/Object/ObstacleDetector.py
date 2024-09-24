@@ -3,17 +3,20 @@ import cv2
 import numpy as np
 import sys
 import time
+
+from sympy import false
 from ultralytics import YOLO
 
 class ObstacleDetector:
 
     def __init__(self, model_path, video_path):
-        self.model = YOLO(model_path)
+        self.model = YOLO(model_path, verbose=False)
         self.cap = cv2.VideoCapture(video_path)
 
 
-    def start_detect_result(self, image, send_func):       
-        _, buffer = cv2.imencode('.jpg', image)
+    def start_detect_result(self, image, send_func):
+        copy_image = image.copy()
+        _, buffer = cv2.imencode('.jpg', copy_image)
         encoded_image = base64.b64encode(buffer).decode('utf-8')
 
         image_data = {
@@ -22,17 +25,16 @@ class ObstacleDetector:
         }
         
         send_func("viewer", image_data , "GUI")
-            
-        # frame = cv2.resize(image, (720, 480))
-        # results = self.model.track(image, conf=0.7, imgsz=480, verbose=False)
 
-        # obstacle_data = {
-        #     "results": results[0].tojson() # results 변환
-        # }
-        # send_func("obstacle", obstacle_data, "Service")
-
-
-
+        try:
+            results = self.model.track(image, conf=0.7, verbose=False)
+            obstacle_data = {
+                "results": results[0].tojson() # results 변환
+            }
+        except Exception as e:
+            print(f"Error processing image: {e}")
+            obstacle_data = {"error": str(e)}
+        send_func("obstacle", obstacle_data, "Service")
 
 
     def get_results(self):
