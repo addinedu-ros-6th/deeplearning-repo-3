@@ -85,8 +85,8 @@ class MainWindow(QMainWindow):
         self.dbm = MySQLConnection.getInstance()
         self.dbm.db_connect("172.20.10.6", 3306, "deep_project", "yhc", "1234")
         self.pushButton_camera.clicked.connect(self.clickCamera)
-        self.camera.update.connect(self.updateCamera)
-        self.speed.update.connect(self.speed_update)
+        #self.camera.update.connect(self.updateCamera)
+        #self.speed.update.connect(self.speed_update)
 
         #log tab
 
@@ -234,9 +234,8 @@ class MainWindow(QMainWindow):
         self.video.release()
         self.label_camera.clear()
 
-    def speed_update(self):
-        self.current_number += 1  # 숫자 증가
-        self.lcdNumber_speed.display(self.current_number)
+    def print_speed(self, speed):
+        self.lcdNumber_speed.display(speed)
     
     def print_driving(self):
         selected_start_time = self.dte_start.dateTime().toString("yyyy-MM-dd HH:mm:ss")

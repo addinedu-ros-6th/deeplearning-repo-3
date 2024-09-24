@@ -11,7 +11,7 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-
+from qt_material import apply_stylesheet
 clients = {
     "Lane": 5001,
     "Obstacle": 5002,
@@ -23,6 +23,7 @@ clients = {
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     myWindow = MainWindow()
+    apply_stylesheet(app, theme='dark_amber.xml')
     myWindow.show()
 
     service = IVService()
