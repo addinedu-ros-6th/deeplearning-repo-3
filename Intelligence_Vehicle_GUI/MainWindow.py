@@ -65,7 +65,7 @@ class MainWindow(QMainWindow):
         uic.loadUi("./Intelligence_Vehicle_GUI/ui/main.ui", self)
 
 
-        self.setWindowTitle("Ferrari 488")
+        self.setWindowTitle("IV GUI")
         self.label = QLabel(self)
 
         #main tab
@@ -84,8 +84,8 @@ class MainWindow(QMainWindow):
         self.dbm = MySQLConnection.getInstance()
         self.dbm.db_connect("172.20.10.6", 3306, "deep_project", "yhc", "1234")
         self.pushButton_camera.clicked.connect(self.clickCamera)
-        self.camera.update.connect(self.updateCamera)
-        self.speed.update.connect(self.speed_update)
+        #self.camera.update.connect(self.updateCamera)
+        #self.speed.update.connect(self.speed_update)
 
         #log tab
 
@@ -233,9 +233,10 @@ class MainWindow(QMainWindow):
         self.video.release()
         self.label_camera.clear()
 
-    def speed_update(self):
-        self.current_number += 1  # 숫자 증가
-        self.lcdNumber_speed.hudSignal(self.current_number)
+
+    def print_speed(self, speed):
+        self.lcdNumber_speed.display(speed)
+
 
     
     def print_driving(self):
@@ -334,7 +335,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
 
-    apply_stylesheet(app, theme='dark_amber.xml')
+    # apply_stylesheet(app, theme='dark_amber.xml')
 
     window.show()
 
