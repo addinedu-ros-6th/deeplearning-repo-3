@@ -32,6 +32,12 @@ class ObstacleProcessor(Processor):
         self.detection_timeout = 3 #검출 해제 조건(시간)
         self.yLimit_signs = 0 #표지판 y조건
         self.yLimit_obstacle = 0 #장애물 y조건
+        self.obstacle_callback = None
+
+
+    def set_obstacle_callback(self, obstacle_callback):
+        self.obstacle_callback = obstacle_callback
+
 
     def check_detection_timeout(self, current_time): # 검출 시간이 초과되었는지 확인하고 객체의 상태를 업데이트하는 메소드
         for obj_name in list(detected_objects.keys()):
@@ -44,7 +50,7 @@ class ObstacleProcessor(Processor):
     def execute(self, data):
 
         current_time = time.time()
-        dList = data["results"]
+        dList = data['data']["results"]
         toggledSigns_prev = toggledSigns_list.copy()
 
         if dList != "[]":
@@ -104,6 +110,8 @@ class ObstacleProcessor(Processor):
         # compare present list with previous list, print present list if they are different
         if toggledSigns_prev != toggledSigns_list:
             print("time: ", current_time, "list : ", toggledSigns_list)
+            self.obstacle_callback("icon",toggledSigns_list, "GUI")
+
 
 ## TEST ##
 # import cv2

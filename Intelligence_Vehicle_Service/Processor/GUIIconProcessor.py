@@ -10,15 +10,12 @@ from Intelligence_Vehicle_Service.Processor.Processor import Processor, Processo
 from PyQt5.QtCore import QObject, pyqtSignal
 import numpy as np
 
-class GUIProcessor(QObject, Processor, metaclass=ProcessorMeta):
-
-    speedfunc = pyqtSignal(str)
+class GUIIconProcessor(QObject, Processor, metaclass=ProcessorMeta):
 
     def __init__(self, parent: QObject = None) -> None:
         super().__init__(parent)
 
     def execute(self, data):
-        # print(f' ==> Line 20: \033[38;2;24;120;43m[data]\033[0m({type(data).__name__}) = \033[38;2;109;167;63m{data}\033[0m')
-        print()
-        # self.speedfunc.emit(data)
+        print(f"GUIIconProcessor=> 21{data}")
+
 
