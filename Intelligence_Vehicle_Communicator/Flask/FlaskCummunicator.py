@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Callable
 from flask import Flask, request, jsonify
 import requests
@@ -20,6 +21,9 @@ class FlaskClient(metaclass = SingletonMeta):
         print(f' ==> Line 19: \033[38;2;214;177;68m[client_id]\033[0m({type(client_id).__name__}) = \033[38;2;234;176;129m{client_id}\033[0m')
         self.port = port
         self.app = Flask(__name__)
+
+        log = logging.getLogger('werkzeug')
+        log.setLevel(logging.ERROR)  # 기본 로깅 레벨을 ERROR로 변경하여 정보 로그를 비활성화
 
         # 클라이언트의 메시지 수신 라우트 설정
         self.setup_routes()
