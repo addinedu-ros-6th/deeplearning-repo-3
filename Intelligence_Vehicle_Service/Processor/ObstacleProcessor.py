@@ -36,11 +36,14 @@ class ObstacleProcessor(Processor):
         self.detection_timeout = 3 #검출 해제 조건(시간)
         self.yLimit_signs = 0 #표지판 y조건
         self.yLimit_obstacle = 0 #장애물 y조건
-        self.obstacle_callback = None
+        self.http_send_func = None
+        self.socket_send_func = None
 
 
-    def set_obstacle_callback(self, obstacle_callback):
-        self.obstacle_callback = obstacle_callback
+    def set_callback(self, http_send_func, socket_send_func):
+        self.http_send_func = http_send_func
+        self.socket_send_func = socket_send_func
+
 
 
     def check_detection_timeout(self, current_time): # 검출 시간이 초과되었는지 확인하고 객체의 상태를 업데이트하는 메소드
@@ -115,7 +118,7 @@ class ObstacleProcessor(Processor):
 
         if toggledSigns_prev != toggledSigns_list:
             print("time: ", current_time, "list : ", toggledSigns_list)
-            self.obstacle_callback("icon",toggledSigns_list, "GUI")
+            self.http_send_func("icon", toggledSigns_list, "GUI")
 
         prev_speedLimit = curr_speedLimit
 
@@ -124,8 +127,7 @@ class ObstacleProcessor(Processor):
         else: curr_speedLimit = 100
         
         if prev_speedLimit != curr_speedLimit:
-            pass
-            #TODO: add function
+            self.socket_send_func("DF", str(curr_speedLimit))
 
 
 
