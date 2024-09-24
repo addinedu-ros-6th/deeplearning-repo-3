@@ -280,19 +280,6 @@
      </widget>
     </widget>
    </widget>
-   <widget class="QPushButton" name="pushButton_camera">
-    <property name="geometry">
-     <rect>
-      <x>930</x>
-      <y>10</y>
-      <width>89</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
   </widget>
  </widget>
  <resources/>
