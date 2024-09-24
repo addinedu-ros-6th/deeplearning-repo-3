@@ -40,13 +40,16 @@ class LaneImageHandler(DataHandler):
 
 class SpeedDataHandler(DataHandler):
     def __init__(self):
-        self.send_func = None
+        self.socket_send_func = None
+        self.http_send_func = None
 
     def register_data_received_callback(self, func_tuple):
-        self.send_func = func_tuple[0]
+        self.socket_send_func = func_tuple[0]
+        self.http_send_func = func_tuple[1]
 
     def handle(self, data, client_address):
         print(f"Handling data from {client_address}: {data}")
-        self.send_func("speed", data , "GUI")
+        self.socket_send_func("speed", data, "GUI")
+        self.http_send_func("gui_speed", data, "GUI")
 
 

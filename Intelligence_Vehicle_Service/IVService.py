@@ -7,6 +7,7 @@ import cv2
 from Intelligence_Vehicle_Communicator.TCPServerNewVersion import TCPServerManager
 from Intelligence_Vehicle_Communicator.UDPClient import UDPClientManager
 from Intelligence_Vehicle_Communicator.UDPServer import UDPServerManager
+from Intelligence_Vehicle_Service.Processor.GUISpeedProcessor import GUISpeedProcessor
 
 current_dir = os.path.dirname(os.path.abspath(__file__)) # 현재 스크립트의 디렉토리를 가져오고, 프로젝트 루트로 이동하는 상대 경로를 추가
 relative_path = os.path.join(current_dir, '..')  # 상위 폴더로 이동
@@ -84,9 +85,14 @@ class IVService:
         gui_viewer_processor.laneView.connect(window_class.update_lane_view)
         self.processor_factory.register("viewer", gui_viewer_processor)
 
-        gui_processor = GUIIconProcessor()
-        gui_processor.hudSignal.connect(window_class.display_road_images)
-        self.processor_factory.register("icon", gui_processor)
+        gui_icon_processor = GUIIconProcessor()
+        gui_icon_processor.hudSignal.connect(window_class.display_road_images)
+        self.processor_factory.register("icon", gui_icon_processor)
+
+        gui_speed_processor = GUISpeedProcessor()
+        gui_speed_processor.speed.connect(window_class.print_speed)
+        self.processor_factory.register("gui_speed", gui_speed_processor)
+
 
 
     def register_socket_receive_handle(self):
