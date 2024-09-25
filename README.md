@@ -74,8 +74,8 @@ UI 구조
 |-----|-----|-----|
 |1000장|모형 도로 촬영|[Stop_Line, L_Lane, R_Lane]|
 
-(라벨링 과정 이미지)
--loss and mAP chart
+![obstacle_result](https://github.com/user-attachments/assets/046bb048-d95b-48f2-a2ef-8e6a30044abd)
+![object_merge](https://github.com/user-attachments/assets/c35aee99-63d5-4ffe-b6a4-bc71ca4a6f27)
 
 #### 객체 검출 모델
 |학습 데이터 분량|데이터 취득 방식|클래스 리스트|
