@@ -73,16 +73,18 @@ UI 구조
 |학습 데이터 분량|데이터 취득 방식|클래스 리스트|
 |-----|-----|-----|
 |1000장|모형 도로 촬영|[Stop_Line, L_Lane, R_Lane]|
-
+#### 차선 모델 loss, mAP 그래프
 ![obstacle_result](https://github.com/user-attachments/assets/046bb048-d95b-48f2-a2ef-8e6a30044abd)
+#### class 데이터 및 val이미지 예시
 ![object_merge](https://github.com/user-attachments/assets/c35aee99-63d5-4ffe-b6a4-bc71ca4a6f27)
 
 #### 객체 검출 모델
 |학습 데이터 분량|데이터 취득 방식|클래스 리스트|
 |-----|-----|-----|
 |1200장|모형 도로 촬영|[Red_sign, Blue_sign, person, child, dog, 50km, 50km_deactive, child, child_deactive]|
-
+#### 객체 모델 loss, mAP 그래프
 ![lane_merge1](https://github.com/user-attachments/assets/a5d272b0-edc9-4640-af1c-f3be448986cc)
+#### class 데이터 및 val이미지 예시
 ![lane_merge2](https://github.com/user-attachments/assets/010ff9f2-935a-48c6-81d1-09731d13d89e)
 
 ### 구현 및 시현 영상
