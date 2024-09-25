@@ -68,7 +68,7 @@
 ![0925121521730420](https://github.com/user-attachments/assets/b6db7a78-0eb2-47d3-aa2a-0b1902b0229b)
 
 #### 주행 제어
-- 제어 알고리즘
+![abstract_driving_algo](https://github.com/user-attachments/assets/3943f5f7-bf7a-435f-88d0-35360cad3c63)
 
 ### 딥러닝 모델 생성
 #### 차선 검출 모델
