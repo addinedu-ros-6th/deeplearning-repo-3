@@ -28,10 +28,7 @@
 |영상 처리|openCV|
 ## 프로젝트 단계
 ### 주제 선정
-- 딥러닝 기술의 학습 기회
-- 데이터 처리 및 패턴 인식
-- 산업적 응용성과 확장성
-- 다양한 연구 분야와의 연계성
+딥러닝 기술의 학습 기회, 센서에서 수집한 대량 데이터의 처리, 여러 산업에 적용될 수 있는 응용성과 확장성, 다양한 연구 분야와의 연계성을 고려하여 카메라 영상을 기반으로 한 자율주행 로봇을 프로젝트 주제로 선정
 ### 사용자 요구사항 분석
 기능
 - 주행 관련 객체 인식 기능
@@ -67,27 +64,33 @@ ERD
 
 ![erd](https://github.com/user-attachments/assets/9d43f6bd-cfd1-4fda-aece-ae4cf4ae6320)
 
-UI
+UI 구조
+![gui_structure](https://github.com/user-attachments/assets/e14f82ce-8122-4441-bf51-14b57c5dcbd9)
+
 제어
 - 제어 알고리즘
 ### 딥러닝 모델 생성
 #### 차선 검출 모델
-|학습 데이터 양|데이터 취득 방식|클래스 리스트|
+|학습 데이터 분량|데이터 취득 방식|클래스 리스트|
 |-----|-----|-----|
-|1000장|모형 도로|[Stop_Line, L_Lane, R_Lane]|
+|1000장|모형 도로 촬영|[Stop_Line, L_Lane, R_Lane]|
+
 (라벨링 과정 이미지)
 -loss and mAP chart
 
 #### 객체 검출 모델
-|학습 데이터 양|데이터 취득 방식|클래스 리스트|
+|학습 데이터 분량|데이터 취득 방식|클래스 리스트|
 |-----|-----|-----|
-|1200장|모형 도로|[Red_sign, Blue_sign, person, child, dog, 50km, 50km_deactive, child, child_deactive]|
+|1200장|모형 도로 촬영|[Red_sign, Blue_sign, person, child, dog, 50km, 50km_deactive, child, child_deactive]|
+
 (라벨링 과정 이미지)
 -loss and mAP chart
 
 ### 구현 및 시현 영상
 - 구현
   Commit 로그, 생성한 파일 등
+![gui_main](https://github.com/user-attachments/assets/17ba72bf-a179-4f41-8b4f-a1548be2c65f)
+![gui_log](https://github.com/user-attachments/assets/feecc268-6a24-484a-996e-bdc692a6f38b)
 - 시현 영상
 Click here to watch the demo
 
