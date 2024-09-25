@@ -89,8 +89,8 @@ UI 구조
 ### 구현 및 시현 영상
 - 구현
   Commit 로그, 생성한 파일 등
-![gui_main](https://github.com/user-attachments/assets/17ba72bf-a179-4f41-8b4f-a1548be2c65f)
-![gui_log](https://github.com/user-attachments/assets/feecc268-6a24-484a-996e-bdc692a6f38b)
+![0925121521730420](https://github.com/user-attachments/assets/b6db7a78-0eb2-47d3-aa2a-0b1902b0229b)
+
 - 시현 영상
 Click here to watch the demo
 
