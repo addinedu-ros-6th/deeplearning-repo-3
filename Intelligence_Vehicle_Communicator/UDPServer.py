@@ -38,6 +38,7 @@ class UDPServer:
                         print(f"클라이언트 {address}가 정상적으로 연결 종료를 요청했습니다.")
                         continue
                 
+                print(data_type, data)
                 # 외부 데이터 핸들러 호출
                 response = self.data_handler(data_type, data, address)
                 

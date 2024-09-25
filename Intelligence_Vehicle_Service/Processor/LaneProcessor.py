@@ -60,8 +60,7 @@ class LaneProcessor(Processor):
                     class_ids.append(result['class'])
 
         self.stop_line_flag = 1 if 'Stop_Line' in self.newlist else 0
-        if self.stop_line_flag == 1:
-            self.socket_send_func("stop_line", self.stop_line_flag)
+        self.socket_send_func("stop_line", self.stop_line_flag)
 
 
         # 차선 데이터 처리
@@ -77,8 +76,8 @@ class LaneProcessor(Processor):
             return
 
         left_center, right_center = self.find_lane_centers(lane_masks)
-        print(f' ==> Line 52: \033[38;2;118;75;166m[right_center]\033[0m({type(right_center).__name__}) = \033[38;2;39;214;70m{right_center}\033[0m')
-        print(f' ==> Line 52: \033[93m[left_center]\033[0m({type(left_center).__name__}) = \033[38;2;21;58;104m{left_center}\033[0m')
+        # print(f'({type(right_center).__name__}) = {right_center}')
+        # print(f"({type(left_center).__name__}) = {left_center}")
         
         if left_center is not None and right_center is not None:
             image_width = WIDTH
@@ -87,7 +86,7 @@ class LaneProcessor(Processor):
             self.error = round((center_x - middle_point[0] + error_correction) / error_divide, 1)
             self.socket_send_func("error", self.error)
 
-            print(f"오차(error): {self.error}")
+            # print(f"오차(error): {self.error}")
 
         # 평균 신뢰도 계산
         avg_confidence = sum(result['confidence'] for result in results) / len(results)

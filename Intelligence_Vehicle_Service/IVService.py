@@ -58,7 +58,6 @@ class IVService:
 
     
     def start_socket_server(self, port=4001):
-        
         try:
             udp_server_manager = UDPServerManager()
             udp_server_manager.start_server(host=SocketConfig.SERVER_HOST, port=port, data_handler=self.handle_receive_socket_data)
@@ -90,7 +89,7 @@ class IVService:
         self.processor_factory.register("icon", gui_icon_processor)
 
         gui_speed_processor = GUISpeedProcessor()
-        gui_speed_processor.hudSignal.connect(window_class.print_speed)
+        gui_speed_processor.speed.connect(window_class.print_speed)
         self.processor_factory.register("gui_speed", gui_speed_processor)
 
 
@@ -128,7 +127,7 @@ class IVService:
             return
 
         try:
-            print(key)
+            #print(f"handle_receive_http_data {key, data}")
             processor = self.processor_factory.get(key)
             processor.execute(data)
 
@@ -140,8 +139,14 @@ class IVService:
         """
         socket통신으로 데이터를 받으면, 데이터의 key에 따라 적절한 프로세서를 찾아 실행합니다.
         """
-        if data_type == 2:  # 이미지 데이터
-            identifier, image = data
+        identifier, image = data
+        # print(f"handle_receive_socket_data{data_type}, {data}")
+        if data_type==1:
+            
+            handler = self.data_handler_factory.get(identifier)
+            handler.handle(data, client_address=client_address)
+        elif data_type == 2:  # 이미지 데이터
+            
 
             try:
                 handler = self.data_handler_factory.get(identifier)
@@ -153,6 +158,7 @@ class IVService:
 
 
     def send_data_socket(self, key, data):
+        print(f"send_data_socket key:{key} data:{data}")
         self.udp_client_str.queue_data((str(data), key))
 
 
