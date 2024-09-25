@@ -90,7 +90,7 @@ UI 구조
   Commit 로그, 생성한 파일 등
 ![0925121521730420](https://github.com/user-attachments/assets/b6db7a78-0eb2-47d3-aa2a-0b1902b0229b)
 
-- 시현 영상
+- 시연 영상
 Click here to watch the demo
 
 ## 결론
