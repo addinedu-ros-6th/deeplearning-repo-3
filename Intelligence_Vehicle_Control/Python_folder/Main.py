@@ -68,20 +68,28 @@ def encoder_monitor():
             mean_encoder_value = (abs(L_encoder)+abs(R_encoder))/2
             
             delta_encoder = mean_encoder_value-pre_encoder_value
-            cur_speed = delta_encoder*20.42/2500
+            cur_speed = delta_encoder*20.42/2500 # cm/s
 
-            client_speed.queue_data((str(cur_speed),'speed'))
+            client_speed.queue_data((str(round(cur_speed,1)),'speed'))
+            print(round(cur_speed,1))
             pre_encoder_value = mean_encoder_value
         time.sleep(0.1)  # 0.1초마다 엔코더 값 읽기
 
 def fetch_commands(command):
     global pre_command
+    global red_light_flag
+    global stop_line_flag
     try:
+        if red_light_flag and stop_line_flag:
+            pre_command = "S"
+        else:
+            precommand = "F30"
         # 명령을 파싱하여 모터 제어 함수 호출
         def process_command(cmd):
             if cmd[0] == 'F':
                 if int(cmd[1:]) == 0:
                     motor_stop()
+                    print("모터 정지")
                 else:
                     speed = int(cmd[1:])  # 속도 값 추출
                     motor_forward(speed)
@@ -113,12 +121,12 @@ def fetch_commands(command):
         process_command(command)
 
         # 자동 command 없을 때  최대한 제자리 회전 구현
-        # if command[0] == 'C':
-        #     right_motor_correction_value = int(command[1:])
-        #     if right_motor_correction_value>12:
-        #         pre_command = "T20"
-        #     else:
-        #         pre_command="F30"
+        if command[0] == 'C':
+            right_motor_correction_value = int(command[1:])
+            if right_motor_correction_value>18:
+                pre_command = "T20"
+            else:
+                pre_command="F30"
 
         # 'C' 또는 'E'일 경우, 이전 명령도 처리
         if command[0] in ['C', 'E']:
@@ -137,13 +145,15 @@ def fetch_commands(command):
 def custom_data_handler(data_type, data, client_address):
     print(data_type,data,client_address)
     command = None
+    global stop_line_flag
+    global red_light_flag
     if data_type == 1:  # 스트링 데이터
         identifier, str_data = data
         print(f"텍스트: {type(str_data)}")
     
         if identifier == 'speed':
             print("정면 카메라 이미지 수신")
-        else:
+        elif identifier == 'error':
             print("error identifier")
 
         if data[0] == "error":
@@ -153,6 +163,14 @@ def custom_data_handler(data_type, data, client_address):
             command = "F"+str(int(float(data[1])))
         elif data[0] == "ST":
             command = "S"
+        elif data[0] == "stop_line":
+            print("stooooooooooooooooooooooooooooooooooooooooooooppppppppppppppppppp")
+            stop_line_flag = data[1] == "1"
+            print(stop_line_flag)
+        elif data[0] == "red_light":
+            print("reeeeeeeeeeddddddddddddddlllllliiiiiiiiiiiiiignt")
+            red_light_flag = data[1] == "True"
+            print(red_light_flag)
         if command :
             fetch_commands(command)
 
@@ -244,6 +262,9 @@ def get_front_frame():
 
 
 if __name__ == "__main__":
+    red_light_flag = False
+    stop_line_flag = False
+
     command = "S"
     lane_cam = cv2.VideoCapture(1)
     width = 640
