@@ -60,7 +60,7 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 
 #### 클래스 구성
 
-![class_diagram_mermaid](https://github.com/user-attachments/assets/f65e9938-39d3-4272-984e-2b64ae90f659)
+![Screenshot from 2024-10-17 14-44-10](https://github.com/user-attachments/assets/5bde5749-b5b4-4788-8342-8cb3b4aac7a9)
 - 코드 설명(Best Practice 적용): 코드 효율성, 확장성, 가독성을 고려한 설계 등
 (생성 패턴: 팩토리 메서드, 빌더, 싱글턴 / 행동 패턴: 전략)
 
