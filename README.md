@@ -89,9 +89,28 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 - 차선 모델 loss, mAP 그래프
   
 ![obstacle_result](https://github.com/user-attachments/assets/046bb048-d95b-48f2-a2ef-8e6a30044abd)
+
+- train/val Loss (segmentation 관련):
+  - segmentation 관련 손실이 꾸준히 감소하고 있음
+  - 학습과 검증 손실이 안정적으로 줄어들고 유사한 경향을 보이므로, 차선 인식 관련 학습이 잘 이루어 졌다고 보임
+- Precision, Recall, mAP (B, M):
+  - mAP50 및 mAP50-95에서 거의 0.9~1.0 수준을 보임
+  - 다소의 흔들림이 보이지만 전체적인 성능은 우수하다 판단됨
+  
+높은 정밀도와 재현율(Precision/Recall)을 달성하였고, mAP값도 높아 좋은 성능을 보이는것으로 보아 차선 인식에 대해 잘 학습되었다고 판단됨
+
 - class 데이터 및 val이미지 
   
 ![object_merge](https://github.com/user-attachments/assets/c35aee99-63d5-4ffe-b6a4-bc71ca4a6f27)
+
+- 왼쪽 상단 그래프: 클래스별 개수를 한 눈에 볼수 있는 그래프
+- 오른쪽 상단 그래프: 다양한 객체들의 바운딩 박스 크기와 위치 분포를 겹쳐서 표현해주는 그래프
+- 하단 히트맵: 객체의 위치 및 크기 분포를 볼 수 있는 그래프
+  - X,Y 좌표와 Width, Height에 따른 객체 인식 분포를 보여주며, 객체들이 다양한 위치와 크기로 인식되었음을 보여줌
+- 오른쪽 사진들: 장애물 인식 시각화(validation 사진)
+  - 각각의 사진에서 객체가 정확하게 탐지된 걸 확인할 수 있음
+ 
+이러한 결과들로 인해 로봇이 환경 내에서 다양한 장애물과 신호를 정확하게 인식할 수 있다고 판단됨
 
 #### 객체 검출 모델
 - 모델 : YOLOv8 object detection (nano)
