@@ -38,10 +38,10 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 ### 2.1. 주요 기능 
 | 기능    | 기능 설명 |
 |----------|---------------|
-| 주행 관련 객체 인식 | &#8226; 장애물(보행자, 야생동물, 바리케이드) <br> &#8226; 차선<br>&#8226; 신호<br>&#8226; 표지판 인식후 메인 프로그램으로 인식 정보 송신|
-| 주행 모니터링   |  &#8226; 객체 검출용 카메라 및 차선 검츌용 카메라 영상 출력<br>&#8226; 표지판 내용 및 장애물 정보 등 알람 <br>&#8226; 현재 속도 표시|
-| 주행 기록 관리   | &#8226; 주행기록(검출 내역, 시간, 속도 등) 저장 및 조회 | 
-| 주행 상태 제어   | &#8226; 차선 유지를 위한 횡방향 제어<br>&#8226; 도로 환경 조건에 따라 변화하는 종방향 제어| 
+| 주행 관련 객체 인식 | 장애물(보행자, 야생동물, 바리케이드 등), 차선, 신호, 표지판 인식 후 메인 프로그램으로 인식 정보 송신|
+| 주행 모니터링    | 객체 검출용 카메라 및 차선 검출용 카메라 영상 출력, 표지판 내용, 장애물 정보 등 알람, 현재 속도 표시|
+| 주행 기록 관리   |  주행기록(검출 내역, 시간, 속도 등) 저장 및 조회 | 
+| 주행 상태 제어   | 차선 유지를 위한 횡방향 제어, 도로 환경 조건에 따라 변화하는 종방향 제어 
   
 ### 2.2. 시스템 아키텍처
 #### 하드웨어 구조
@@ -50,11 +50,11 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 #### 시나리오 설계
 - 차선 검출 시나리오
     
-![lane_detector](https://github.com/user-attachments/assets/d21aa2be-2171-4e37-a634-643d14254351)
+![lane_detector](https://github.com/user-attachments/assets/3591915b-40a3-46c4-bb63-d60072893c8b)
 
 - 장애물 검출 시나리오
     
-![obstacle_detector](https://github.com/user-attachments/assets/e2353afa-ff55-4517-8f3f-b97c7e72a521)
+![obstacle_detector](https://github.com/user-attachments/assets/54e90570-63ac-4a88-af33-fff16364a7e0)
 
 #### 클래스 구성
 
