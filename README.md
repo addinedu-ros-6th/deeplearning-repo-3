@@ -3,6 +3,9 @@
 
 ## 개요
 (데모 영상)
+https://drive.google.com/file/d/1wHXQA6brI9wGeNsBYWnBAAHrJa71_X6w/view?usp=sharing
+https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=sharing
+
 
 ### 프로젝트 목표
 ### 팀 구성
