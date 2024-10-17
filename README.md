@@ -50,11 +50,11 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 #### 시나리오 설계
 - 차선 검출 시나리오
     
-![sequence_lane1](https://github.com/user-attachments/assets/7db9002c-4d24-4c77-beda-08a4e25903b1)
+![lane_detector](https://github.com/user-attachments/assets/d21aa2be-2171-4e37-a634-643d14254351)
 
 - 장애물 검출 시나리오
     
-![sequence_lane (1)](https://github.com/user-attachments/assets/ad45240c-29f7-4031-8746-643ae64fcabb)
+![obstacle_detector](https://github.com/user-attachments/assets/e2353afa-ff55-4517-8f3f-b97c7e72a521)
 
 #### 클래스 구성
 
