@@ -4,8 +4,8 @@
 ## 1. 개요
 (데모 영상)
 
-https://drive.google.com/file/d/1wHXQA6brI9wGeNsBYWnBAAHrJa71_X6w/view?usp=sharing
-https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=sharing
+[![Screenshot from 2024-10-17 20-34-51](https://github.com/user-attachments/assets/152528c5-05d4-4d41-9f2a-38e1176fccc2)](https://drive.google.com/file/d/1wHXQA6brI9wGeNsBYWnBAAHrJa71_X6w/view?usp=sharing)
+[![Screenshot from 2024-10-17 20-37-51](https://github.com/user-attachments/assets/d268a4e1-249f-498b-a334-e75896dff41f)](https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=sharing)
 
 
 ### 1.1. 프로젝트 설명
