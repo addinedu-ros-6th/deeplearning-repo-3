@@ -90,14 +90,9 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 
 ![lane_merge1](https://github.com/user-attachments/assets/a5d272b0-edc9-4640-af1c-f3be448986cc)
 
-- train/val Loss (segmentation 관련):
-  - segmentation 관련 손실이 꾸준히 감소하고 있음
-  - 학습과 검증 손실이 안정적으로 줄어들고 유사한 경향을 보이므로, 차선 인식 관련 학습이 잘 이루어 졌다고 보임
-- Precision, Recall, mAP (B, M):
-  - mAP50 및 mAP50-95에서 거의 0.9~1.0 수준을 보임
-  - 다소의 흔들림이 보이지만 전체적인 성능은 우수하다 판단됨
+
   
-해석: 높은 정밀도와 재현율(Precision/Recall)을 달성하였고, mAP값도 높아 좋은 성능을 보이는것으로 보아 차선 인식에 대해 잘 학습되었다고 판단됨
+해석: 
 
 - class 데이터 및 val이미지 
 
@@ -112,6 +107,7 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
  
 해석: 로봇이 도로 환경에서 차선과 정지선을 일관되게 인식할 수 있음을 보여줌
 
+
 #### 객체 검출 모델
 - 모델 : YOLOv8 object detection (nano)
 - 목적 : 차량 제어에 필요한 장애물(신호등, 표지판 사람 등)을 검출
@@ -125,6 +121,10 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 - 객체 모델 loss, mAP 그래프
   
 ![obstacle_result](https://github.com/user-attachments/assets/046bb048-d95b-48f2-a2ef-8e6a30044abd)
+
+  
+해석: 
+
 - class 데이터 및 val이미지 
 
 ![object_merge](https://github.com/user-attachments/assets/c35aee99-63d5-4ffe-b6a4-bc71ca4a6f27)
@@ -136,7 +136,7 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 - 오른쪽 사진들: 장애물 인식 시각화(validation 사진)
   - 각각의 사진에서 객체가 정확하게 탐지되고 표시된걸 확인할 수 있음
 
-해석: 
+해석: 로봇이 도로 환경에서 다양한 장애물과 신호를 정확하게 인식할 수 있음을 보여줌
   
   
 ### 2.3. 구현
