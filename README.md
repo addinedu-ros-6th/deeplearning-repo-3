@@ -1,15 +1,15 @@
 # IV Project
 차선인식 기반 자율주행 시스템 프로젝트
 
-## 개요
+## 1. 개요
 (데모 영상)
 
 https://drive.google.com/file/d/1wHXQA6brI9wGeNsBYWnBAAHrJa71_X6w/view?usp=sharing
 https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=sharing
 
 
-### 프로젝트 목표
-### 팀 구성
+### 1.1. 프로젝트 목표
+### 1.2. 팀 구성
 |성명|담당|
 |----|-----|
 |윤희천 <br> (Project Leader)|차선 인식 모델 학습 <br> 차선 인식 로직 개발, 제어 로직 지원| 
@@ -17,11 +17,11 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 |서영환|DB 환경 구축, GUI 개발 <br> 객체 탐지 모델 학습| 
 |이경민|제어 로직 개발, 객체 탐지 모델 학습 <br> 차선 인식 로직 지원|
 |조전욱|통신 환경 구축, 객체 탐지 모델 학습 <br> 시스템 설계, 구현 및 시스템 통합|
-### 협업
+### 1.3. 협업
 - Confluence: 프로젝트 문서 및 지식 공유
 - Jira: 프로젝트 관리 및 이슈 트래킹
 - Git: 형상 관리 및 프로젝트 공유
-### 기술 스택
+### 1.4. 기술 스택
 |분류|기술|
 |-----|-----|
 |개발 환경|Linux|
@@ -32,9 +32,9 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 |DBMS|MySQL|
 |UI|PyQT|
 |영상 처리|openCV|
-## 개발 단계
+## 2. 개발 단계
 딥러닝 기술의 적용, 센서에서 수집한 대량 데이터의 처리, 여러 산업에 적용될 수 있는 확장성, 다양한 연구 분야와의 연계성을 고려하여 카메라 영상을 기반으로 한 자율주행 로봇을 프로젝트 주제로 선정
-### 목표 기능 
+### 2.1. 목표 기능 
 - 주행 관련 객체 인식 기능
 장애물(보행자, 야생동물, 바리케이드 등), 차선, 신호, 표지판 인식 후 메인 프로그램으로 인식 정보 송신
 - 주행 모니터링 기능
@@ -44,7 +44,7 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 - 주행 상태 제어 기능
 차선 유지를 위한 횡방향 제어, 도로 환경 조건에 따라 변화하는 종방향 제어
   
-### 소프트웨어 설계
+### 2.2. 소프트웨어 설계
 #### 시스템 구조
 ![system_architecture](https://github.com/user-attachments/assets/be74edc8-9306-4ccd-9494-87cf21cf4ec3)
 
@@ -59,6 +59,7 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 #### 통신
 
 #### 클래스 구성
+
 ![class_diagram_mermaid](https://github.com/user-attachments/assets/f65e9938-39d3-4272-984e-2b64ae90f659)
 - 코드 설명(Best Practice 적용): 코드 효율성, 확장성, 가독성을 고려한 설계 등
 (생성 패턴: 팩토리 메서드, 빌더, 싱글턴 / 행동 패턴: 전략)
@@ -74,7 +75,7 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 #### 주행 제어
 ![abstract_driving_algo](https://github.com/user-attachments/assets/3943f5f7-bf7a-435f-88d0-35360cad3c63)
 
-### 딥러닝 모델 생성
+### 2.2. 딥러닝 모델 생성
 #### 차선 검출 모델
 |학습 데이터 분량|데이터 취득 방식|클래스 리스트|
 |-----|-----|-----|
@@ -97,16 +98,16 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 
 ![lane_merge2](https://github.com/user-attachments/assets/010ff9f2-935a-48c6-81d1-09731d13d89e)
 
-### 구현
+### 2.3. 구현
 - 구현
   Commit 로그, 생성한 파일 등
 
 - 시연 영상
 Click here to watch the demo
 
-## 결론
-### 문제 해결 과정
+## 3. 결론
+### 3.1. 문제 해결 과정
 - 영상 송출 관련
 - 하드웨어 성능 관련
 - 제어 관련
-### 향후 개선 방안 및 확장 가능성
+### 3.2. 향후 개선 방안 및 확장 가능성
