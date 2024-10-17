@@ -47,7 +47,8 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 ### 2.2. 소프트웨어 설계
 #### 시스템 구조
 ![system_architecture](https://github.com/user-attachments/assets/be74edc8-9306-4ccd-9494-87cf21cf4ec3)
-
+#### 하드웨어 구성
+![hardware](https://github.com/user-attachments/assets/e793c40f-491b-4d63-8d04-106b6e3c24c1)
 #### 주요 시나리오
 - 차선 검출 시나리오
     
