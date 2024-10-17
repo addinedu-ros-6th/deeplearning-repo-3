@@ -87,8 +87,8 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 |-----|-----|-----|
 |1000장|모형 도로 촬영|[Stop_Line, L_Lane, R_Lane]|
 - 차선 모델 loss, mAP 그래프
-  
-![obstacle_result](https://github.com/user-attachments/assets/046bb048-d95b-48f2-a2ef-8e6a30044abd)
+
+![lane_merge1](https://github.com/user-attachments/assets/a5d272b0-edc9-4640-af1c-f3be448986cc)
 
 - train/val Loss (segmentation 관련):
   - segmentation 관련 손실이 꾸준히 감소하고 있음
@@ -100,8 +100,8 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 높은 정밀도와 재현율(Precision/Recall)을 달성하였고, mAP값도 높아 좋은 성능을 보이는것으로 보아 차선 인식에 대해 잘 학습되었다고 판단됨
 
 - class 데이터 및 val이미지 
-  
-![object_merge](https://github.com/user-attachments/assets/c35aee99-63d5-4ffe-b6a4-bc71ca4a6f27)
+
+![lane_merge2](https://github.com/user-attachments/assets/010ff9f2-935a-48c6-81d1-09731d13d89e)
 
 - 왼쪽 상단 그래프: 클래스별 개수를 한 눈에 볼수 있는 그래프
 - 오른쪽 상단 그래프: 다양한 객체들의 바운딩 박스 크기와 위치 분포를 겹쳐서 표현해주는 그래프
@@ -124,10 +124,10 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 |1200장|모형 도로 촬영|[Red_Sign, Blue_Sign, Child, Child_deactivate, 50km, 50km_deactivate, person, child, dog]|
 - 객체 모델 loss, mAP 그래프
   
-![lane_merge1](https://github.com/user-attachments/assets/a5d272b0-edc9-4640-af1c-f3be448986cc)
+![obstacle_result](https://github.com/user-attachments/assets/046bb048-d95b-48f2-a2ef-8e6a30044abd)
 - class 데이터 및 val이미지 
 
-![lane_merge2](https://github.com/user-attachments/assets/010ff9f2-935a-48c6-81d1-09731d13d89e)
+![object_merge](https://github.com/user-attachments/assets/c35aee99-63d5-4ffe-b6a4-bc71ca4a6f27)
 
 ### 2.3. 구현
 - 구현
