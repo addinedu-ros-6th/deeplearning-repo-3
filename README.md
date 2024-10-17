@@ -79,6 +79,7 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 #### 차선 검출 모델
 - 제어에 필요한 정보인 정지선, 차선은 왼쪽 차선과 오른쪽 차선으로 구분하여, 테스트 트랙에서 충분한 분량인 1000장을 YOLO-v8 segmentation nano 모델에 학습시켜 차선 검출 모델로 활용 하였음
 - 라벨링은 Labeme 툴을 사용하여 직접 정지선, 왼쪽 차선, 오른쪽 차선을 polygon을 사용하여 라벨 작업 하였음
+- 
 |학습 데이터 분량|데이터 취득 방식|클래스 리스트|
 |-----|-----|-----|
 |1000장|모형 도로 촬영|[Stop_Line, L_Lane, R_Lane]|
@@ -92,6 +93,7 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 #### 객체 검출 모델
 - 제어에 필요한 정보인 여러 장애물을 몇 가지 케이스만 추려서 테스트 환경에 맞춰 C920 단안 웹캠 카메라로 촬영한 녹화영상에서 학습용 사진을 추출하여 1200장을 YOLO-v8 nano 검출 모델에 학습시켜서 장애물 검출 모델로 활용 하였음
 - 라벨링은 Labeme 툴을 사용하여 직접 polygon을 사용하여 신호등, 표지판, 사람 등을 라벨 작업 하였음
+- 
 |학습 데이터 분량|데이터 취득 방식|클래스 리스트|
 |-----|-----|-----|
 |1200장|모형 도로 촬영|[Red_Sign, Blue_Sign, Child, Child_deactivate, 50km, 50km_deactivate, person, child, dog]|
