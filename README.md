@@ -97,7 +97,7 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
   - mAP50 및 mAP50-95에서 거의 0.9~1.0 수준을 보임
   - 다소의 흔들림이 보이지만 전체적인 성능은 우수하다 판단됨
   
-높은 정밀도와 재현율(Precision/Recall)을 달성하였고, mAP값도 높아 좋은 성능을 보이는것으로 보아 차선 인식에 대해 잘 학습되었다고 판단됨
+해석: 높은 정밀도와 재현율(Precision/Recall)을 달성하였고, mAP값도 높아 좋은 성능을 보이는것으로 보아 차선 인식에 대해 잘 학습되었다고 판단됨
 
 - class 데이터 및 val이미지 
 
