@@ -90,9 +90,14 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 
 ![lane_merge1](https://github.com/user-attachments/assets/a5d272b0-edc9-4640-af1c-f3be448986cc)
 
+- Loss 감소(train/val box, cls, dfl loss):
+  - train과 val 손실이 지속적으로 감소하며, 학습이 잘 진행된거를 보여줌
+  - 검증 손실(val)이 학습 손실(train)과 유사하게 수렴하므로 과적합이 없고 안정적인 학습이 이루어졌다고 보여짐
+- Precision/Recall 및 mAP (B):
+  - Precision과 Recall(B)의 값이 50 에포크 이후보터 0.96~0.98 이상으로 안정화 되었음
+  - mAP50 및 mAP50-95 지표 또한 시간이 지남에 따라 향상되어, 0.9에 가까운 성능을 달성했음
 
-  
-해석: 
+해석: 학습과 검증 데이터에서 모두 좋은 성능을 보여주어, 작업에 안정적으로 적용될 수 있는것으로 보여짐
 
 - class 데이터 및 val이미지 
 
@@ -122,8 +127,14 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
   
 ![obstacle_result](https://github.com/user-attachments/assets/046bb048-d95b-48f2-a2ef-8e6a30044abd)
 
+- Loss 감소(train/val bbox, cls, dfl loss):
+  - train과 val 손실이 지속적으로 감소하며, 학습이 잘 진행된거를 보여줌
+  - 검증 손실(val)이 학습 손실(train)과 유사하게 수렴하므로 과적합이 없고 안정적인 학습이 이루어졌다고 보여짐
+- Precision/Recall 및 mAP (B):
+  - Precision과 Recall(B)의 값이 50 에포크 이후부터 0.96~0.98 이상으로 안정화 되었음
+  - mAP50 및 mAP50-95 지표 또한 시간이 지남에 따라 향상되어, 0.9에 가까운 성능을 달성했음
   
-해석: 
+해석: 학습과 검증 데이터에서 모두 좋은 성능을 보여주며, 작업에 안정적으로 적용될 수 있는것으로 보여짐
 
 - class 데이터 및 val이미지 
 
