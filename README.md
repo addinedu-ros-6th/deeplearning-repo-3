@@ -74,9 +74,12 @@ https://drive.google.com/file/d/1Vh_ztGSVTv9K7oVbI3sXrSjJfdcepeMJ/view?usp=shari
 #### 주행 제어
 - 시스템 동작 알고리즘
 
+![DrivingAlgo drawio (2)](https://github.com/user-attachments/assets/959b6592-13f7-4c14-825e-c2f417e0be4e)
+
 - 주행 알고리즘
 
-![abstract_driving_algo](https://github.com/user-attachments/assets/3943f5f7-bf7a-435f-88d0-35360cad3c63)
+![DrivingAlgo drawio](https://github.com/user-attachments/assets/b6d79790-daf4-4806-ae2f-bbc2e8bdb709)
+<!-- ![abstract_driving_algo](https://github.com/user-attachments/assets/3943f5f7-bf7a-435f-88d0-35360cad3c63) -->
 
 ### 2.2. 딥러닝 모델 생성
 #### 차선 검출 모델
