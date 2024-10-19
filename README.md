@@ -45,9 +45,15 @@
   
 ### 2.2. 시스템 아키텍처
 #### 하드웨어 구조
+
 ![hardware](https://github.com/user-attachments/assets/e793c40f-491b-4d63-8d04-106b6e3c24c1)
+
 #### 소프트웨어 구조
+
+![sw_arch](https://github.com/user-attachments/assets/579853f9-fdb1-4d32-ab39-38f8166725a4)
+
 #### 시나리오 설계
+
 - 차선 검출 시나리오
     
 ![lane_detector](https://github.com/user-attachments/assets/3591915b-40a3-46c4-bb63-d60072893c8b)
@@ -59,9 +65,6 @@
 #### 클래스 구성
 
 ![Screenshot from 2024-10-17 14-44-10](https://github.com/user-attachments/assets/5bde5749-b5b4-4788-8342-8cb3b4aac7a9)
-
-- 코드 설명(Best Practice 적용): 코드 효율성, 확장성, 가독성을 고려한 설계 등
-(생성 패턴: 팩토리 메서드, 빌더, 싱글턴 / 행동 패턴: 전략)
 
 #### 데이터베이스 구조
 
